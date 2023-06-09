@@ -1,16 +1,19 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User, UserDocument } from './users.model';
+import { User, UserSchema } from './users.model';
+import { CreateUserDto } from './dto/create.user.dto';
+import { compareSync, hashSync } from 'bcrypt';
+
+
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: User) {}
 
   async findAll(user: User): Promise<User[]> {
     if (user.role === 'admin') {
-      return this.userModel.find().exec() as unknown;
+      return this.userModel.find().exec();
     } else if (user.role === 'boss') {
       return this.userModel
         .find({ _id: { $in: [...user.subordinates, user._id] } })
@@ -24,8 +27,10 @@ export class UsersService {
     return this.userModel.findById(id).exec();
   }
 
-  async create(user: User): Promise<User> {
-    const createdUser = new this.userModel(user);
+  async create(dto: CreateUserDto): Promise<User> {
+    const createdUser = await this.userModel.create(dto);
+    createdUser.setName(dto.email);
+    createdUser.setPassword(dto.password);
     return createdUser.save();
   }
 
@@ -84,3 +89,15 @@ export class UsersService {
     }
   }
 }
+
+UserSchema.methods.setPassword = async function (password: string) {  
+  return this.password = hashSync(password, 10);
+};
+
+UserSchema.methods.setName = function (email: string) {
+  const parts = email.split("@");
+  this.name = parts[0];
+};
+UserSchema.methods.comparePassword = function (password: string) {
+  return compareSync(password, this.password);
+};

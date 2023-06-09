@@ -10,7 +10,7 @@ export class User extends Model<User> {
     type: String,
     minlength: 2,
     maxlength: 20,
-    required: [true, 'Name is required'],
+    
   })
   name: string;
 
@@ -19,8 +19,7 @@ export class User extends Model<User> {
 
   @Prop({
     type: String,
-    minlength: 6,
-    maxlength: 20,
+    minlength: 6,    
     required: [true, 'Password is required'],
   })
   password: string;
