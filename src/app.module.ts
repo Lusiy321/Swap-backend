@@ -1,18 +1,17 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './users/users.module';
 
-const DB_HOST = process.env.DB_HOST;
-
-console.log(DB_HOST);
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://admin:admin123@cluster0.gwfkspe.mongodb.net/?retryWrites=true&w=majority',
-    ),
+    ConfigModule.forRoot({
+      envFilePath: `.env`,
+    }),
+    MongooseModule.forRoot(process.env.DB_HOST),
+    UsersModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
