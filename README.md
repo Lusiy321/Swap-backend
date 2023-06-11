@@ -1,10 +1,11 @@
 <p align="center">
-  ![swwa](https://github.com/Lusiy321/Incode-backend/assets/107991551/541d1c59-0797-4764-a00f-975426b06027)
+
+![swwa](https://github.com/Lusiy321/Incode-backend/assets/107991551/310c14fe-3844-42cc-8212-d5aa0cc88574)
 
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Test task for Incode. Login web server
 
 ## Installation
 
