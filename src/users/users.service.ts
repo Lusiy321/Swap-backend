@@ -6,15 +6,19 @@ import { CreateUserDto } from './dto/create.user.dto';
 import { compareSync, hashSync } from 'bcrypt';
 import { Conflict, NotFound, BadRequest, Unauthorized } from 'http-errors'
 import { sign, verify, JwtPayload } from 'jsonwebtoken'
+import { UpdateUserDto } from './dto/update.user.dto';
+import { RoleUserDto } from './dto/role.user.dto';
 
 
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: User) {}
-
-  async findAll(req: any): Promise<User[]> {
-    const { authorization = "" } = req.headers;
+  
+  constructor(@InjectModel(User.name) private userModel: User) { }
+   
+  async findAll(req: any,): Promise<User[]> {
+    try {
+      const { authorization = "" } = req.headers;
   const [bearer, token] = authorization.split(" ");
 
   if (bearer !== "Bearer") {
@@ -22,22 +26,41 @@ export class UsersService {
     }
     const SECRET_KEY = process.env.SECRET_KEY;
     const findId = verify(token, SECRET_KEY) as JwtPayload;
-const user = await this.userModel.findById({ _id: findId.id });
+    const user: any = await this.userModel.findById({ _id: findId.id });
     if (user.role === 'admin') {
       return this.userModel.find().exec();
-    } else if (user.role === 'boss') {
-      return this.userModel
-        .find({ _id: { $in: [...user.subordinates, user._id] } })
+    } else if (user.role === 'boss') {       
+      const subUsers = this.userModel
+        .find({ $or: [ { _id: user._id }, { boss: user._id }] })
         .exec();
+      
+      return subUsers;
+      
     } else {
-      return this.userModel.findById(user._id).exec();
+      return await this.userModel.findById(user._id).exec();
     }
+    } catch (e) {
+      throw new NotFound('User not found');
+    }
+  
   }
 
-  async findById(id: string): Promise<User> {
+  async findById(id: string, req: any): Promise<User> {
     try { 
-      const find = await this.userModel.findById(id).exec();
-      return find; 
+      const { authorization = "" } = req.headers;
+      const [bearer, token] = authorization.split(" ");
+
+  if (bearer !== "Bearer") {
+    throw new Unauthorized("Not authorized");
+    }
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const findId = verify(token, SECRET_KEY) as JwtPayload;
+      const user = await this.userModel.findById({ _id: findId.id });
+      if (user.role === 'admin' || user.role === 'boss') {
+        const find = await this.userModel.findById(id).exec();
+      return find;
+      }
+       
     } catch(e) {
       throw new NotFound('User not found');
     }    
@@ -49,11 +72,18 @@ const user = await this.userModel.findById({ _id: findId.id });
     const registrationUser = await this.userModel.findOne({ email });
     if (registrationUser) {
       throw new Conflict(`User with ${email} in use`);
-    }
+    } 
     const createdUser = await this.userModel.create(user);
     createdUser.setName(user.email);
     createdUser.setPassword(user.password);
-    return createdUser.save();
+    createdUser.save();
+    const setUser = await this.userModel.findById(createdUser._id);
+      if (setUser.role === 'user') {          
+        const boss = await this.userModel.findOne({ role: 'boss' });  
+        setUser.boss = boss._id;
+        setUser.save();        
+    }
+    return await this.userModel.findById(createdUser._id);
     } catch (e) {
       throw new BadRequest(e.message);
     }
@@ -98,61 +128,121 @@ const user = await this.userModel.findById({ _id: findId.id });
     }
   }
 
-  async update(id: string, user: User, loggedInUser: User): Promise<User> {
-    const existingUser: any = await this.userModel.findById(id).exec();
-    if (!existingUser) {
-      throw new Conflict('User not found');
-    }
+  async update(user: UpdateUserDto, req: any): Promise<User> {
+    try { 
+      const { authorization = "" } = req.headers;
+      const [bearer, token] = authorization.split(" ");
+      const { ...params } = user; 
 
-    if (
-      loggedInUser.role === 'boss' &&
-      loggedInUser.subordinates.includes(existingUser._id)
-    ) {
-      return this.userModel.findByIdAndUpdate(id, user, { new: true }).exec();
-    } else {
-      throw new Conflict('Only boss and their subordinates can update user');
+  if (bearer !== "Bearer") {
+    throw new Unauthorized("Not authorized");
     }
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const findId = verify(token, SECRET_KEY) as JwtPayload;
+     await this.userModel.findByIdAndUpdate({ _id: findId.id }, { ...params });
+    const userUpdate = this.userModel.findById({ _id: findId.id });  
+      return userUpdate;
+    } catch(e) {
+      throw new NotFound('User not found');
+    }    
   }
 
-  async delete(id: string, loggedInUser: User): Promise<User> {
-    const existingUser: any = await this.userModel.findById(id).exec();
-    if (!existingUser) {
-      throw new Conflict('User not found');
-    }
+  async delete(id: string, req: any): Promise<User> {
+    try { 
+    const { authorization = "" } = req.headers;
+    const [bearer, token] = authorization.split(" ");
 
-    if (
-      loggedInUser.role === 'boss' &&
-      loggedInUser.subordinates.includes(existingUser._id)
-    ) {
-      return this.userModel.findByIdAndRemove(id).exec();
-    } else {
-      throw new Conflict('Only boss and their subordinates can delete user');
+  if (bearer !== "Bearer") {
+    throw new Unauthorized("Not authorized");
     }
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const findId = verify(token, SECRET_KEY) as JwtPayload;
+    const user = await this.userModel.findById({ _id: findId.id });
+      if (user.role === 'admin') {
+        const find = await this.userModel.findByIdAndRemove(id).exec();
+      return find;
+      } else {
+      throw new Conflict('Only admin can delete user');
+    }
+     } catch (e) {
+      throw new NotFound('User not found');
+    }
+    
   }
 
-  async setBoss(
-    userId: string,
-    bossId: string,
-    loggedInUser: User,
+  async setBoss(    
+    id: string,
+    req: any,
   ): Promise<User> {
-    const userToUpdate = await this.userModel.findById(userId).exec();
-    const newBoss: any = await this.userModel.findById(bossId).exec();
+    try {
+    const { authorization = "" } = req.headers;
+    const [bearer, token] = authorization.split(" ");
 
-    if (!userToUpdate || !newBoss) {
+  if (bearer !== "Bearer") {
+    throw new Unauthorized("Not authorized");
+    }
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const findId = verify(token, SECRET_KEY) as JwtPayload;
+    const userToUpdate = await this.userModel.findById({ _id: findId.id }).exec();
+    const newSub = await this.userModel.findById(id).exec();
+
+    if (!userToUpdate || !newSub) {
       throw new Conflict('User or boss not found');
     }
 
-    if (
-      loggedInUser.role === 'boss' &&
-      loggedInUser.subordinates.includes(newBoss._id)
-    ) {
-      userToUpdate.boss = newBoss._id;
+    if (userToUpdate.role === 'user' && newSub.role === 'boss') {
+      userToUpdate.boss = newSub._id;
       return userToUpdate.save();
+    } else if (userToUpdate.role === 'boss' && newSub.role === 'user') {
+      newSub.boss = userToUpdate._id;
+      return newSub.save();
     } else {
       throw new Conflict('Only boss and their subordinates can change user boss');
+    } 
+
+    } catch(e) {
+      throw new NotFound('User not found');
+    }    
+    
+  }
+
+  async setRole(    
+    id: string,
+    role: RoleUserDto,
+    req: any,
+  ): Promise<User> {
+    try {
+    const { authorization = "" } = req.headers;
+    const [bearer, token] = authorization.split(" ");
+
+  if (bearer !== "Bearer") {
+    throw new Unauthorized("Not authorized");
     }
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const findId = verify(token, SECRET_KEY) as JwtPayload;
+    const userAdmin = await this.userModel.findById({ _id: findId.id }).exec();
+    const newRoleSub = await this.userModel.findById(id).exec();
+
+    if (!userAdmin || !newRoleSub) {
+      throw new Conflict('User or admin not found');
+    }
+
+      if (userAdmin.role === 'admin') {       
+      newRoleSub.role = role.role;
+      return await newRoleSub.save();
+    } else {
+      throw new Conflict('Only admin  can change user role');
+    } 
+
+    } catch(e) {
+      throw new Conflict(e.message);
+    }    
+    
   }
 }
+
+
+
 
 UserSchema.methods.setPassword = async function (password: string) {  
   return this.password = hashSync(password, 10);

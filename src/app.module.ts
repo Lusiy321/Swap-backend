@@ -6,10 +6,11 @@ import { UsersModule } from './users/users.module';
 import { User, UserSchema } from './users/users.model';
 
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.env`,
+      envFilePath: `.env`
     }),
     MongooseModule.forRoot(process.env.DB_HOST),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema, collection: 'users' }]),
