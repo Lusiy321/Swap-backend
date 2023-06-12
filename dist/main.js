@@ -25,7 +25,7 @@ async function start() {
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('docs', app, document);
-    await app.listen(PORT, () => console.log(`Server started on port = ${PORT}`));
+    await app.listen(PORT, () => console.log(`Server started on port = http://localhost:${PORT}`));
 }
 start();
 //# sourceMappingURL=main.js.map

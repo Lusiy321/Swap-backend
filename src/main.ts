@@ -28,6 +28,6 @@ async function start() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document)
-  await app.listen(PORT, () => console.log(`Server started on port = ${PORT}`));
+  await app.listen(PORT, () => console.log(`Server started on port = http://localhost:${PORT}`));
 }
 start();
