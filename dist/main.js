@@ -19,9 +19,9 @@ async function start() {
         type: 'http',
         in: 'header',
         scheme: 'bearer',
-        bearerFormat: 'JWT'
-    }, 'BearerAuthMethod').addServer(`http://localhost:${PORT}`)
-        .addServer('https://final-project-yourpe-backend.onrender.com')
+        bearerFormat: 'JWT',
+    }, 'BearerAuthMethod')
+        .addServer(`http://localhost:${PORT}`)
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('docs', app, document);

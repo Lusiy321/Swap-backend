@@ -7,7 +7,10 @@ import * as express from 'express';
 
 async function start() {
   const PORT = process.env.PORT || 6000;
-  const app = await NestFactory.create(AppModule, new ExpressAdapter(express()));
+  const app = await NestFactory.create(
+    AppModule,
+    new ExpressAdapter(express()),
+  );
   app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Test task for Incode')
@@ -20,14 +23,16 @@ async function start() {
         type: 'http',
         in: 'header',
         scheme: 'bearer',
-        bearerFormat: 'JWT'
+        bearerFormat: 'JWT',
       },
       'BearerAuthMethod',
-  ).addServer(`http://localhost:${PORT}`)
-    .addServer('https://final-project-yourpe-backend.onrender.com')
+    )
+    .addServer(`http://localhost:${PORT}`)
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document)
-  await app.listen(PORT, () => console.log(`Server started on port = http://localhost:${PORT}`));
+  SwaggerModule.setup('docs', app, document);
+  await app.listen(PORT, () =>
+    console.log(`Server started on port = http://localhost:${PORT}`),
+  );
 }
 start();

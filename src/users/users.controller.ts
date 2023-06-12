@@ -8,7 +8,7 @@ import {
   Patch,
   Post,
   Put,
-  Req,    
+  Req,
 } from '@nestjs/common';
 import { User } from './users.model';
 import { UsersService } from './users.service';
@@ -17,25 +17,22 @@ import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { RoleUserDto } from './dto/role.user.dto';
 
-
-
 @Controller('users')
-
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
   @ApiOperation({ summary: 'Create User' })
-  @ApiResponse({ status: 200, type: User })  
+  @ApiResponse({ status: 200, type: User })
   @Post('/')
   async create(@Body() user: CreateUserDto): Promise<User> {
     return this.usersService.create(user);
   }
 
   @ApiOperation({ summary: 'Login User' })
-  @ApiResponse({status: 200, type: User})
+  @ApiResponse({ status: 200, type: User })
   @Post('login')
   async login(@Body() user: CreateUserDto): Promise<User> {
     return this.usersService.login(user);
-  } 
+  }
 
   @ApiOperation({ summary: 'Logout User' })
   @ApiResponse({ status: 200, type: User })
@@ -49,10 +46,10 @@ export class UsersController {
   @ApiResponse({ status: 200, type: [User] })
   @ApiBearerAuth('BearerAuthMethod')
   @Get('/')
-  async findAll(@Req() request: any,): Promise<User[]> {
+  async findAll(@Req() request: any): Promise<User[]> {
     return this.usersService.findAll(request);
   }
-  
+
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({ status: 200, type: User })
   @ApiBearerAuth('BearerAuthMethod')
@@ -60,12 +57,12 @@ export class UsersController {
   async findById(@Param('id') id: string, @Req() request: any): Promise<User> {
     return this.usersService.findById(id, request);
   }
-   
-  @ApiOperation({ summary: 'Update user' }) 
+
+  @ApiOperation({ summary: 'Update user' })
   @ApiResponse({ status: 200, type: User })
-  @ApiBearerAuth('BearerAuthMethod')  
+  @ApiBearerAuth('BearerAuthMethod')
   @Put('/')
-  async update(    
+  async update(
     @Body() user: UpdateUserDto,
     @Req() request: any,
   ): Promise<User> {
@@ -84,10 +81,7 @@ export class UsersController {
   @ApiResponse({ status: 200, type: User })
   @ApiBearerAuth('BearerAuthMethod')
   @Patch('/boss/:Id')
-  async setBoss(    
-    @Param('Id') id: string,
-    @Req() request: any,
-  ): Promise<User> {
+  async setBoss(@Param('Id') id: string, @Req() request: any): Promise<User> {
     return this.usersService.setBoss(id, request);
   }
 
@@ -95,7 +89,7 @@ export class UsersController {
   @ApiResponse({ status: 200, type: User })
   @ApiBearerAuth('BearerAuthMethod')
   @Patch('/role/:Id')
-  async setRole(    
+  async setRole(
     @Param('Id') id: string,
     @Body() role: RoleUserDto,
     @Req() request: any,
