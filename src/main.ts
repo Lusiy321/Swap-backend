@@ -27,6 +27,7 @@ async function start() {
       },
       'BearerAuthMethod',
     )
+    .addServer(`https://test-server-incode.onrender.com/`)
     .addServer(`http://localhost:${PORT}`)
     .build();
   const document = SwaggerModule.createDocument(app, config);
