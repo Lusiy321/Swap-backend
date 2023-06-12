@@ -21,6 +21,7 @@ async function start() {
         scheme: 'bearer',
         bearerFormat: 'JWT',
     }, 'BearerAuthMethod')
+        .addServer(`https://test-server-incode.onrender.com`)
         .addServer(`http://localhost:${PORT}`)
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
