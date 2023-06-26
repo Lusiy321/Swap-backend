@@ -16,14 +16,23 @@ const mongoose_2 = require("mongoose");
 let User = exports.User = class User extends mongoose_2.Model {
 };
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Petro', description: 'User name' }),
+    (0, swagger_1.ApiProperty)({ example: 'Petro', description: 'User first name' }),
     (0, mongoose_1.Prop)({
         type: String,
         minlength: 2,
         maxlength: 20,
     }),
     __metadata("design:type", String)
-], User.prototype, "name", void 0);
+], User.prototype, "firstName", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Poroshenko', description: 'User last name' }),
+    (0, mongoose_1.Prop)({
+        type: String,
+        minlength: 2,
+        maxlength: 20,
+    }),
+    __metadata("design:type", String)
+], User.prototype, "lastName", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'poroshenko@gmail.com', description: 'User email' }),
     (0, mongoose_1.Prop)({ type: String, required: [true, 'Email is required'] }),
@@ -33,24 +42,72 @@ __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Petro-123545', description: 'User password' }),
     (0, mongoose_1.Prop)({
         type: String,
-        minlength: 6,
+        minlength: 8,
         required: [true, 'Password is required'],
     }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: '+380987894556',
+        description: 'User phone number',
+    }),
+    (0, mongoose_1.Prop)({
+        type: String,
+        minlength: 12,
+        maxlength: 12,
+        default: '+38000000000',
+    }),
+    __metadata("design:type", String)
+], User.prototype, "phone", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'Kyiv',
+        description: 'User location',
+    }),
+    (0, mongoose_1.Prop)({
+        type: String,
+        minlength: 2,
+        maxlength: 20,
+        default: 'Kyiv',
+    }),
+    __metadata("design:type", String)
+], User.prototype, "location", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'https://',
+        description: 'User avatarURL',
+    }),
+    (0, mongoose_1.Prop)({
+        type: String,
+        default: 'https://',
+    }),
+    __metadata("design:type", String)
+], User.prototype, "avatarURL", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({ example: 'admin', description: 'User role' }),
-    (0, mongoose_1.Prop)({ required: true, enum: ['admin', 'boss', 'user'], default: 'user' }),
+    (0, mongoose_1.Prop)({
+        enum: ['admin', 'moderator', 'user'],
+        default: 'user',
+    }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'true', description: 'User status' }),
+    (0, mongoose_1.Prop)({
+        type: Boolean,
+        default: false,
+    }),
+    __metadata("design:type", Boolean)
+], User.prototype, "isOnline", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({
         example: ['64849dc0b92d9a89e4bbf568'],
-        description: 'Subordinates users ID',
+        description: 'User post ID',
     }),
-    (0, mongoose_1.Prop)({ type: [{ type: 'ObjectId', ref: 'User' }], default: [] }),
+    (0, mongoose_1.Prop)({ type: [{ type: 'ObjectId', ref: 'Post' }], default: [] }),
     __metadata("design:type", Array)
-], User.prototype, "boss", void 0);
+], User.prototype, "postsId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0N2EzNzhiNGU4MTk3ODYzMzkwMTUyYSIsImlhdCI6MTY4NTczMTIxNCwiZXhwIjoxNjg1ODE3NjE0fQ.rxH3-wVl3VGGX675UCqOFrLx-1xNH-GObq9v7GbZj0s',

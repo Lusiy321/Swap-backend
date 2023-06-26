@@ -37,40 +37,40 @@ export class User extends Model<User> {
 
   @ApiProperty({
     example: '+380987894556',
-    description: 'User phone number',
-    default: '+38000000000',
+    description: 'User phone number', 
   })
   @Prop({
     type: String,
     minlength: 12,
-    maxlength: 12,
+    maxlength: 12,    
+    default: '+38000000000',
   })
   phone: string;
 
   @ApiProperty({
     example: 'Kyiv',
-    description: 'User location',
-    default: 'Kyiv',
+    description: 'User location',    
   })
   @Prop({
     type: String,
     minlength: 2,
-    maxlength: 20,
+    maxlength: 20,    
+    default: 'Kyiv',
   })
   location: string;
 
-  @ApiProperty({
+  @ApiProperty({    
     example: 'https://',
-    description: 'User avatarURL',
+    description: 'User avatarURL',    
   })
   @Prop({
     type: String,
+    default: 'https://',    
   })
   avatarURL: string;
 
   @ApiProperty({ example: 'admin', description: 'User role' })
-  @Prop({
-    required: true,
+  @Prop({    
     enum: ['admin', 'moderator', 'user'],
     default: 'user',
   })
@@ -79,6 +79,7 @@ export class User extends Model<User> {
   @ApiProperty({ example: 'true', description: 'User status' })
   @Prop({
     type: Boolean,
+    default: false,
   })
   isOnline: boolean;
 
@@ -86,7 +87,7 @@ export class User extends Model<User> {
     example: ['64849dc0b92d9a89e4bbf568'],
     description: 'User post ID',
   })
-  @Prop({ type: [{ type: 'ObjectId', ref: 'User' }], default: [] })
+  @Prop({ type: [{ type: 'ObjectId', ref: 'Post' }], default: [] })
   postsId: Array<string>;
 
   @ApiProperty({

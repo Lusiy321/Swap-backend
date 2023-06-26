@@ -10,10 +10,10 @@ async function start() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, new platform_express_1.ExpressAdapter(express()));
     app.enableCors();
     const config = new swagger_1.DocumentBuilder()
-        .setTitle('Test task for Incode')
-        .setDescription('REAST API Documentation (https://github.com/Lusiy321)')
+        .setTitle('Test server Thing')
+        .setDescription('REAST API Documentation')
         .setVersion('1.0.0')
-        .addTag('lusiy321@gmail.com')
+        .addTag('test server')
         .addBearerAuth({
         description: 'JWT Authorization',
         type: 'http',
@@ -21,7 +21,7 @@ async function start() {
         scheme: 'bearer',
         bearerFormat: 'JWT',
     }, 'BearerAuthMethod')
-        .addServer(`https://test-server-incode.onrender.com`)
+        .addServer(`https://test-server-thing.onrender.com/`)
         .addServer(`http://localhost:${PORT}`)
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);

@@ -15,15 +15,27 @@ class UpdateUserDto {
 }
 exports.UpdateUserDto = UpdateUserDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Petro', description: 'User name' }),
+    (0, swagger_1.ApiProperty)({ example: 'Petro', description: 'User first name' }),
     __metadata("design:type", String)
-], UpdateUserDto.prototype, "name", void 0);
+], UpdateUserDto.prototype, "firstName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'poroshenko@gmail.com', description: 'User email' }),
+    (0, swagger_1.ApiProperty)({ example: 'Poroshenko', description: 'User last name' }),
     __metadata("design:type", String)
-], UpdateUserDto.prototype, "email", void 0);
+], UpdateUserDto.prototype, "lastName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Petro-123545', description: 'User password' }),
+    (0, swagger_1.ApiProperty)({ example: '+380984561225', description: 'User phone' }),
     __metadata("design:type", String)
-], UpdateUserDto.prototype, "password", void 0);
+], UpdateUserDto.prototype, "phone", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Kyiv', description: 'User location' }),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "location", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'https://', description: 'User avatar' }),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "avatarURL", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'false', description: 'User status' }),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "isOnline", void 0);
 //# sourceMappingURL=update.user.dto.js.map

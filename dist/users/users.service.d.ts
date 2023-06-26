@@ -12,6 +12,6 @@ export declare class UsersService {
     logout(req: any): Promise<User>;
     update(user: UpdateUserDto, req: any): Promise<User>;
     delete(id: string, req: any): Promise<User>;
-    setBoss(id: string, req: any): Promise<User>;
+    setModerator(id: string, req: any): Promise<User>;
     setRole(id: string, role: RoleUserDto, req: any): Promise<User>;
 }

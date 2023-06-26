@@ -11,17 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
@@ -47,9 +36,9 @@ let UsersService = exports.UsersService = class UsersService {
             if (user.role === 'admin') {
                 return this.userModel.find().exec();
             }
-            else if (user.role === 'boss') {
+            else if (user.role === 'moderator') {
                 const subUsers = this.userModel
-                    .find({ $or: [{ _id: user._id }, { boss: user._id }] })
+                    .find({ $or: [{ _id: user._id }, { moderator: user._id }] })
                     .exec();
                 return subUsers;
             }
@@ -71,7 +60,7 @@ let UsersService = exports.UsersService = class UsersService {
             const SECRET_KEY = process.env.SECRET_KEY;
             const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
             const user = await this.userModel.findById({ _id: findId.id });
-            if (user.role === 'admin' || user.role === 'boss') {
+            if (user.role === 'admin' || user.role === 'moderator') {
                 const find = await this.userModel.findById(id).exec();
                 return find;
             }
@@ -91,12 +80,6 @@ let UsersService = exports.UsersService = class UsersService {
             createdUser.setName(user.email);
             createdUser.setPassword(user.password);
             createdUser.save();
-            const setUser = await this.userModel.findById(createdUser._id);
-            if (setUser.role === 'user') {
-                const boss = await this.userModel.findOne({ role: 'boss' });
-                setUser.boss = boss._id;
-                setUser.save();
-            }
             return await this.userModel.findById(createdUser._id);
         }
         catch (e) {
@@ -145,13 +128,13 @@ let UsersService = exports.UsersService = class UsersService {
         try {
             const { authorization = '' } = req.headers;
             const [bearer, token] = authorization.split(' ');
-            const params = __rest(user, []);
+            const { firstName, lastName, phone, location, avatarURL, isOnline } = user;
             if (bearer !== 'Bearer') {
                 throw new http_errors_1.Unauthorized('Not authorized');
             }
             const SECRET_KEY = process.env.SECRET_KEY;
             const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            await this.userModel.findByIdAndUpdate({ _id: findId.id }, Object.assign({}, params));
+            await this.userModel.findByIdAndUpdate({ _id: findId.id }, { firstName, lastName, phone, location, avatarURL, isOnline });
             const userUpdate = this.userModel.findById({ _id: findId.id });
             return userUpdate;
         }
@@ -181,7 +164,7 @@ let UsersService = exports.UsersService = class UsersService {
             throw new http_errors_1.NotFound('User not found');
         }
     }
-    async setBoss(id, req) {
+    async setModerator(id, req) {
         try {
             const { authorization = '' } = req.headers;
             const [bearer, token] = authorization.split(' ');
@@ -195,18 +178,18 @@ let UsersService = exports.UsersService = class UsersService {
                 .exec();
             const newSub = await this.userModel.findById(id).exec();
             if (!userToUpdate || !newSub) {
-                throw new http_errors_1.Conflict('User or boss not found');
+                throw new http_errors_1.Conflict('User or moderator not found');
             }
-            if (userToUpdate.role === 'user' && newSub.role === 'boss') {
-                userToUpdate.boss = newSub._id;
+            if (userToUpdate.role === 'user' && newSub.role === 'moderator') {
+                userToUpdate.moderator = newSub._id;
                 return userToUpdate.save();
             }
-            else if (userToUpdate.role === 'boss' && newSub.role === 'user') {
-                newSub.boss = userToUpdate._id;
+            else if (userToUpdate.role === 'moderator' && newSub.role === 'user') {
+                newSub.moderator = userToUpdate._id;
                 return newSub.save();
             }
             else {
-                throw new http_errors_1.Conflict('Only boss and their subordinates can change user boss');
+                throw new http_errors_1.Conflict('Only moderator and their subordinates can change user moderator');
             }
         }
         catch (e) {

@@ -45,9 +45,6 @@ let UsersController = exports.UsersController = class UsersController {
     async delete(id, request) {
         return this.usersService.delete(id, request);
     }
-    async setBoss(id, request) {
-        return this.usersService.setBoss(id, request);
-    }
     async setRole(id, role, request) {
         return this.usersService.setRole(id, role, request);
     }
@@ -81,7 +78,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "logout", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Get All Users (admin only and boss role)' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get All Users (admin only and moderator role)' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: [users_model_1.User] }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
     (0, common_1.Get)('/'),
@@ -124,18 +121,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "delete", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Set user subordinates ID' }),
-    (0, swagger_1.ApiResponse)({ status: 200, type: users_model_1.User }),
-    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
-    (0, common_1.Patch)('/boss/:Id'),
-    __param(0, (0, common_1.Param)('Id')),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "setBoss", null);
-__decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Set user role ID enum: admin, boss, user' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Set user role ID admin, moderator or user' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: users_model_1.User }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
     (0, common_1.Patch)('/role/:Id'),

@@ -13,6 +13,5 @@ export declare class UsersController {
     findById(id: string, request: any): Promise<User>;
     update(user: UpdateUserDto, request: any): Promise<User>;
     delete(id: string, request: any): Promise<User>;
-    setBoss(id: string, request: any): Promise<User>;
     setRole(id: string, role: RoleUserDto, request: any): Promise<User>;
 }

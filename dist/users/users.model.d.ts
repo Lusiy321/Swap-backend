@@ -25,11 +25,16 @@
 import { Model } from 'mongoose';
 export type UserDocument = User & Document;
 export declare class User extends Model<User> {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
+    phone: string;
+    location: string;
+    avatarURL: string;
     role: string;
-    boss: User[];
+    isOnline: boolean;
+    postsId: Array<string>;
     token: string;
 }
 export declare const UserSchema: import("mongoose").Schema<User, Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & Omit<User & {
