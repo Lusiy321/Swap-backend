@@ -42,7 +42,7 @@ export class UsersController {
     return this.usersService.logout(request);
   }
 
-  @ApiOperation({ summary: 'Get All Users (admin only and boss role)' })
+  @ApiOperation({ summary: 'Get All Users (admin only and moderator role)' })
   @ApiResponse({ status: 200, type: [User] })
   @ApiBearerAuth('BearerAuthMethod')
   @Get('/')
@@ -77,15 +77,7 @@ export class UsersController {
     return this.usersService.delete(id, request);
   }
 
-  @ApiOperation({ summary: 'Set user subordinates ID' })
-  @ApiResponse({ status: 200, type: User })
-  @ApiBearerAuth('BearerAuthMethod')
-  @Patch('/boss/:Id')
-  async setBoss(@Param('Id') id: string, @Req() request: any): Promise<User> {
-    return this.usersService.setBoss(id, request);
-  }
-
-  @ApiOperation({ summary: 'Set user role ID enum: admin, boss, user' })
+  @ApiOperation({ summary: 'Set user role ID admin, moderator or user' })
   @ApiResponse({ status: 200, type: User })
   @ApiBearerAuth('BearerAuthMethod')
   @Patch('/role/:Id')

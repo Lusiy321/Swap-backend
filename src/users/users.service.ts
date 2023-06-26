@@ -26,10 +26,10 @@ export class UsersService {
       const user: any = await this.userModel.findById({ _id: findId.id });
       if (user.role === 'admin') {
         return this.userModel.find().exec();
-      } else if (user.role === 'boss') {
+      } else if (user.role === 'moderator') {
         const subUsers = this.userModel
-          .find({ $or: [{ _id: user._id }, { boss: user._id }] })
-          .exec();
+          .find({ $or: [{ _id: user._id }, { moderator: user._id }] })
+          .exec(); 
 
         return subUsers;
       } else {
@@ -51,7 +51,7 @@ export class UsersService {
       const SECRET_KEY = process.env.SECRET_KEY;
       const findId = verify(token, SECRET_KEY) as JwtPayload;
       const user = await this.userModel.findById({ _id: findId.id });
-      if (user.role === 'admin' || user.role === 'boss') {
+      if (user.role === 'admin' || user.role === 'moderator') {
         const find = await this.userModel.findById(id).exec();
         return find;
       }
@@ -73,8 +73,8 @@ export class UsersService {
       createdUser.save();
       const setUser = await this.userModel.findById(createdUser._id);
       if (setUser.role === 'user') {
-        const boss = await this.userModel.findOne({ role: 'boss' });
-        setUser.boss = boss._id;
+        const moderator = await this.userModel.findOne({ role: 'moderator' });
+        setUser.moderator = moderator._id;
         setUser.save();
       }
       return await this.userModel.findById(createdUser._id);
@@ -165,7 +165,7 @@ export class UsersService {
     }
   }
 
-  async setBoss(id: string, req: any): Promise<User> {
+  async setModerator(id: string, req: any): Promise<User> {
     try {
       const { authorization = '' } = req.headers;
       const [bearer, token] = authorization.split(' ');
@@ -181,18 +181,18 @@ export class UsersService {
       const newSub = await this.userModel.findById(id).exec();
 
       if (!userToUpdate || !newSub) {
-        throw new Conflict('User or boss not found');
+        throw new Conflict('User or moderator not found');
       }
 
-      if (userToUpdate.role === 'user' && newSub.role === 'boss') {
-        userToUpdate.boss = newSub._id;
+      if (userToUpdate.role === 'user' && newSub.role === 'moderator') {
+        userToUpdate.moderator = newSub._id;
         return userToUpdate.save();
-      } else if (userToUpdate.role === 'boss' && newSub.role === 'user') {
-        newSub.boss = userToUpdate._id;
+      } else if (userToUpdate.role === 'moderator' && newSub.role === 'user') {
+        newSub.moderator = userToUpdate._id;
         return newSub.save();
       } else {
         throw new Conflict(
-          'Only boss and their subordinates can change user boss',
+          'Only moderator and their subordinates can change user moderator',
         );
       }
     } catch (e) {
