@@ -70,13 +70,7 @@ export class UsersService {
       const createdUser = await this.userModel.create(user);
       createdUser.setName(user.email);
       createdUser.setPassword(user.password);
-      createdUser.save();
-      const setUser = await this.userModel.findById(createdUser._id);
-      if (setUser.role === 'user') {
-        const moderator = await this.userModel.findOne({ role: 'moderator' });
-        setUser.moderator = moderator._id;
-        setUser.save();
-      }
+      createdUser.save();      
       return await this.userModel.findById(createdUser._id);
     } catch (e) {
       throw new BadRequest(e.message);
