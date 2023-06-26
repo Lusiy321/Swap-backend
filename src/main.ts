@@ -13,10 +13,10 @@ async function start() {
   );
   app.enableCors();
   const config = new DocumentBuilder()
-    .setTitle('Test task for Incode')
-    .setDescription('REAST API Documentation (https://github.com/Lusiy321)')
+    .setTitle('Test server Thing')
+    .setDescription('REAST API Documentation')
     .setVersion('1.0.0')
-    .addTag('lusiy321@gmail.com')
+    .addTag('test server')
     .addBearerAuth(
       {
         description: 'JWT Authorization',
@@ -27,7 +27,7 @@ async function start() {
       },
       'BearerAuthMethod',
     )
-    .addServer(`https://test-server-incode.onrender.com`)
+    .addServer(`https://test-server-thing.onrender.com/`)
     .addServer(`http://localhost:${PORT}`)
     .build();
   const document = SwaggerModule.createDocument(app, config);
