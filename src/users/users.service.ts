@@ -28,9 +28,8 @@ export class UsersService {
         return this.userModel.find().exec();
       } else if (user.role === 'moderator') {
         const subUsers = this.userModel
-          .find({ $or: [{ _id: user._id }, { moderator: user._id }] })
-          .exec(); 
-
+          .find({ $or: [{ _id: user._id }, { role: 'user' }] })
+          .exec();
         return subUsers;
       } else {
         return await this.userModel.findById(user._id).exec();
@@ -70,7 +69,7 @@ export class UsersService {
       const createdUser = await this.userModel.create(user);
       createdUser.setName(user.email);
       createdUser.setPassword(user.password);
-      createdUser.save();      
+      createdUser.save();
       return await this.userModel.findById(createdUser._id);
     } catch (e) {
       throw new BadRequest(e.message);
@@ -122,14 +121,18 @@ export class UsersService {
     try {
       const { authorization = '' } = req.headers;
       const [bearer, token] = authorization.split(' ');
-      const { firstName, lastName, phone, location, avatarURL, isOnline  } = user;
+      const { firstName, lastName, phone, location, avatarURL, isOnline } =
+        user;
 
       if (bearer !== 'Bearer') {
         throw new Unauthorized('Not authorized');
       }
       const SECRET_KEY = process.env.SECRET_KEY;
       const findId = verify(token, SECRET_KEY) as JwtPayload;
-      await this.userModel.findByIdAndUpdate({ _id: findId.id }, { firstName, lastName, phone, location, avatarURL, isOnline });
+      await this.userModel.findByIdAndUpdate(
+        { _id: findId.id },
+        { firstName, lastName, phone, location, avatarURL, isOnline },
+      );
       const userUpdate = this.userModel.findById({ _id: findId.id });
       return userUpdate;
     } catch (e) {
@@ -231,7 +234,7 @@ UserSchema.methods.setPassword = async function (password: string) {
 
 UserSchema.methods.setName = function (email: string) {
   const parts = email.split('@');
-  this.name = parts[0];
+  this.firstName = parts[0];
 };
 UserSchema.methods.comparePassword = function (password: string) {
   return compareSync(password, this.password);

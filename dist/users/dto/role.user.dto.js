@@ -9,19 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RoleUserDto = void 0;
+exports.RoleUserDto = exports.role = void 0;
 const swagger_1 = require("@nestjs/swagger");
 var role;
 (function (role) {
     role["admin"] = "admin";
     role["user"] = "user";
-    role["boss"] = "boss";
-})(role || (role = {}));
+    role["boss"] = "moderator";
+})(role || (exports.role = role = {}));
 class RoleUserDto {
 }
 exports.RoleUserDto = RoleUserDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'boss', description: 'User role' }),
+    (0, swagger_1.ApiProperty)({ example: 'moderator', description: 'User role' }),
     __metadata("design:type", String)
 ], RoleUserDto.prototype, "role", void 0);
 //# sourceMappingURL=role.user.dto.js.map

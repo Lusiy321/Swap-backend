@@ -2,10 +2,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Model } from 'mongoose';
+import { role } from './dto/role.user.dto';
 
 export type UserDocument = User & Document;
 
-@Schema()
+@Schema({ versionKey: false, timestamps: true })
 export class User extends Model<User> {
   @ApiProperty({ example: 'Petro', description: 'User first name' })
   @Prop({
@@ -74,7 +75,7 @@ export class User extends Model<User> {
     enum: ['admin', 'moderator', 'user'],
     default: 'user',
   })
-  role: string;
+  role: role;
 
   @ApiProperty({ example: 'true', description: 'User status' })
   @Prop({

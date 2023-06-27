@@ -23,6 +23,7 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Model } from 'mongoose';
+import { role } from './dto/role.user.dto';
 export type UserDocument = User & Document;
 export declare class User extends Model<User> {
     firstName: string;
@@ -32,7 +33,7 @@ export declare class User extends Model<User> {
     phone: string;
     location: string;
     avatarURL: string;
-    role: string;
+    role: role;
     isOnline: boolean;
     postsId: Array<string>;
     token: string;

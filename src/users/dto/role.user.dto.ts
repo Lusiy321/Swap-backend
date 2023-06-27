@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 
-enum role {
+export enum role {
   admin = 'admin',
   user = 'user',
   boss = 'moderator',
