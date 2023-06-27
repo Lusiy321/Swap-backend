@@ -1,13 +1,13 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 
-enum role {
+export enum role {
   admin = 'admin',
   user = 'user',
-  boss = 'boss',
+  boss = 'moderator',
 }
 
 export class RoleUserDto {
-  @ApiProperty({ example: 'boss', description: 'User role' })
+  @ApiProperty({ example: 'moderator', description: 'User role' })
   readonly role: role;
 }

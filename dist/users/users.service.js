@@ -38,7 +38,7 @@ let UsersService = exports.UsersService = class UsersService {
             }
             else if (user.role === 'moderator') {
                 const subUsers = this.userModel
-                    .find({ $or: [{ _id: user._id }, { moderator: user._id }] })
+                    .find({ $or: [{ _id: user._id }, { role: 'user' }] })
                     .exec();
                 return subUsers;
             }
@@ -235,7 +235,7 @@ users_model_1.UserSchema.methods.setPassword = async function (password) {
 };
 users_model_1.UserSchema.methods.setName = function (email) {
     const parts = email.split('@');
-    this.name = parts[0];
+    this.firstName = parts[0];
 };
 users_model_1.UserSchema.methods.comparePassword = function (password) {
     return (0, bcrypt_1.compareSync)(password, this.password);

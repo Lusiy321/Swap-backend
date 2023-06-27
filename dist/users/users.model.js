@@ -13,6 +13,7 @@ exports.UserSchema = exports.User = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const mongoose_2 = require("mongoose");
+const role_user_dto_1 = require("./dto/role.user.dto");
 let User = exports.User = class User extends mongoose_2.Model {
 };
 __decorate([
@@ -117,7 +118,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "token", void 0);
 exports.User = User = __decorate([
-    (0, mongoose_1.Schema)()
+    (0, mongoose_1.Schema)({ versionKey: false, timestamps: true })
 ], User);
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
 //# sourceMappingURL=users.model.js.map
