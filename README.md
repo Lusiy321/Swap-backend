@@ -4,9 +4,7 @@
 
 
 ## Description
-
-Test task for Incode. Login web server https://test-server-incode.onrender.com/docs
-
+Login web server 
 ## Installation
 
 ```bash

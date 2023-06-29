@@ -134,9 +134,11 @@ let UsersService = exports.UsersService = class UsersService {
             }
             const SECRET_KEY = process.env.SECRET_KEY;
             const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            await this.userModel.findByIdAndUpdate({ _id: findId.id }, { firstName, lastName, phone, location, avatarURL, isOnline });
-            const userUpdate = this.userModel.findById({ _id: findId.id });
-            return userUpdate;
+            if (firstName || lastName || phone || location || avatarURL || isOnline) {
+                await this.userModel.findByIdAndUpdate({ _id: findId.id }, { firstName, lastName, phone, location, avatarURL, isOnline });
+                const userUpdate = this.userModel.findById({ _id: findId.id });
+                return userUpdate;
+            }
         }
         catch (e) {
             throw new http_errors_1.NotFound('User not found');

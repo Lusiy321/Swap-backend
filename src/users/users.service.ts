@@ -129,12 +129,15 @@ export class UsersService {
       }
       const SECRET_KEY = process.env.SECRET_KEY;
       const findId = verify(token, SECRET_KEY) as JwtPayload;
-      await this.userModel.findByIdAndUpdate(
-        { _id: findId.id },
-        { firstName, lastName, phone, location, avatarURL, isOnline },
-      );
-      const userUpdate = this.userModel.findById({ _id: findId.id });
-      return userUpdate;
+
+      if (firstName || lastName || phone || location || avatarURL || isOnline) {
+        await this.userModel.findByIdAndUpdate(
+          { _id: findId.id },
+          { firstName, lastName, phone, location, avatarURL, isOnline },
+        );
+        const userUpdate = this.userModel.findById({ _id: findId.id });
+        return userUpdate;
+      }
     } catch (e) {
       throw new NotFound('User not found');
     }
