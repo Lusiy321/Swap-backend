@@ -42,8 +42,8 @@ export class User extends Model<User> {
   })
   @Prop({
     type: String,
-    minlength: 12,
-    maxlength: 14,    
+    minlength: 13,
+    maxlength: 13,    
     default: '+38000000000',
   })
   phone: string;

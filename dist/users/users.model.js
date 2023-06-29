@@ -55,8 +55,8 @@ __decorate([
     }),
     (0, mongoose_1.Prop)({
         type: String,
-        minlength: 12,
-        maxlength: 14,
+        minlength: 13,
+        maxlength: 13,
         default: '+38000000000',
     }),
     __metadata("design:type", String)
