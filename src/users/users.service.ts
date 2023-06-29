@@ -148,6 +148,7 @@ export class UsersService {
       if (bearer !== 'Bearer') {
         throw new Unauthorized('Not authorized');
       }
+      
       const SECRET_KEY = process.env.SECRET_KEY;
       const findId = verify(token, SECRET_KEY) as JwtPayload;
       const user = await this.userModel.findById({ _id: findId.id });
@@ -172,20 +173,20 @@ export class UsersService {
       }
       const SECRET_KEY = process.env.SECRET_KEY;
       const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const userToUpdate = await this.userModel
+      const admin = await this.userModel
         .findById({ _id: findId.id })
         .exec();
       const newSub = await this.userModel.findById(id).exec();
 
-      if (!userToUpdate || !newSub) {
-        throw new Conflict('User or moderator not found');
+      if (!admin || !newSub) {
+        throw new Conflict('User not found');
       }
 
-      if (userToUpdate.role === 'user' && newSub.role === 'moderator') {
-        userToUpdate.moderator = newSub._id;
-        return userToUpdate.save();
-      } else if (userToUpdate.role === 'moderator' && newSub.role === 'user') {
-        newSub.moderator = userToUpdate._id;
+      if (admin.role === 'admin' && newSub.role === 'user') {
+        newSub.role = 'moderator';
+        return newSub.save();
+      } else if (admin.role === 'admin' && newSub.role === 'moderator') {
+        newSub.role = 'user';
         return newSub.save();
       } else {
         throw new Conflict(
@@ -197,35 +198,6 @@ export class UsersService {
     }
   }
 
-  async setRole(id: string, role: RoleUserDto, req: any): Promise<User> {
-    try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const userAdmin = await this.userModel
-        .findById({ _id: findId.id })
-        .exec();
-      const newRoleSub = await this.userModel.findById(id).exec();
-
-      if (!userAdmin || !newRoleSub) {
-        throw new Conflict('User or admin not found');
-      }
-
-      if (userAdmin.role === 'admin') {
-        newRoleSub.role = role.role;
-        return await newRoleSub.save();
-      } else {
-        throw new Conflict('Only admin  can change user role');
-      }
-    } catch (e) {
-      throw new Conflict(e.message);
-    }
-  }
 }
 
 UserSchema.methods.setPassword = async function (password: string) {

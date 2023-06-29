@@ -27,6 +27,14 @@ export class UsersController {
     return this.usersService.create(user);
   }
 
+  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiResponse({ status: 200, type: User })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Get(':id')
+  async findById(@Param('id') id: string, @Req() request: any): Promise<User> {
+    return this.usersService.findById(id, request);
+  }
+
   @ApiOperation({ summary: 'Login User' })
   @ApiResponse({ status: 200, type: User })
   @Post('login')
@@ -50,14 +58,6 @@ export class UsersController {
     return this.usersService.findAll(request);
   }
 
-  @ApiOperation({ summary: 'Get user by ID' })
-  @ApiResponse({ status: 200, type: User })
-  @ApiBearerAuth('BearerAuthMethod')
-  @Get(':id')
-  async findById(@Param('id') id: string, @Req() request: any): Promise<User> {
-    return this.usersService.findById(id, request);
-  }
-
   @ApiOperation({ summary: 'Update user' })
   @ApiResponse({ status: 200, type: User })
   @ApiBearerAuth('BearerAuthMethod')
@@ -77,15 +77,14 @@ export class UsersController {
     return this.usersService.delete(id, request);
   }
 
-  @ApiOperation({ summary: 'Set user role ID admin, moderator or user' })
+  @ApiOperation({ summary: 'Set moderator' })
   @ApiResponse({ status: 200, type: User })
   @ApiBearerAuth('BearerAuthMethod')
   @Patch('/role/:Id')
   async setRole(
-    @Param('Id') id: string,
-    @Body() role: RoleUserDto,
+    @Param('Id') id: string,    
     @Req() request: any,
   ): Promise<User> {
-    return this.usersService.setRole(id, role, request);
+    return this.usersService.setModerator(id, request);
   }
 }

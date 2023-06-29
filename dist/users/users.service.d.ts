@@ -1,7 +1,6 @@
 import { User } from './users.model';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
-import { RoleUserDto } from './dto/role.user.dto';
 export declare class UsersService {
     private userModel;
     constructor(userModel: User);
@@ -13,5 +12,4 @@ export declare class UsersService {
     update(user: UpdateUserDto, req: any): Promise<User>;
     delete(id: string, req: any): Promise<User>;
     setModerator(id: string, req: any): Promise<User>;
-    setRole(id: string, role: RoleUserDto, req: any): Promise<User>;
 }
