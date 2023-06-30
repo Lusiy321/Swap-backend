@@ -38,40 +38,40 @@ export class User extends Model<User> {
 
   @ApiProperty({
     example: '+380987894556',
-    description: 'User phone number', 
+    description: 'User phone number',
   })
   @Prop({
     type: String,
     minlength: 13,
-    maxlength: 13,    
+    maxlength: 13,
     default: '+38000000000',
   })
   phone: string;
 
   @ApiProperty({
     example: 'Kyiv',
-    description: 'User location',    
+    description: 'User location',
   })
   @Prop({
     type: String,
     minlength: 2,
-    maxlength: 20,    
+    maxlength: 20,
     default: 'Kyiv',
   })
   location: string;
 
-  @ApiProperty({    
+  @ApiProperty({
     example: 'https://',
-    description: 'User avatarURL',    
+    description: 'User avatarURL',
   })
   @Prop({
     type: String,
-    default: 'https://',    
+    default: 'https://',
   })
   avatarURL: string;
 
   @ApiProperty({ example: 'admin', description: 'User role' })
-  @Prop({    
+  @Prop({
     enum: ['admin', 'moderator', 'user'],
     default: 'user',
   })
@@ -98,6 +98,20 @@ export class User extends Model<User> {
   })
   @Prop({ type: String, default: null })
   token: string;
+
+  @ApiProperty({ example: 'true', description: 'User status' })
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  verify: boolean;
+
+  @ApiProperty({
+    example: 'jE0fQ.rxH3-wVl3VGGX675UCqOFrLx-1xNH-GObq9v7GbZj0s',
+    description: 'Verification token',
+  })
+  @Prop({ type: String, default: null })
+  verificationToken: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
