@@ -9,17 +9,22 @@ import {
   Post,
   Put,
   Req,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 import { User } from './users.model';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create.user.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update.user.dto';
-import { RoleUserDto } from './dto/role.user.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Request, Response } from 'express';
+
+
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
   @ApiOperation({ summary: 'Create User' })
   @ApiResponse({ status: 200, type: User })
   @Post('/')
@@ -30,7 +35,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({ status: 200, type: User })
   @ApiBearerAuth('BearerAuthMethod')
-  @Get(':id')
+  @Get('/find:id')
   async findById(@Param('id') id: string, @Req() request: any): Promise<User> {
     return this.usersService.findById(id, request);
   }
@@ -82,9 +87,30 @@ export class UsersController {
   @ApiBearerAuth('BearerAuthMethod')
   @Patch('/role/:Id')
   async setRole(
-    @Param('Id') id: string,    
+    @Param('Id') id: string,
     @Req() request: any,
   ): Promise<User> {
     return this.usersService.setModerator(id, request);
   }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+  async googleAuth(@Req() req: Request, @Res() res: Response): Promise<void> {
+
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthCallback(@Req() req: any): Promise<any> {
+    // В этом маршруте происходит обратный вызов Google OAuth после аутентификации
+    // Если авторизация успешна, вы получите доступ к данным пользователя в `req.user`
+    // Здесь вы можете выполнять дополнительные действия, сохранять данные пользователя и т. д.
+
+    // Например, вы можете вернуть JWT-токен в ответе
+    const user = req.user;
+    
+    return  this.usersService.findOrCreateUser(user.googleId, user.firstName, user.email);
+  }
+
 }

@@ -7,7 +7,6 @@ import { compareSync, hashSync } from 'bcrypt';
 import { Conflict, NotFound, BadRequest, Unauthorized } from 'http-errors';
 import { sign, verify, JwtPayload } from 'jsonwebtoken';
 import { UpdateUserDto } from './dto/update.user.dto';
-import { RoleUserDto } from './dto/role.user.dto';
 
 @Injectable()
 export class UsersService {
@@ -201,6 +200,22 @@ export class UsersService {
     }
   }
 
+  async findOrCreateUser(googleId: string, firstName: string, email: string): Promise<any> {
+    try { 
+      let user = await this.userModel.findOne({ googleId });
+      if (!user) {      
+      user = await this.userModel.create({
+        googleId,
+        firstName,
+        email,
+      });
+        user.setPassword(googleId)
+        return user.save();
+    }
+    } catch (e) {
+      throw new NotFound('User not found');
+    }
+  }
 }
 
 UserSchema.methods.setPassword = async function (password: string) {

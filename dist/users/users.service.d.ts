@@ -12,4 +12,5 @@ export declare class UsersService {
     update(user: UpdateUserDto, req: any): Promise<User>;
     delete(id: string, req: any): Promise<User>;
     setModerator(id: string, req: any): Promise<User>;
+    findOrCreateUser(googleId: string, firstName: string, email: string): Promise<any>;
 }

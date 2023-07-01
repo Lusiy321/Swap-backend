@@ -19,6 +19,7 @@ const users_service_1 = require("./users.service");
 const create_user_dto_1 = require("./dto/create.user.dto");
 const swagger_1 = require("@nestjs/swagger");
 const update_user_dto_1 = require("./dto/update.user.dto");
+const passport_1 = require("@nestjs/passport");
 let UsersController = exports.UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -47,6 +48,12 @@ let UsersController = exports.UsersController = class UsersController {
     async setRole(id, request) {
         return this.usersService.setModerator(id, request);
     }
+    async googleAuth(req, res) {
+    }
+    async googleAuthCallback(req) {
+        const user = req.user;
+        return this.usersService.findOrCreateUser(user.googleId, user.firstName, user.email);
+    }
 };
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Create User' }),
@@ -61,7 +68,7 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Get user by ID' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: users_model_1.User }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
-    (0, common_1.Get)(':id'),
+    (0, common_1.Get)('/find:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -130,6 +137,23 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "setRole", null);
+__decorate([
+    (0, common_1.Get)('google'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "googleAuth", null);
+__decorate([
+    (0, common_1.Get)('google/callback'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "googleAuthCallback", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

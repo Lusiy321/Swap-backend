@@ -12,6 +12,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const config_1 = require("@nestjs/config");
 const users_module_1 = require("./users/users.module");
 const users_model_1 = require("./users/users.model");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -25,7 +26,7 @@ exports.AppModule = AppModule = __decorate([
             users_module_1.UsersModule,
         ],
         controllers: [],
-        providers: [],
+        providers: [auth_module_1.AuthModule],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

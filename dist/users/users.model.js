@@ -117,6 +117,30 @@ __decorate([
     (0, mongoose_1.Prop)({ type: String, default: null }),
     __metadata("design:type", String)
 ], User.prototype, "token", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'true', description: 'User status' }),
+    (0, mongoose_1.Prop)({
+        type: Boolean,
+        default: false,
+    }),
+    __metadata("design:type", Boolean)
+], User.prototype, "verify", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'jE0fQ.rxH3-wVl3VGGX675UCqOFrLx-1xNH-GObq9v7GbZj0s',
+        description: 'Verification token',
+    }),
+    (0, mongoose_1.Prop)({ type: String, default: null }),
+    __metadata("design:type", String)
+], User.prototype, "verificationToken", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'wVl3VGGX675UCqOFrLx-1xNH-GObq9v7GbZj0s',
+        description: 'Google ID',
+    }),
+    (0, mongoose_1.Prop)({ type: String }),
+    __metadata("design:type", String)
+], User.prototype, "googleId", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)({ versionKey: false, timestamps: true })
 ], User);

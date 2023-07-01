@@ -198,6 +198,23 @@ let UsersService = exports.UsersService = class UsersService {
             throw new http_errors_1.NotFound('User not found');
         }
     }
+    async findOrCreateUser(googleId, firstName, email) {
+        try {
+            let user = await this.userModel.findOne({ googleId });
+            if (!user) {
+                user = await this.userModel.create({
+                    googleId,
+                    firstName,
+                    email,
+                });
+                user.setPassword(googleId);
+                return user.save();
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('User not found');
+        }
+    }
 };
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),

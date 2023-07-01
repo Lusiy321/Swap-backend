@@ -112,6 +112,13 @@ export class User extends Model<User> {
   })
   @Prop({ type: String, default: null })
   verificationToken: string;
+
+  @ApiProperty({
+    example: 'wVl3VGGX675UCqOFrLx-1xNH-GObq9v7GbZj0s',
+    description: 'Google ID',
+  })
+  @Prop({ type: String })
+  googleId: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
