@@ -21,16 +21,16 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Model } from 'mongoose';
-import { User } from 'src/users/users.model';
-export declare class AuthService {
-    private readonly userModel;
-    constructor(userModel: Model<User>);
-    validateUser(details: User): Promise<import("mongoose").Document<unknown, {}, User> & Omit<User & {
-        _id: import("mongoose").Types.ObjectId;
-    }, never>>;
-    findUser(id: number): Promise<import("mongoose").Document<unknown, {}, User> & Omit<User & {
+import { Profile } from 'passport-google-oauth20';
+import { AuthService } from '../auth.service';
+declare const GoogleStrategy_base: new (...args: any[]) => any;
+export declare class GoogleStrategy extends GoogleStrategy_base {
+    private readonly authService;
+    constructor(authService: AuthService);
+    validate(accessToken: string, refreshToken: string, profile: Profile): Promise<import("mongoose").Document<unknown, {}, import("../../users/users.model").User> & Omit<import("../../users/users.model").User & {
         _id: import("mongoose").Types.ObjectId;
     }, never>>;
 }
+export {};

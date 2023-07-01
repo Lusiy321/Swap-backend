@@ -20,16 +20,20 @@ let AuthService = exports.AuthService = class AuthService {
     constructor(userModel) {
         this.userModel = userModel;
     }
-    async findOrCreateUser(googleId, firstName, email) {
-        let user = await this.userModel.findOne({ googleId });
-        if (!user) {
-            user = await this.userModel.create({
-                googleId,
-                firstName,
-                email,
-            });
-        }
-        return user.save();
+    async validateUser(details) {
+        console.log('AuthService');
+        console.log(details);
+        const user = await this.userModel.findOne({ email: details.email });
+        console.log(user);
+        if (user)
+            return user;
+        console.log('User not found. Creating...');
+        const newUser = this.userModel.create(details);
+        return (await newUser).save();
+    }
+    async findUser(id) {
+        const user = await this.userModel.findById({ id });
+        return user;
     }
 };
 exports.AuthService = AuthService = __decorate([

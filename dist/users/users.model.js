@@ -13,7 +13,6 @@ exports.UserSchema = exports.User = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const mongoose_2 = require("mongoose");
-const role_user_dto_1 = require("./dto/role.user.dto");
 let User = exports.User = class User extends mongoose_2.Model {
 };
 __decorate([
@@ -88,7 +87,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'admin', description: 'User role' }),
     (0, mongoose_1.Prop)({
-        enum: ['admin', 'moderator', 'user'],
+        type: String,
         default: 'user',
     }),
     __metadata("design:type", String)

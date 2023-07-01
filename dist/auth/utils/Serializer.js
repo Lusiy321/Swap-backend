@@ -8,30 +8,30 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GoogleStrategy = void 0;
+exports.SessionSerializer = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
-const passport_google_oauth20_1 = require("passport-google-oauth20");
-const auth_service_1 = require("./auth.service");
-let GoogleStrategy = exports.GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrategy)(passport_google_oauth20_1.Strategy, 'google') {
+const auth_service_1 = require("../auth.service");
+let SessionSerializer = exports.SessionSerializer = class SessionSerializer extends passport_1.PassportSerializer {
     constructor(authService) {
-        super({
-            clientID: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: process.env.GOOGLE_CALLBACK_URL,
-            scope: ['email', 'profile'],
-        });
+        super();
         this.authService = authService;
     }
-    async validate(accessToken, refreshToken, profile, done) {
-        const { id, displayName, emails } = profile;
-        const user = await this.authService.findOrCreateUser(id, displayName, emails[0].value);
+    serializeUser(user, done) {
         done(null, user);
     }
+    async deserializeUser(payload, done) {
+        const user = await this.authService.findUser(payload.id);
+        return user ? done(null, user) : done(null, null);
+    }
 };
-exports.GoogleStrategy = GoogleStrategy = __decorate([
+exports.SessionSerializer = SessionSerializer = __decorate([
     (0, common_1.Injectable)(),
+    __param(0, (0, common_1.Inject)('AUTH_SERVICE')),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
-], GoogleStrategy);
-//# sourceMappingURL=google.strategy.js.map
+], SessionSerializer);
+//# sourceMappingURL=Serializer.js.map
