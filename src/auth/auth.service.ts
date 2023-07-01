@@ -9,18 +9,19 @@ export class AuthService {
    constructor(
     @InjectModel('User') private readonly userModel: Model<User>,
   ) {}
-    async findOrCreateUser(googleId: string, firstName: string, email: string): Promise<any> {
-    let user = await this.userModel.findOne({ googleId });
+    async validateUser(details: User) {
+    console.log('AuthService');
+    console.log(details);
+    const user = await this.userModel.findOne({ email: details.email });
+    console.log(user);
+    if (user) return user;
+    console.log('User not found. Creating...');
+    const newUser = this.userModel.create(details);
+    return (await newUser).save();
+  }
 
-    if (!user) {
-      
-      user = await this.userModel.create({
-        googleId,
-        firstName,
-        email,
-      });
-    }
-    
-    return user.save();
+  async findUser(id: number) {
+    const user = await this.userModel.findById({ id });
+    return user;
   }
 }
