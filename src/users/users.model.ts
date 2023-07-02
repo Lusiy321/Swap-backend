@@ -44,7 +44,7 @@ export class User extends Model<User> {
     type: String,
     minlength: 13,
     maxlength: 13,
-    default: '+38000000000',
+    default: '+380000000000',
   })
   phone: string;
 

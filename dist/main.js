@@ -5,9 +5,15 @@ const app_module_1 = require("./app.module");
 const swagger_1 = require("@nestjs/swagger");
 const platform_express_1 = require("@nestjs/platform-express");
 const express = require("express");
+const session = require("express-session");
 async function start() {
     const PORT = process.env.PORT || 6000;
     const app = await core_1.NestFactory.create(app_module_1.AppModule, new platform_express_1.ExpressAdapter(express()));
+    app.use(session({
+        secret: process.env.GOOGLE_CLIENT_SECRET,
+        resave: false,
+        saveUninitialized: false,
+    }));
     app.enableCors();
     const config = new swagger_1.DocumentBuilder()
         .setTitle('Test server Thing')

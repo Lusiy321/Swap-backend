@@ -13,7 +13,7 @@ exports.UserSchema = exports.User = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const mongoose_2 = require("mongoose");
-let User = exports.User = class User extends mongoose_2.Model {
+let User = class User extends mongoose_2.Model {
 };
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Petro', description: 'User first name' }),
@@ -56,7 +56,7 @@ __decorate([
         type: String,
         minlength: 13,
         maxlength: 13,
-        default: '+38000000000',
+        default: '+380000000000',
     }),
     __metadata("design:type", String)
 ], User.prototype, "phone", void 0);
@@ -140,8 +140,9 @@ __decorate([
     (0, mongoose_1.Prop)({ type: String }),
     __metadata("design:type", String)
 ], User.prototype, "googleId", void 0);
-exports.User = User = __decorate([
+User = __decorate([
     (0, mongoose_1.Schema)({ versionKey: false, timestamps: true })
 ], User);
+exports.User = User;
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
 //# sourceMappingURL=users.model.js.map

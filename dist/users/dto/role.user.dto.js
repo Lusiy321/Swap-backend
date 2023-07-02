@@ -16,12 +16,12 @@ var role;
     role["admin"] = "admin";
     role["user"] = "user";
     role["boss"] = "moderator";
-})(role || (exports.role = role = {}));
+})(role = exports.role || (exports.role = {}));
 class RoleUserDto {
 }
-exports.RoleUserDto = RoleUserDto;
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'moderator', description: 'User role' }),
     __metadata("design:type", String)
 ], RoleUserDto.prototype, "role", void 0);
+exports.RoleUserDto = RoleUserDto;
 //# sourceMappingURL=role.user.dto.js.map

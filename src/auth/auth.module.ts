@@ -7,18 +7,18 @@ import { AuthService } from './auth.service';
 import { GoogleStrategy } from './utils/GoogleStrategy';
 import { SessionSerializer } from './utils/Serializer';
 
+
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema, collection: 'users' }]),
+    
   ],
   controllers: [AuthController],
   providers: [
     GoogleStrategy,
     SessionSerializer,
-    {
-      provide: 'AUTH_SERVICE',
-      useClass: AuthService,
-    },
+    { provide: 'AUTH_SERVICE', useClass: AuthService },
+    AuthService,    
   ],
 })
 export class AuthModule {}

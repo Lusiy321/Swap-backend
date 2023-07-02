@@ -16,29 +16,27 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-let AuthService = exports.AuthService = class AuthService {
+let AuthService = class AuthService {
     constructor(userModel) {
         this.userModel = userModel;
     }
     async validateUser(details) {
-        console.log('AuthService');
-        console.log(details);
         const user = await this.userModel.findOne({ email: details.email });
         console.log(user);
-        if (user)
-            return user;
-        console.log('User not found. Creating...');
-        const newUser = this.userModel.create(details);
-        return (await newUser).save();
+        if (!user) {
+            const newUser = this.userModel.create(details);
+            return (await newUser).save();
+        }
     }
     async findUser(id) {
         const user = await this.userModel.findById({ id });
         return user;
     }
 };
-exports.AuthService = AuthService = __decorate([
+AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)('User')),
     __metadata("design:paramtypes", [mongoose_2.Model])
 ], AuthService);
+exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

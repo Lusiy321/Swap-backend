@@ -19,7 +19,7 @@ const users_model_1 = require("./users.model");
 const bcrypt_1 = require("bcrypt");
 const http_errors_1 = require("http-errors");
 const jsonwebtoken_1 = require("jsonwebtoken");
-let UsersService = exports.UsersService = class UsersService {
+let UsersService = class UsersService {
     constructor(userModel) {
         this.userModel = userModel;
     }
@@ -216,11 +216,12 @@ let UsersService = exports.UsersService = class UsersService {
         }
     }
 };
-exports.UsersService = UsersService = __decorate([
+UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(users_model_1.User.name)),
     __metadata("design:paramtypes", [users_model_1.User])
 ], UsersService);
+exports.UsersService = UsersService;
 users_model_1.UserSchema.methods.setPassword = async function (password) {
     return (this.password = (0, bcrypt_1.hashSync)(password, 10));
 };

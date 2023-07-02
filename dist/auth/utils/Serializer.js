@@ -16,7 +16,7 @@ exports.SessionSerializer = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const auth_service_1 = require("../auth.service");
-let SessionSerializer = exports.SessionSerializer = class SessionSerializer extends passport_1.PassportSerializer {
+let SessionSerializer = class SessionSerializer extends passport_1.PassportSerializer {
     constructor(authService) {
         super();
         this.authService = authService;
@@ -29,9 +29,10 @@ let SessionSerializer = exports.SessionSerializer = class SessionSerializer exte
         return user ? done(null, user) : done(null, null);
     }
 };
-exports.SessionSerializer = SessionSerializer = __decorate([
+SessionSerializer = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)('AUTH_SERVICE')),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], SessionSerializer);
+exports.SessionSerializer = SessionSerializer;
 //# sourceMappingURL=Serializer.js.map

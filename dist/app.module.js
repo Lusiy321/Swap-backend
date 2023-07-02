@@ -13,20 +13,23 @@ const config_1 = require("@nestjs/config");
 const users_module_1 = require("./users/users.module");
 const users_model_1 = require("./users/users.model");
 const auth_module_1 = require("./auth/auth.module");
-let AppModule = exports.AppModule = class AppModule {
+const passport_1 = require("@nestjs/passport");
+let AppModule = class AppModule {
 };
-exports.AppModule = AppModule = __decorate([
+AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            auth_module_1.AuthModule,
             config_1.ConfigModule.forRoot({
                 envFilePath: `.env`
             }),
             mongoose_1.MongooseModule.forRoot(process.env.DB_HOST),
             mongoose_1.MongooseModule.forFeature([{ name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' }]),
-            users_module_1.UsersModule,
+            users_module_1.UsersModule, passport_1.PassportModule.register({ session: true }),
         ],
         controllers: [],
-        providers: [auth_module_1.AuthModule],
+        providers: [],
     })
 ], AppModule);
+exports.AppModule = AppModule;
 //# sourceMappingURL=app.module.js.map

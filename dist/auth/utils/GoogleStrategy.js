@@ -12,43 +12,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GoogleStrategy = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
-const passport_google_oauth20_1 = require("passport-google-oauth20");
 const auth_service_1 = require("../auth.service");
-let GoogleStrategy = exports.GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrategy)(passport_google_oauth20_1.Strategy, 'google') {
+const passport_google_oauth20_1 = require("passport-google-oauth20");
+let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrategy)(passport_google_oauth20_1.Strategy, 'google') {
     constructor(authService) {
         super({
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: 'http://localhost:5000/auth/google/redirect',
+            callbackURL: process.env.GOOGLE_CALLBACK_URL,
             scope: ['email', 'profile'],
         });
         this.authService = authService;
     }
     async validate(accessToken, refreshToken, profile) {
-        console.log(accessToken);
-        console.log(refreshToken);
         console.log(profile);
         const user = await this.authService.validateUser({
             email: profile.emails[0].value,
-            firstName: profile.displayName,
-            lastName: '',
-            password: '',
-            phone: '',
-            location: '',
-            avatarURL: '',
-            role: '',
-            isOnline: false,
-            postsId: [],
-            token: '',
-            verify: false,
-            verificationToken: '',
-            googleId: ''
+            password: accessToken,
         });
         return user || null;
     }
 };
-exports.GoogleStrategy = GoogleStrategy = __decorate([
+GoogleStrategy = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], GoogleStrategy);
+exports.GoogleStrategy = GoogleStrategy;
 //# sourceMappingURL=GoogleStrategy.js.map

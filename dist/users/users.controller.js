@@ -20,7 +20,7 @@ const create_user_dto_1 = require("./dto/create.user.dto");
 const swagger_1 = require("@nestjs/swagger");
 const update_user_dto_1 = require("./dto/update.user.dto");
 const passport_1 = require("@nestjs/passport");
-let UsersController = exports.UsersController = class UsersController {
+let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
     }
@@ -154,8 +154,9 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "googleAuthCallback", null);
-exports.UsersController = UsersController = __decorate([
+UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])
 ], UsersController);
+exports.UsersController = UsersController;
 //# sourceMappingURL=users.controller.js.map

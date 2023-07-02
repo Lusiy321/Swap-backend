@@ -23,9 +23,9 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Profile } from 'passport-google-oauth20';
 import { AuthService } from '../auth.service';
-declare const GoogleStrategy_base: new (...args: any[]) => any;
+import { Strategy, Profile } from 'passport-google-oauth20';
+declare const GoogleStrategy_base: new (...args: any[]) => Strategy;
 export declare class GoogleStrategy extends GoogleStrategy_base {
     private readonly authService;
     constructor(authService: AuthService);

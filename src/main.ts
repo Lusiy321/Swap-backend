@@ -4,12 +4,20 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import * as express from 'express';
+import * as session from 'express-session';
 
 async function start() {
   const PORT = process.env.PORT || 6000;
   const app = await NestFactory.create(
     AppModule,
     new ExpressAdapter(express()),
+  );
+  app.use(
+    session({
+      secret: process.env.GOOGLE_CLIENT_SECRET,
+      resave: false,
+      saveUninitialized: false,
+    }),
   );
   app.enableCors();
   const config = new DocumentBuilder()

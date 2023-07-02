@@ -12,16 +12,16 @@ const mongoose_1 = require("@nestjs/mongoose");
 const users_controller_1 = require("./users.controller");
 const users_service_1 = require("./users.service");
 const users_model_1 = require("./users.model");
-const auth_service_1 = require("../auth/auth.service");
-let UsersModule = exports.UsersModule = class UsersModule {
+let UsersModule = class UsersModule {
 };
-exports.UsersModule = UsersModule = __decorate([
+UsersModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' }]),
         ],
         controllers: [users_controller_1.UsersController],
-        providers: [users_service_1.UsersService, auth_service_1.AuthService],
+        providers: [users_service_1.UsersService],
     })
 ], UsersModule);
+exports.UsersModule = UsersModule;
 //# sourceMappingURL=users.module.js.map

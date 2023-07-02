@@ -13,7 +13,6 @@ exports.CreateUserDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 class CreateUserDto {
 }
-exports.CreateUserDto = CreateUserDto;
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'poroshenko@gmail.com', description: 'User email' }),
     __metadata("design:type", String)
@@ -22,4 +21,5 @@ __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Petro-123545', description: 'User password' }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "password", void 0);
+exports.CreateUserDto = CreateUserDto;
 //# sourceMappingURL=create.user.dto.js.map
