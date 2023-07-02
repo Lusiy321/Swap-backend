@@ -93,24 +93,4 @@ export class UsersController {
     return this.usersService.setModerator(id, request);
   }
 
-  @Get('google')
-  @UseGuards(AuthGuard('google'))
-  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-  async googleAuth(@Req() req: Request, @Res() res: Response): Promise<void> {
-
-  }
-
-  @Get('google/callback')
-  @UseGuards(AuthGuard('google'))
-  async googleAuthCallback(@Req() req: any): Promise<any> {
-    // В этом маршруте происходит обратный вызов Google OAuth после аутентификации
-    // Если авторизация успешна, вы получите доступ к данным пользователя в `req.user`
-    // Здесь вы можете выполнять дополнительные действия, сохранять данные пользователя и т. д.
-
-    // Например, вы можете вернуть JWT-токен в ответе
-    const user = req.user;
-    
-    return  this.usersService.findOrCreateUser(user.googleId, user.firstName, user.email);
-  }
-
 }

@@ -13,8 +13,7 @@ export class AuthService {
     async validateUser(details: CreateUserDto) {
     
     const user = await this.userModel.findOne({ email: details.email });
-    console.log(user);
-      if (!user) {
+    if (!user) {
       const newUser = this.userModel.create(details);
     return (await newUser).save();
     }    
