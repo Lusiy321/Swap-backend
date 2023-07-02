@@ -19,8 +19,8 @@ let AuthController = class AuthController {
     handleLogin() {
         return { msg: 'Google Authentication' };
     }
-    handleRedirect() {
-        return { msg: 'OK' };
+    async handleRedirect() {
+        return { msg: 'Google Ok' };
     }
     user(request) {
         if (request.user) {
@@ -43,7 +43,7 @@ __decorate([
     (0, common_1.UseGuards)(Guards_1.GoogleAuthGuard),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "handleRedirect", null);
 __decorate([
     (0, common_1.Get)('status'),

@@ -66,7 +66,7 @@ export class User extends Model<User> {
   })
   @Prop({
     type: String,
-    default: 'https://',
+    default: 'https://cdn-icons-png.flaticon.com/512/149/149071.png',
   })
   avatarURL: string;
 

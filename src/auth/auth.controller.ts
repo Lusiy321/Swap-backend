@@ -4,6 +4,7 @@ import { GoogleAuthGuard } from './utils/Guards';
 
 @Controller('auth')
 export class AuthController {
+  [x: string]: any;
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
   handleLogin() {
@@ -12,8 +13,8 @@ export class AuthController {
 
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  handleRedirect() {
-    return { msg: 'OK' }; 
+  async handleRedirect() {
+    return { msg: 'Google Ok' }; 
   }
 
   @Get('status')

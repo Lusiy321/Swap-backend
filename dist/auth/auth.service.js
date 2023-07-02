@@ -22,11 +22,11 @@ let AuthService = class AuthService {
     }
     async validateUser(details) {
         const user = await this.userModel.findOne({ email: details.email });
-        console.log(user);
         if (!user) {
             const newUser = this.userModel.create(details);
             return (await newUser).save();
         }
+        return user;
     }
     async findUser(id) {
         const user = await this.userModel.findById({ id });
