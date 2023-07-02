@@ -8,18 +8,13 @@ import {
   Patch,
   Post,
   Put,
-  Req,
-  Res,
-  UseGuards,
+  Req,  
 } from '@nestjs/common';
 import { User } from './users.model';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create.user.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update.user.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { Request, Response } from 'express';
-
 
 
 @Controller('users')

@@ -17,7 +17,7 @@ export class AuthService {
       const newUser = this.userModel.create(details);
     return (await newUser).save();
     }    
-    
+    return user;
   }
 
   async findUser(id: number) {
