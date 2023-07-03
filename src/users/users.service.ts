@@ -12,17 +12,17 @@ import { UpdateUserDto } from './dto/update.user.dto';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: User) {}
 
-  async findAll(req: any): Promise<User[]> {
+  async findAll(req: any) {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
+    const { authorization = '' } = req.headers;
+    const [bearer, token] = authorization.split(' ');
 
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user: any = await this.userModel.findById({ _id: findId.id });
+    if (bearer !== 'Bearer') {
+      throw new Unauthorized('Not authorized');
+    }
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const findId = verify(token, SECRET_KEY) as JwtPayload;
+    const user = await this.userModel.findById({ _id: findId.id });
       if (user.role === 'admin') {
         return this.userModel.find().exec();
       } else if (user.role === 'moderator') {
@@ -82,16 +82,7 @@ export class UsersService {
       if (!authUser || !authUser.comparePassword(password)) {
         throw new Unauthorized(`Email or password is wrong`);
       }
-      const payload = {
-        id: authUser._id,
-      };
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const token = sign(payload, SECRET_KEY, { expiresIn: '24h' });
-      await this.userModel.findByIdAndUpdate(authUser._id, { token });
-      const authentificationUser = await this.userModel.findById({
-        _id: authUser._id,
-      });
-      return authentificationUser;
+      return this.createToken(authUser);
     } catch (e) {
       throw new BadRequest(e.message);
     }
@@ -150,7 +141,7 @@ export class UsersService {
       if (bearer !== 'Bearer') {
         throw new Unauthorized('Not authorized');
       }
-      
+
       const SECRET_KEY = process.env.SECRET_KEY;
       const findId = verify(token, SECRET_KEY) as JwtPayload;
       const user = await this.userModel.findById({ _id: findId.id });
@@ -175,9 +166,7 @@ export class UsersService {
       }
       const SECRET_KEY = process.env.SECRET_KEY;
       const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const admin = await this.userModel
-        .findById({ _id: findId.id })
-        .exec();
+      const admin = await this.userModel.findById({ _id: findId.id }).exec();
       const newSub = await this.userModel.findById(id).exec();
 
       if (!admin || !newSub) {
@@ -200,21 +189,50 @@ export class UsersService {
     }
   }
 
-  async findOrCreateUser(googleId: string, firstName: string, email: string): Promise<any> {
-    try { 
+  async findOrCreateUser(
+    googleId: string,
+    firstName: string,
+    email: string,
+  ): Promise<any> {
+    try {
       let user = await this.userModel.findOne({ googleId });
-      if (!user) {      
-      user = await this.userModel.create({
-        googleId,
-        firstName,
-        email,
-      });
-        user.setPassword(googleId)
+      if (!user) {
+        user = await this.userModel.create({
+          googleId,
+          firstName,
+          email,
+        });
+        user.setPassword(googleId);
         return user.save();
-    }
+      }
     } catch (e) {
       throw new NotFound('User not found');
     }
+  }
+  async createToken(authUser: { _id: string }) {
+    const payload = {
+      id: authUser._id,
+    };
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const token = sign(payload, SECRET_KEY, { expiresIn: '24h' });
+    await this.userModel.findByIdAndUpdate(authUser._id, { token });
+    const authentificationUser = await this.userModel.findById({
+      _id: authUser._id,
+    });
+    return authentificationUser;
+  }
+
+  async findToken(req: { headers: { authorization?: '' } }) {
+    const { authorization = '' } = req.headers;
+    const [bearer, token] = authorization.split(' ');
+
+    if (bearer !== 'Bearer') {
+      throw new Unauthorized('Not authorized');
+    }
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const findId = verify(token, SECRET_KEY) as JwtPayload;
+    const user = await this.userModel.findById({ _id: findId.id });
+    return user;
   }
 }
 

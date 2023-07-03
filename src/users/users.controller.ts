@@ -8,7 +8,7 @@ import {
   Patch,
   Post,
   Put,
-  Req,  
+  Req,
 } from '@nestjs/common';
 import { User } from './users.model';
 import { UsersService } from './users.service';
@@ -16,10 +16,9 @@ import { CreateUserDto } from './dto/create.user.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update.user.dto';
 
-
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
   @ApiOperation({ summary: 'Create User' })
   @ApiResponse({ status: 200, type: User })
   @Post('/')
@@ -81,11 +80,7 @@ export class UsersController {
   @ApiResponse({ status: 200, type: User })
   @ApiBearerAuth('BearerAuthMethod')
   @Patch('/role/:Id')
-  async setRole(
-    @Param('Id') id: string,
-    @Req() request: any,
-  ): Promise<User> {
+  async setRole(@Param('Id') id: string, @Req() request: any): Promise<User> {
     return this.usersService.setModerator(id, request);
   }
-
 }

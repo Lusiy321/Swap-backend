@@ -72,10 +72,10 @@ export class User extends Model<User> {
 
   @ApiProperty({ example: 'admin', description: 'User role' })
   @Prop({
-    type: String,
+    enum: ['admin', 'moderator', 'user'],
     default: 'user',
   })
-  role: string;
+  role: role;
 
   @ApiProperty({ example: 'true', description: 'User status' })
   @Prop({

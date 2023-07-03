@@ -3,9 +3,7 @@ export declare class AuthController {
     handleLogin(): {
         msg: string;
     };
-    handleRedirect(): Promise<{
-        msg: string;
-    }>;
+    googleAuthCallback(req: any, res: any): Promise<any>;
     user(request: any): {
         msg: string;
     };

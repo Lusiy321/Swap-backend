@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update.user.dto';
 export declare class UsersService {
     private userModel;
     constructor(userModel: User);
-    findAll(req: any): Promise<User[]>;
+    findAll(req: any): Promise<any>;
     findById(id: string, req: any): Promise<User>;
     create(user: CreateUserDto): Promise<User>;
     login(user: CreateUserDto): Promise<User>;
@@ -13,4 +13,12 @@ export declare class UsersService {
     delete(id: string, req: any): Promise<User>;
     setModerator(id: string, req: any): Promise<User>;
     findOrCreateUser(googleId: string, firstName: string, email: string): Promise<any>;
+    createToken(authUser: {
+        _id: string;
+    }): Promise<any>;
+    findToken(req: {
+        headers: {
+            authorization?: '';
+        };
+    }): Promise<any>;
 }

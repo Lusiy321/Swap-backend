@@ -24,11 +24,11 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { Model } from 'mongoose';
 import { User } from 'src/users/users.model';
-import { CreateUserDto } from 'src/users/dto/create.user.dto';
+import { GoogleUserDto } from 'src/users/dto/google.user.dto';
 export declare class AuthService {
     private readonly userModel;
     constructor(userModel: Model<User>);
-    validateUser(details: CreateUserDto): Promise<import("mongoose").Document<unknown, {}, User> & Omit<User & {
+    validateUser(details: GoogleUserDto): Promise<import("mongoose").Document<unknown, {}, User> & Omit<User & {
         _id: import("mongoose").Types.ObjectId;
     }, never>>;
     findUser(id: number): Promise<import("mongoose").Document<unknown, {}, User> & Omit<User & {

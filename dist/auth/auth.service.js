@@ -16,17 +16,23 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const http_errors_1 = require("http-errors");
 let AuthService = class AuthService {
     constructor(userModel) {
         this.userModel = userModel;
     }
     async validateUser(details) {
-        const user = await this.userModel.findOne({ email: details.email });
-        if (!user) {
-            const newUser = this.userModel.create(details);
-            return (await newUser).save();
+        try {
+            const user = await this.userModel.findOne({ email: details.email });
+            if (!user) {
+                const newUser = this.userModel.create(details);
+                return (await newUser).save();
+            }
+            return user;
         }
-        return user;
+        catch (e) {
+            throw new http_errors_1.NotFound('User not found');
+        }
     }
     async findUser(id) {
         const user = await this.userModel.findById({ id });

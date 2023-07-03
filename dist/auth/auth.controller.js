@@ -19,8 +19,12 @@ let AuthController = class AuthController {
     handleLogin() {
         return { msg: 'Google Authentication' };
     }
-    async handleRedirect() {
-        return { msg: 'Google Ok' };
+    async googleAuthCallback(req, res) {
+        const user = req.user;
+        console.log(user);
+        req.session.user = user;
+        res.redirect('https://smirnypavel.github.io/my-app/');
+        return res.user;
     }
     user(request) {
         if (request.user) {
@@ -41,10 +45,12 @@ __decorate([
 __decorate([
     (0, common_1.Get)('google/redirect'),
     (0, common_1.UseGuards)(Guards_1.GoogleAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "handleRedirect", null);
+], AuthController.prototype, "googleAuthCallback", null);
 __decorate([
     (0, common_1.Get)('status'),
     __param(0, (0, common_1.Req)()),

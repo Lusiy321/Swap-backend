@@ -93,16 +93,7 @@ let UsersService = class UsersService {
             if (!authUser || !authUser.comparePassword(password)) {
                 throw new http_errors_1.Unauthorized(`Email or password is wrong`);
             }
-            const payload = {
-                id: authUser._id,
-            };
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const token = (0, jsonwebtoken_1.sign)(payload, SECRET_KEY, { expiresIn: '24h' });
-            await this.userModel.findByIdAndUpdate(authUser._id, { token });
-            const authentificationUser = await this.userModel.findById({
-                _id: authUser._id,
-            });
-            return authentificationUser;
+            return this.createToken(authUser);
         }
         catch (e) {
             throw new http_errors_1.BadRequest(e.message);
@@ -175,9 +166,7 @@ let UsersService = class UsersService {
             }
             const SECRET_KEY = process.env.SECRET_KEY;
             const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const admin = await this.userModel
-                .findById({ _id: findId.id })
-                .exec();
+            const admin = await this.userModel.findById({ _id: findId.id }).exec();
             const newSub = await this.userModel.findById(id).exec();
             if (!admin || !newSub) {
                 throw new http_errors_1.Conflict('User not found');
@@ -214,6 +203,29 @@ let UsersService = class UsersService {
         catch (e) {
             throw new http_errors_1.NotFound('User not found');
         }
+    }
+    async createToken(authUser) {
+        const payload = {
+            id: authUser._id,
+        };
+        const SECRET_KEY = process.env.SECRET_KEY;
+        const token = (0, jsonwebtoken_1.sign)(payload, SECRET_KEY, { expiresIn: '24h' });
+        await this.userModel.findByIdAndUpdate(authUser._id, { token });
+        const authentificationUser = await this.userModel.findById({
+            _id: authUser._id,
+        });
+        return authentificationUser;
+    }
+    async findToken(req) {
+        const { authorization = '' } = req.headers;
+        const [bearer, token] = authorization.split(' ');
+        if (bearer !== 'Bearer') {
+            throw new http_errors_1.Unauthorized('Not authorized');
+        }
+        const SECRET_KEY = process.env.SECRET_KEY;
+        const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
+        const user = await this.userModel.findById({ _id: findId.id });
+        return user;
     }
 };
 UsersService = __decorate([
