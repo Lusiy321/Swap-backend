@@ -18,6 +18,9 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const http_errors_1 = require("http-errors");
 let AuthService = class AuthService {
+    static validateUser() {
+        throw new Error('Method not implemented.');
+    }
     constructor(userModel) {
         this.userModel = userModel;
     }

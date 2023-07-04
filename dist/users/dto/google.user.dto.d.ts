@@ -5,4 +5,6 @@ export declare class GoogleUserDto {
     readonly password: string;
     readonly avatarURL: string;
     readonly googleId: string;
+    readonly verificationToken: string;
+    readonly verify: string;
 }

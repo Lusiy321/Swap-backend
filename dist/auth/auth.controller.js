@@ -26,10 +26,8 @@ let AuthController = class AuthController {
     async googleAuthCallback(req, res) {
         const user = req.user;
         req.session.user = user;
-        const loginUser = { email: user.email, password: user.googleId };
-        this.usersService.login(loginUser);
         console.log();
-        return res.json(this.usersService.findById(user._id, req.session.user));
+        return res.json(user);
     }
     user(request) {
         if (request.user) {

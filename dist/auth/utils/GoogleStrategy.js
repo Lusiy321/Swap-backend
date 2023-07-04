@@ -33,6 +33,8 @@ let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrateg
             lastName: profile.name.familyName,
             avatarURL: profile.photos[0].value,
             googleId: profile.id,
+            verificationToken: accessToken,
+            verify: profile.emails[0].verified
         });
         user.setPassword(user.password);
         user.save();

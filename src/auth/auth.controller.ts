@@ -17,11 +17,9 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   async googleAuthCallback(@Req() req: any, @Res() res: any) {
     const user = req.user;    
-    req.session.user = user;  
-    const loginUser = { email: user.email, password: user.googleId}
-    this.usersService.login(loginUser);
+    req.session.user = user;    
     console.log();
-    return res.json(this.usersService.findById(user._id, req.session.user))
+    return res.json(user);
   }
 
   @Get('status')

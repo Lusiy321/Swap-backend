@@ -40,5 +40,13 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], GoogleUserDto.prototype, "googleId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'iIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0N2Ez', description: 'User verificationToken' }),
+    __metadata("design:type", String)
+], GoogleUserDto.prototype, "verificationToken", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'true', description: 'User email verify' }),
+    __metadata("design:type", String)
+], GoogleUserDto.prototype, "verify", void 0);
 exports.GoogleUserDto = GoogleUserDto;
 //# sourceMappingURL=google.user.dto.js.map

@@ -5,7 +5,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import * as express from 'express';
 import * as session from 'express-session';
-import passport from 'passport';
+
+
 
 async function start() {
   const PORT = process.env.PORT || 6000;
@@ -22,9 +23,7 @@ async function start() {
         maxAge: 60000,
       },
     }),
-  );
-  app.use(passport.initialize());
-  app.use(passport.session());
+  );    
   app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Test server Thing')

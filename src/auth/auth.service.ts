@@ -8,6 +8,9 @@ import { NotFound } from 'http-errors';
 
 @Injectable()
 export class AuthService {
+  static validateUser(): AuthService {
+    throw new Error('Method not implemented.');
+  }
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
   async validateUser(details: GoogleUserDto) {
     try {

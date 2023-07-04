@@ -13,6 +13,9 @@ async function start() {
         secret: process.env.GOOGLE_CLIENT_SECRET,
         resave: false,
         saveUninitialized: false,
+        cookie: {
+            maxAge: 60000,
+        },
     }));
     app.enableCors();
     const config = new swagger_1.DocumentBuilder()
