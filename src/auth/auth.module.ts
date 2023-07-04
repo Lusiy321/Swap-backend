@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { GoogleStrategy } from './utils/GoogleStrategy';
 import { SessionSerializer } from './utils/Serializer';
+import { UsersService } from 'src/users/users.service';
 
 
 @Module({
@@ -16,6 +17,7 @@ import { SessionSerializer } from './utils/Serializer';
   controllers: [AuthController],
   providers: [
     GoogleStrategy,
+    UsersService,
     SessionSerializer,
     { provide: 'AUTH_SERVICE', useClass: AuthService },
     AuthService,    

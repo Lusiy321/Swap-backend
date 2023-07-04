@@ -25,14 +25,17 @@ let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrateg
         this.authService = authService;
     }
     async validate(accessToken, refreshToken, profile) {
+        console.log(profile);
         const user = await this.authService.validateUser({
             email: profile.emails[0].value,
             password: profile.id,
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
             avatarURL: profile.photos[0].value,
-            googleId: accessToken,
+            googleId: profile.id,
         });
+        user.setPassword(user.password);
+        user.save();
         return user || null;
     }
 };

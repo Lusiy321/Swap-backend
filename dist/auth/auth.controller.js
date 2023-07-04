@@ -15,16 +15,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const Guards_1 = require("./utils/Guards");
+const users_service_1 = require("../users/users.service");
 let AuthController = class AuthController {
+    constructor(usersService) {
+        this.usersService = usersService;
+    }
     handleLogin() {
         return { msg: 'Google Authentication' };
     }
     async googleAuthCallback(req, res) {
         const user = req.user;
-        console.log(user);
         req.session.user = user;
-        res.redirect('https://smirnypavel.github.io/my-app/');
-        return res.user;
+        const loginUser = { email: user.email, password: user.googleId };
+        this.usersService.login(loginUser);
+        console.log();
+        return res.json(this.usersService.findById(user._id, req.session.user));
     }
     user(request) {
         if (request.user) {
@@ -59,7 +64,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "user", null);
 AuthController = __decorate([
-    (0, common_1.Controller)('auth')
+    (0, common_1.Controller)('auth'),
+    __metadata("design:paramtypes", [users_service_1.UsersService])
 ], AuthController);
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controller.js.map

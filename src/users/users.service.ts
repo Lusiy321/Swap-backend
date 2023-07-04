@@ -53,6 +53,7 @@ export class UsersService {
         const find = await this.userModel.findById(id).exec();
         return find;
       }
+      return user;
     } catch (e) {
       throw new NotFound('User not found');
     }

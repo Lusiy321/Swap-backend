@@ -14,6 +14,7 @@ const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
 const GoogleStrategy_1 = require("./utils/GoogleStrategy");
 const Serializer_1 = require("./utils/Serializer");
+const users_service_1 = require("../users/users.service");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -24,6 +25,7 @@ AuthModule = __decorate([
         controllers: [auth_controller_1.AuthController],
         providers: [
             GoogleStrategy_1.GoogleStrategy,
+            users_service_1.UsersService,
             Serializer_1.SessionSerializer,
             { provide: 'AUTH_SERVICE', useClass: auth_service_1.AuthService },
             auth_service_1.AuthService,

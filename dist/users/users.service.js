@@ -64,6 +64,7 @@ let UsersService = class UsersService {
                 const find = await this.userModel.findById(id).exec();
                 return find;
             }
+            return user;
         }
         catch (e) {
             throw new http_errors_1.NotFound('User not found');
