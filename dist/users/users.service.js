@@ -190,6 +190,36 @@ let UsersService = class UsersService {
             throw new http_errors_1.NotFound('User not found');
         }
     }
+    async banUser(id, req) {
+        try {
+            const { authorization = '' } = req.headers;
+            const [bearer, token] = authorization.split(' ');
+            if (bearer !== 'Bearer') {
+                throw new http_errors_1.Unauthorized('Not authorized');
+            }
+            const SECRET_KEY = process.env.SECRET_KEY;
+            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
+            const admin = await this.userModel.findById({ _id: findId.id }).exec();
+            const newSub = await this.userModel.findById(id).exec();
+            if (!admin || !newSub) {
+                throw new http_errors_1.Conflict('User not found');
+            }
+            if (admin.role === 'admin' && newSub.ban === false) {
+                newSub.ban = true;
+                return newSub.save();
+            }
+            else if (admin.role === 'admin' && newSub.ban === true) {
+                newSub.ban = false;
+                return newSub.save();
+            }
+            else {
+                throw new http_errors_1.Conflict('Only moderator and their subordinates can change user moderator');
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('User not found');
+        }
+    }
     async findOrCreateUser(googleId, firstName, email) {
         try {
             let user = await this.userModel.findOne({ googleId });
