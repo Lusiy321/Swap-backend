@@ -122,8 +122,8 @@ export class User extends Model<User> {
 
   @ApiProperty({ example: 'true', description: 'User ban status' })
   @Prop({
-    type: Boolean,
-    default: false,
+    type: String,
+    default: 'false',
   })
   ban: boolean;
 }

@@ -13,4 +13,5 @@ export declare class UsersController {
     update(user: UpdateUserDto, request: any): Promise<User>;
     delete(id: string, request: any): Promise<User>;
     setRole(id: string, request: any): Promise<User>;
+    setBan(id: string, request: any): Promise<User>;
 }

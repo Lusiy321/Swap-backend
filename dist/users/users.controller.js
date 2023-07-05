@@ -47,6 +47,9 @@ let UsersController = class UsersController {
     async setRole(id, request) {
         return this.usersService.setModerator(id, request);
     }
+    async setBan(id, request) {
+        return this.usersService.setModerator(id, request);
+    }
 };
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Create User' }),
@@ -129,6 +132,17 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "setRole", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Set ban user' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: users_model_1.User }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Patch)('/ban/:Id'),
+    __param(0, (0, common_1.Param)('Id')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "setBan", null);
 UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

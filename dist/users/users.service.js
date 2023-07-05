@@ -199,21 +199,21 @@ let UsersService = class UsersService {
             }
             const SECRET_KEY = process.env.SECRET_KEY;
             const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const admin = await this.userModel.findById({ _id: findId.id }).exec();
-            const newSub = await this.userModel.findById(id).exec();
+            const admin = await this.userModel.findById({ _id: findId.id });
+            const newSub = await this.userModel.findById(id);
             if (!admin || !newSub) {
                 throw new http_errors_1.Conflict('User not found');
             }
-            if (admin.role === 'admin' && newSub.ban === false) {
-                newSub.ban = true;
+            if (admin.role === 'admin' && newSub.ban === 'false') {
+                newSub.ban = 'true';
                 return newSub.save();
             }
-            else if (admin.role === 'admin' && newSub.ban === true) {
-                newSub.ban = false;
+            else if (admin.role === 'moderator' && newSub.ban === 'true') {
+                newSub.ban = 'true';
                 return newSub.save();
             }
             else {
-                throw new http_errors_1.Conflict('Only moderator and their subordinates can change user moderator');
+                throw new http_errors_1.Conflict('Only moderator and admin can change user moderator');
             }
         }
         catch (e) {

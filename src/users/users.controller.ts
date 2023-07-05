@@ -83,4 +83,12 @@ export class UsersController {
   async setRole(@Param('Id') id: string, @Req() request: any): Promise<User> {
     return this.usersService.setModerator(id, request);
   }
+
+  @ApiOperation({ summary: 'Set ban user' })
+  @ApiResponse({ status: 200, type: User })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Patch('/ban/:Id')
+  async setBan(@Param('Id') id: string, @Req() request: any): Promise<User> {
+    return this.usersService.setModerator(id, request);
+  }
 }
