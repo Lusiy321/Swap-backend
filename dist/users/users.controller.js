@@ -26,8 +26,8 @@ let UsersController = class UsersController {
     async create(user) {
         return this.usersService.create(user);
     }
-    async findById(id, request) {
-        return this.usersService.findById(id, request);
+    async findById(id) {
+        return this.usersService.findById(id);
     }
     async login(user) {
         return this.usersService.login(user);
@@ -61,11 +61,10 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Get user by ID' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: users_model_1.User }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
-    (0, common_1.Get)('/find:id'),
+    (0, common_1.Get)('/find/:id'),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findById", null);
 __decorate([

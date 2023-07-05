@@ -40,6 +40,7 @@ export declare class User extends Model<User> {
     verify: boolean;
     verificationToken: string;
     googleId: string;
+    ban: boolean;
 }
 export declare const UserSchema: import("mongoose").Schema<User, Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & Omit<User & {
     _id: import("mongoose").Types.ObjectId;

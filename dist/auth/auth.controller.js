@@ -16,6 +16,8 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const Guards_1 = require("./utils/Guards");
 const users_service_1 = require("../users/users.service");
+const swagger_1 = require("@nestjs/swagger");
+const google_user_dto_1 = require("../users/dto/google.user.dto");
 let AuthController = class AuthController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -26,8 +28,8 @@ let AuthController = class AuthController {
     async googleAuthCallback(req, res) {
         const user = req.user;
         req.session.user = user;
-        console.log();
-        return res.json(user);
+        const authUser = await this.usersService.GoogleLogin(user);
+        return res.json(authUser);
     }
     user(request) {
         if (request.user) {
@@ -39,6 +41,8 @@ let AuthController = class AuthController {
     }
 };
 __decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Login Google User' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: google_user_dto_1.GoogleUserDto }),
     (0, common_1.Get)('google/login'),
     (0, common_1.UseGuards)(Guards_1.GoogleAuthGuard),
     __metadata("design:type", Function),
@@ -46,6 +50,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "handleLogin", null);
 __decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Google Authentication' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: google_user_dto_1.GoogleUserDto }),
     (0, common_1.Get)('google/redirect'),
     (0, common_1.UseGuards)(Guards_1.GoogleAuthGuard),
     __param(0, (0, common_1.Req)()),
@@ -55,6 +61,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "googleAuthCallback", null);
 __decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Google Authentication status' }),
     (0, common_1.Get)('status'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),

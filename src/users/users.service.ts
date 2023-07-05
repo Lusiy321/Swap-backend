@@ -7,6 +7,7 @@ import { compareSync, hashSync } from 'bcrypt';
 import { Conflict, NotFound, BadRequest, Unauthorized } from 'http-errors';
 import { sign, verify, JwtPayload } from 'jsonwebtoken';
 import { UpdateUserDto } from './dto/update.user.dto';
+import { GoogleUserDto } from './dto/google.user.dto';
 
 @Injectable()
 export class UsersService {
@@ -14,15 +15,15 @@ export class UsersService {
 
   async findAll(req: any) {
     try {
-    const { authorization = '' } = req.headers;
-    const [bearer, token] = authorization.split(' ');
+      const { authorization = '' } = req.headers;
+      const [bearer, token] = authorization.split(' ');
 
-    if (bearer !== 'Bearer') {
-      throw new Unauthorized('Not authorized');
-    }
-    const SECRET_KEY = process.env.SECRET_KEY;
-    const findId = verify(token, SECRET_KEY) as JwtPayload;
-    const user = await this.userModel.findById({ _id: findId.id });
+      if (bearer !== 'Bearer') {
+        throw new Unauthorized('Not authorized');
+      }
+      const SECRET_KEY = process.env.SECRET_KEY;
+      const findId = verify(token, SECRET_KEY) as JwtPayload;
+      const user = await this.userModel.findById({ _id: findId.id });
       if (user.role === 'admin') {
         return this.userModel.find().exec();
       } else if (user.role === 'moderator') {
@@ -38,22 +39,10 @@ export class UsersService {
     }
   }
 
-  async findById(id: string, req: any): Promise<User> {
+  async findById(id: string): Promise<User> {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
-      if (user.role === 'admin' || user.role === 'moderator') {
-        const find = await this.userModel.findById(id).exec();
-        return find;
-      }
-      return user;
+      const find = await this.userModel.findById(id).exec();
+      return find;
     } catch (e) {
       throw new NotFound('User not found');
     }
@@ -82,6 +71,19 @@ export class UsersService {
       const authUser = await this.userModel.findOne({ email });
       if (!authUser || !authUser.comparePassword(password)) {
         throw new Unauthorized(`Email or password is wrong`);
+      }
+      return this.createToken(authUser);
+    } catch (e) {
+      throw new BadRequest(e.message);
+    }
+  }
+
+  async GoogleLogin(user: GoogleUserDto): Promise<User> {
+    try {
+      const { email } = user;
+      const authUser = await this.userModel.findOne({ email });
+      if (!authUser) {
+        throw new Unauthorized(`Authorization failure`);
       }
       return this.createToken(authUser);
     } catch (e) {

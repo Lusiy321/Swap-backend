@@ -50,21 +50,10 @@ let UsersService = class UsersService {
             throw new http_errors_1.NotFound('User not found');
         }
     }
-    async findById(id, req) {
+    async findById(id) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById({ _id: findId.id });
-            if (user.role === 'admin' || user.role === 'moderator') {
-                const find = await this.userModel.findById(id).exec();
-                return find;
-            }
-            return user;
+            const find = await this.userModel.findById(id).exec();
+            return find;
         }
         catch (e) {
             throw new http_errors_1.NotFound('User not found');
@@ -93,6 +82,19 @@ let UsersService = class UsersService {
             const authUser = await this.userModel.findOne({ email });
             if (!authUser || !authUser.comparePassword(password)) {
                 throw new http_errors_1.Unauthorized(`Email or password is wrong`);
+            }
+            return this.createToken(authUser);
+        }
+        catch (e) {
+            throw new http_errors_1.BadRequest(e.message);
+        }
+    }
+    async GoogleLogin(user) {
+        try {
+            const { email } = user;
+            const authUser = await this.userModel.findOne({ email });
+            if (!authUser) {
+                throw new http_errors_1.Unauthorized(`Authorization failure`);
             }
             return this.createToken(authUser);
         }

@@ -29,9 +29,9 @@ export class UsersController {
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({ status: 200, type: User })
   @ApiBearerAuth('BearerAuthMethod')
-  @Get('/find:id')
-  async findById(@Param('id') id: string, @Req() request: any): Promise<User> {
-    return this.usersService.findById(id, request);
+  @Get('/find/:id')
+  async findById(@Param('id') id: string): Promise<User> {
+    return this.usersService.findById(id);
   }
 
   @ApiOperation({ summary: 'Login User' })

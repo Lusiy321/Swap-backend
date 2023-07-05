@@ -141,6 +141,14 @@ __decorate([
     (0, mongoose_1.Prop)({ type: String }),
     __metadata("design:type", String)
 ], User.prototype, "googleId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'true', description: 'User ban status' }),
+    (0, mongoose_1.Prop)({
+        type: Boolean,
+        default: false,
+    }),
+    __metadata("design:type", Boolean)
+], User.prototype, "ban", void 0);
 User = __decorate([
     (0, mongoose_1.Schema)({ versionKey: false, timestamps: true })
 ], User);

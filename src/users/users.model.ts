@@ -119,6 +119,13 @@ export class User extends Model<User> {
   })
   @Prop({ type: String })
   googleId: string;
+
+  @ApiProperty({ example: 'true', description: 'User ban status' })
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  ban: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
