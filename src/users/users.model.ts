@@ -120,10 +120,10 @@ export class User extends Model<User> {
   @Prop({ type: String })
   googleId: string;
 
-  @ApiProperty({ example: 'true', description: 'User ban status' })
+  @ApiProperty({ example: 'false', description: 'User ban status' })
   @Prop({
-    type: String,
-    default: 'false',
+    type: Boolean,
+    default: false,
   })
   ban: boolean;
 }

@@ -204,16 +204,13 @@ let UsersService = class UsersService {
             if (!admin || !newSub) {
                 throw new http_errors_1.Conflict('User not found');
             }
-            if (admin.role === 'admin' && newSub.ban === 'false') {
-                newSub.ban = 'true';
-                return newSub.save();
-            }
-            else if (admin.role === 'moderator' && newSub.ban === 'true') {
-                newSub.ban = 'true';
-                return newSub.save();
+            if (admin.role === 'admin' || admin.role === 'moderator' && newSub.ban === false) {
+                newSub.ban = true;
+                newSub.save();
             }
             else {
-                throw new http_errors_1.Conflict('Only moderator and admin can change user moderator');
+                newSub.ban = false;
+                return newSub.save();
             }
         }
         catch (e) {

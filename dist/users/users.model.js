@@ -142,10 +142,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "googleId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'true', description: 'User ban status' }),
+    (0, swagger_1.ApiProperty)({ example: 'false', description: 'User ban status' }),
     (0, mongoose_1.Prop)({
-        type: String,
-        default: 'false',
+        type: Boolean,
+        default: false,
     }),
     __metadata("design:type", Boolean)
 ], User.prototype, "ban", void 0);

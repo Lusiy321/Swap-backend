@@ -48,7 +48,7 @@ let UsersController = class UsersController {
         return this.usersService.setModerator(id, request);
     }
     async setBan(id, request) {
-        return this.usersService.setModerator(id, request);
+        return this.usersService.banUser(id, request);
     }
 };
 __decorate([

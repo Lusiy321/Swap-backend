@@ -89,6 +89,6 @@ export class UsersController {
   @ApiBearerAuth('BearerAuthMethod')
   @Patch('/ban/:Id')
   async setBan(@Param('Id') id: string, @Req() request: any): Promise<User> {
-    return this.usersService.setModerator(id, request);
+    return this.usersService.banUser(id, request);
   }
 }

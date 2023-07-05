@@ -209,17 +209,15 @@ async banUser(id: string, req: any): Promise<User> {
         throw new Conflict('User not found');
       }
 
-      if (admin.role === 'admin' && newSub.ban === 'false') {
-        newSub.ban = 'true';
-        return newSub.save();
-      } else if (admin.role === 'moderator' && newSub.ban === 'true') {
-        newSub.ban = 'true';
-        return newSub.save();
+      if (admin.role === 'admin' || admin.role === 'moderator' && newSub.ban === false) {
+        newSub.ban = true;
+        newSub.save();
+
       } else {
-        throw new Conflict(
-          'Only moderator and admin can change user moderator',
-        );
+        newSub.ban = false;
+        return newSub.save();
       }
+      
     } catch (e) {
       throw new NotFound('User not found');
     }
