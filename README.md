@@ -1,8 +1,5 @@
 <p align="center">
 
-![swwa](https://github.com/Lusiy321/Incode-backend/assets/107991551/310c14fe-3844-42cc-8212-d5aa0cc88574)
-
-
 ## Description
 Login web server 
 ## Installation
