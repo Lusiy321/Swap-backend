@@ -13,9 +13,10 @@ import {
 import { User } from './users.model';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create.user.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update.user.dto';
 
+@ApiTags('User')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -71,7 +72,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Delet user (admin only)' })
   @ApiResponse({ status: 200, type: User })
   @ApiBearerAuth('BearerAuthMethod')
-  @Delete(':id')
+  @Delete('/:id')
   async delete(@Param('id') id: string, @Req() request: any): Promise<User> {
     return this.usersService.delete(id, request);
   }

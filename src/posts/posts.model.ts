@@ -4,17 +4,18 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Model } from 'mongoose';
 import { UpdateUserDto } from 'src/users/dto/update.user.dto';
 
-export type PostDocument = Post & Document;
+export type PostDocument = Posts & Document;
 
 @Schema({ versionKey: false, timestamps: true })
     
-export class Post extends Model<Post> {
+export class Posts extends Model<Posts> {
 
   @ApiProperty({ example: 'My first post', description: 'Post title' })
   @Prop({
     type: String,
     minlength: 2,
     maxlength: 50,
+    required: [true, 'Title is required']
   })
   title: string;
 
@@ -23,6 +24,7 @@ export class Post extends Model<Post> {
     type: String,
     minlength: 2,
     maxlength: 280,
+    required: [true, 'Description is required']
   })
   description: string;
 
@@ -30,12 +32,12 @@ export class Post extends Model<Post> {
   @Prop({ type: String, })
   category: string;
 
-  @ApiProperty({ example: 'https://ldsound.info/wp-content/uploads/2013/07/25%D0%B0%D1%81128-ldsound_ru-1.jpg', description: 'Post avatar' })
+  @ApiProperty({ example: 'https://ldsound.info/wp-content/uploads/2013/07/25%D0%B0%D1%81128-ldsound_ru-1.jpg', description: 'Post image' })
   @Prop({
     type: String,
     default: 'https://ldsound.info/wp-content/uploads/2013/07/25%D0%B0%D1%81128-ldsound_ru-1.jpg',
   })
-  avatar: string;
+  img: string;
 
   @ApiProperty({
     example: '649b2cc373ebdf1b04d734ff',
@@ -84,4 +86,4 @@ export class Post extends Model<Post> {
   views: number;  
 }
 
-export const PostSchema = SchemaFactory.createForClass(Post);
+export const PostSchema = SchemaFactory.createForClass(Posts);

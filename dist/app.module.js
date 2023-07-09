@@ -17,6 +17,7 @@ const passport_1 = require("@nestjs/passport");
 const posts_controller_1 = require("./posts/posts.controller");
 const posts_service_1 = require("./posts/posts.service");
 const posts_module_1 = require("./posts/posts.module");
+const posts_model_1 = require("./posts/posts.model");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -28,6 +29,7 @@ AppModule = __decorate([
             }),
             mongoose_1.MongooseModule.forRoot(process.env.DB_HOST),
             mongoose_1.MongooseModule.forFeature([{ name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' }]),
+            mongoose_1.MongooseModule.forFeature([{ name: posts_model_1.Posts.name, schema: posts_model_1.PostSchema, collection: 'posts' }]),
             users_module_1.UsersModule, passport_1.PassportModule.register({ session: true }), posts_module_1.PostsModule,
         ],
         controllers: [posts_controller_1.PostsController],

@@ -114,7 +114,7 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Delet user (admin only)' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: users_model_1.User }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
-    (0, common_1.Delete)(':id'),
+    (0, common_1.Delete)('/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -144,6 +144,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "setBan", null);
 UsersController = __decorate([
+    (0, swagger_1.ApiTags)('User'),
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])
 ], UsersController);

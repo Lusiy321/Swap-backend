@@ -23,19 +23,20 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Model } from 'mongoose';
-export type PostDocument = Post & Document;
-export declare class Post extends Model<Post> {
+export type PostDocument = Posts & Document;
+export declare class Posts extends Model<Posts> {
     title: string;
     description: string;
     category: string;
-    avatar: string;
+    img: string;
     favorite: Array<string>;
     owner: object;
     price: number;
     verify: boolean;
+    views: number;
 }
-export declare const PostSchema: import("mongoose").Schema<Post, Model<Post, any, any, any, import("mongoose").Document<unknown, any, Post> & Omit<Post & {
+export declare const PostSchema: import("mongoose").Schema<Posts, Model<Posts, any, any, any, import("mongoose").Document<unknown, any, Posts> & Omit<Posts & {
     _id: import("mongoose").Types.ObjectId;
-}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Post, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Post>> & Omit<import("mongoose").FlatRecord<Post> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Posts, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Posts>> & Omit<import("mongoose").FlatRecord<Posts> & {
     _id: import("mongoose").Types.ObjectId;
 }, never>>;

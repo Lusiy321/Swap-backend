@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import { PostsController } from './posts/posts.controller';
 import { PostsService } from './posts/posts.service';
 import { PostsModule } from './posts/posts.module';
+import { PostSchema, Posts } from './posts/posts.model';
 
 
 
@@ -21,6 +22,7 @@ import { PostsModule } from './posts/posts.module';
     }),
     MongooseModule.forRoot(process.env.DB_HOST),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema, collection: 'users' }]),
+    MongooseModule.forFeature([{ name: Posts.name, schema: PostSchema, collection: 'posts' }]),
     UsersModule, PassportModule.register({ session: true }), PostsModule,
   ],
   controllers: [PostsController],

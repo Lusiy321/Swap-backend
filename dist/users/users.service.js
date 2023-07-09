@@ -207,10 +207,12 @@ let UsersService = class UsersService {
             if (admin.role === 'admin' || admin.role === 'moderator' && newSub.ban === false) {
                 newSub.ban = true;
                 newSub.save();
+                return this.userModel.findById(id);
             }
             else {
                 newSub.ban = false;
-                return newSub.save();
+                newSub.save();
+                return this.userModel.findById(id);
             }
         }
         catch (e) {

@@ -3,12 +3,12 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
-import { Post, PostSchema } from './posts.model';
+import { Posts, PostSchema } from './posts.model';
 
 @Module({
     imports: [
     MongooseModule.forFeature([
-      { name: Post.name, schema: PostSchema, collection: 'posts' },
+      { name: Posts.name, schema: PostSchema, collection: 'posts' },
     ]),
   
   ],

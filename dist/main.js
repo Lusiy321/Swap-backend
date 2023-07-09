@@ -22,7 +22,6 @@ async function start() {
         .setTitle('Test server Thing')
         .setDescription('REAST API Documentation')
         .setVersion('1.0.0')
-        .addTag('test server')
         .addBearerAuth({
         description: 'JWT Authorization',
         type: 'http',
