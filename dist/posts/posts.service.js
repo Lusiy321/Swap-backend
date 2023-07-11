@@ -29,9 +29,11 @@ const posts_model_1 = require("./posts.model");
 const mongoose_1 = require("@nestjs/mongoose");
 const http_errors_1 = require("http-errors");
 const jsonwebtoken_1 = require("jsonwebtoken");
+const users_model_1 = require("../users/users.model");
 let PostsService = class PostsService {
-    constructor(postModel) {
+    constructor(postModel, userModel) {
         this.postModel = postModel;
+        this.userModel = userModel;
     }
     async findAllPosts() {
         try {
@@ -60,14 +62,14 @@ let PostsService = class PostsService {
             }
             const SECRET_KEY = process.env.SECRET_KEY;
             const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById({ _id: findId.id });
+            const user = await this.userModel.findById(findId.id);
             if (user) {
                 const createdPost = await this.postModel.create(post);
                 createdPost.save();
                 createdPost.owner = findId.id;
-                createdPost.save();
                 return await this.postModel.findById(createdPost._id);
             }
+            console.log("null");
         }
         catch (e) {
             throw new http_errors_1.BadRequest(e.message);
@@ -150,7 +152,8 @@ let PostsService = class PostsService {
 PostsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(posts_model_1.Posts.name)),
-    __metadata("design:paramtypes", [posts_model_1.Posts])
+    __param(1, (0, mongoose_1.InjectModel)(users_model_1.User.name)),
+    __metadata("design:paramtypes", [posts_model_1.Posts, users_model_1.User])
 ], PostsService);
 exports.PostsService = PostsService;
 //# sourceMappingURL=posts.service.js.map

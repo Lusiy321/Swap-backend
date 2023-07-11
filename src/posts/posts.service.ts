@@ -9,8 +9,8 @@ import { User } from 'src/users/users.model';
 
 @Injectable()
 export class PostsService {
-    userModel: User;
-  constructor(@InjectModel(Posts.name) private postModel: Posts) {}
+  
+  constructor(@InjectModel(Posts.name) private postModel: Posts, @InjectModel(User.name)  private userModel: User) {}
 
   async findAllPosts() {
     try {
@@ -41,15 +41,15 @@ export class PostsService {
 
       const SECRET_KEY = process.env.SECRET_KEY;
       const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
+      const user = await this.userModel.findById(findId.id);
       if (user) {
       const createdPost = await this.postModel.create(post);
       createdPost.save();
-        createdPost.owner = findId.id;
-        createdPost.save();
+      createdPost.owner = findId.id;
+      
       return await this.postModel.findById(createdPost._id);
         }
-
+      console.log("null")
       
     } catch (e) {
       throw new BadRequest(e.message);

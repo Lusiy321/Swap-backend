@@ -3,8 +3,8 @@ import { CreatePostDto } from './dto/create.post.dto';
 import { User } from 'src/users/users.model';
 export declare class PostsService {
     private postModel;
-    userModel: User;
-    constructor(postModel: Posts);
+    private userModel;
+    constructor(postModel: Posts, userModel: User);
     findAllPosts(): Promise<any>;
     findPostById(id: string): Promise<Posts>;
     createPost(post: CreatePostDto, req: any): Promise<Posts>;
