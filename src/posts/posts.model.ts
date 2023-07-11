@@ -3,6 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Model } from 'mongoose';
 import { UpdateUserDto } from 'src/users/dto/update.user.dto';
+import { verify } from './dto/verify.post.dto';
 
 export type PostDocument = Posts & Document;
 
@@ -62,6 +63,7 @@ export class Posts extends Model<Posts> {
     example: '100',
     description: 'Item price',
   })
+  
   @Prop({
     type: Number,
     default: '0',
@@ -70,10 +72,10 @@ export class Posts extends Model<Posts> {
 
   @ApiProperty({ example: 'true', description: 'Post status' })
   @Prop({
-    type: Boolean,
-    default: false,
+    enum: ['new', 'aprove', 'rejected'],
+    default: 'new',
   })
-    verify: boolean;
+    verify: verify;
 
   @ApiProperty({
     example: '200',

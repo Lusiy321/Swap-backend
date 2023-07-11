@@ -14,6 +14,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const mongoose_2 = require("mongoose");
 const update_user_dto_1 = require("../users/dto/update.user.dto");
+const verify_post_dto_1 = require("./dto/verify.post.dto");
 let Posts = class Posts extends mongoose_2.Model {
 };
 __decorate([
@@ -84,10 +85,10 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'true', description: 'Post status' }),
     (0, mongoose_1.Prop)({
-        type: Boolean,
-        default: false,
+        enum: ['new', 'aprove', 'rejected'],
+        default: 'new',
     }),
-    __metadata("design:type", Boolean)
+    __metadata("design:type", String)
 ], Posts.prototype, "verify", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({

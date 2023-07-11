@@ -134,8 +134,8 @@ let PostsService = class PostsService {
             if (!admin || !post) {
                 throw new http_errors_1.Conflict('Not found');
             }
-            if (admin.role === 'admin' || admin.role === 'moderator' && post.verify === false) {
-                post.verify = true;
+            if (admin.role === 'admin' || admin.role === 'moderator' && post.verify === 'new') {
+                post.verify = 'aprove';
                 post.save();
                 return await this.postModel.findById(id);
             }

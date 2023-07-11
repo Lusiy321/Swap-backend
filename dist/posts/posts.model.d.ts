@@ -23,6 +23,7 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Model } from 'mongoose';
+import { verify } from './dto/verify.post.dto';
 export type PostDocument = Posts & Document;
 export declare class Posts extends Model<Posts> {
     title: string;
@@ -32,7 +33,7 @@ export declare class Posts extends Model<Posts> {
     favorite: Array<string>;
     owner: object;
     price: number;
-    verify: boolean;
+    verify: verify;
     views: number;
 }
 export declare const PostSchema: import("mongoose").Schema<Posts, Model<Posts, any, any, any, import("mongoose").Document<unknown, any, Posts> & Omit<Posts & {

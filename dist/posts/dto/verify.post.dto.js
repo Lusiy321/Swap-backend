@@ -9,19 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RoleUserDto = exports.role = void 0;
+exports.CreatePostDto = exports.verify = void 0;
 const swagger_1 = require("@nestjs/swagger");
-var role;
-(function (role) {
-    role["admin"] = "admin";
-    role["user"] = "user";
-    role["moderator"] = "moderator";
-})(role = exports.role || (exports.role = {}));
-class RoleUserDto {
+var verify;
+(function (verify) {
+    verify["new"] = "new";
+    verify["aprove"] = "aprove";
+    verify["rejected"] = "rejected";
+})(verify = exports.verify || (exports.verify = {}));
+class CreatePostDto {
 }
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'moderator', description: 'User role' }),
+    (0, swagger_1.ApiProperty)({ example: 'new, aprove, rejected', description: 'Post verify' }),
     __metadata("design:type", String)
-], RoleUserDto.prototype, "role", void 0);
-exports.RoleUserDto = RoleUserDto;
-//# sourceMappingURL=role.user.dto.js.map
+], CreatePostDto.prototype, "verify", void 0);
+exports.CreatePostDto = CreatePostDto;
+//# sourceMappingURL=verify.post.dto.js.map

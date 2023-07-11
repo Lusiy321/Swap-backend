@@ -9,19 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RoleUserDto = exports.role = void 0;
+exports.CreatePostDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
-var role;
-(function (role) {
-    role["admin"] = "admin";
-    role["user"] = "user";
-    role["moderator"] = "moderator";
-})(role = exports.role || (exports.role = {}));
-class RoleUserDto {
+class CreatePostDto {
 }
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'moderator', description: 'User role' }),
+    (0, swagger_1.ApiProperty)({ example: 'My first post', description: 'Post title' }),
     __metadata("design:type", String)
-], RoleUserDto.prototype, "role", void 0);
-exports.RoleUserDto = RoleUserDto;
-//# sourceMappingURL=role.user.dto.js.map
+], CreatePostDto.prototype, "title", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Change my item for your item', description: 'Post description' }),
+    __metadata("design:type", String)
+], CreatePostDto.prototype, "description", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'https://ldsound.info/wp-content/uploads/2013/07/25%D0%B0%D1%81128-ldsound_ru-1.jpg', description: 'Post image' }),
+    __metadata("design:type", String)
+], CreatePostDto.prototype, "img", void 0);
+exports.CreatePostDto = CreatePostDto;
+//# sourceMappingURL=create.post.dto%20copy.js.map
