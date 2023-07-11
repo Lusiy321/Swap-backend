@@ -40,6 +40,9 @@ let PostsController = class PostsController {
     async setBan(id, request) {
         return this.postService.verifyPost(id, request);
     }
+    async favorite(id, request) {
+        return this.postService.favoritePost(id, request);
+    }
 };
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Create Post' }),
@@ -103,6 +106,17 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "setBan", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Favorite post' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Patch)('/fav/:Id'),
+    __param(0, (0, common_1.Param)('Id')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "favorite", null);
 PostsController = __decorate([
     (0, swagger_1.ApiTags)('Post'),
     (0, common_1.Controller)('posts'),

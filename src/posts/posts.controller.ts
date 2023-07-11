@@ -70,6 +70,14 @@ export class PostsController {
 @Patch('/verify/:Id')
   async setBan(@Param('Id') id: string, @Req() request: any): Promise<Posts> {
     return this.postService.verifyPost(id, request);
+}
+
+@ApiOperation({ summary: 'Favorite post' })
+@ApiResponse({ status: 200, type: Posts })
+@ApiBearerAuth('BearerAuthMethod')
+@Patch('/fav/:Id')
+  async favorite(@Param('Id') id: string, @Req() request: any): Promise<Posts> {
+    return this.postService.favoritePost(id, request);
   }
     
 }

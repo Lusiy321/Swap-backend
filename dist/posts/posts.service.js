@@ -69,7 +69,6 @@ let PostsService = class PostsService {
                 createdPost.owner = findId.id;
                 return await this.postModel.findById(createdPost._id);
             }
-            console.log("null");
         }
         catch (e) {
             throw new http_errors_1.BadRequest(e.message);
@@ -137,6 +136,41 @@ let PostsService = class PostsService {
             }
             if (admin.role === 'admin' || admin.role === 'moderator' && post.verify === false) {
                 post.verify = true;
+                post.save();
+                return await this.postModel.findById(id);
+            }
+            else {
+                return post;
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('User not found');
+        }
+    }
+    async favoritePost(id, req) {
+        try {
+            const { authorization = '' } = req.headers;
+            const [bearer, token] = authorization.split(' ');
+            if (bearer !== 'Bearer') {
+                throw new http_errors_1.Unauthorized('Not authorized');
+            }
+            const SECRET_KEY = process.env.SECRET_KEY;
+            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
+            const user = await this.userModel.findById({ _id: findId.id });
+            const post = await this.postModel.findById(id);
+            if (!user || !post) {
+                throw new http_errors_1.Conflict('Not found');
+            }
+            if (user && post) {
+                const array = post.favorite;
+                const index = array.indexOf(id);
+                if (index > -1) {
+                    array.splice(index, 1);
+                }
+                else {
+                    array.push(id);
+                }
+                await this.postModel.updateOne({ _id: id, }, { $set: { favorite: array } });
                 post.save();
                 return await this.postModel.findById(id);
             }

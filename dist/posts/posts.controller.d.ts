@@ -10,4 +10,5 @@ export declare class PostsController {
     update(post: CreatePostDto, request: any, id: string): Promise<Posts>;
     delete(id: string, request: any): Promise<Posts>;
     setBan(id: string, request: any): Promise<Posts>;
+    favorite(id: string, request: any): Promise<Posts>;
 }

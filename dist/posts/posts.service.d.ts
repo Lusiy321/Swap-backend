@@ -11,4 +11,5 @@ export declare class PostsService {
     updatePost(post: CreatePostDto, id: string, req: any): Promise<Posts>;
     deletePost(id: string, req: any): Promise<Posts>;
     verifyPost(id: string, req: any): Promise<Posts>;
+    favoritePost(id: string, req: any): Promise<Posts>;
 }

@@ -48,8 +48,7 @@ export class PostsService {
       createdPost.owner = findId.id;
       
       return await this.postModel.findById(createdPost._id);
-        }
-      console.log("null")
+      }
       
     } catch (e) {
       throw new BadRequest(e.message);
@@ -128,6 +127,44 @@ export class PostsService {
         post.verify = true;
         post.save();
         return await this.postModel.findById(id); 
+      } else {
+        return post;
+      }      
+    } catch (e) {
+      throw new NotFound('User not found');
+    }
+  }
+
+  async favoritePost(id: string, req: any): Promise<Posts> {
+    try {
+      const { authorization = '' } = req.headers;
+      const [bearer, token] = authorization.split(' ');
+
+      if (bearer !== 'Bearer') {
+        throw new Unauthorized('Not authorized');
+      }
+      
+      const SECRET_KEY = process.env.SECRET_KEY;
+      const findId = verify(token, SECRET_KEY) as JwtPayload;
+      const user = await this.userModel.findById({ _id: findId.id });
+      const post = await this.postModel.findById(id);
+
+      if (!user || !post) {
+        throw new Conflict('Not found');
+      }
+
+      if (user && post) {
+        const array = post.favorite;
+        const index = array.indexOf(id);
+        if (index > -1) {
+          array.splice(index, 1);
+        } else {
+          array.push(id);
+        }
+        await this.postModel.updateOne({ _id: id, }, { $set: { favorite: array } });
+        post.save();
+        return await this.postModel.findById(id);
+       
       } else {
         return post;
       }      
