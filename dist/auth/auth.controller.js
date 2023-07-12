@@ -39,6 +39,9 @@ let AuthController = class AuthController {
             return { msg: 'Not Authenticated' };
         }
     }
+    async refresh(request) {
+        return this.usersService.refreshAccessToken(request);
+    }
 };
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Login Google User' }),
@@ -68,6 +71,15 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "user", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Refresh Access Token' }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Patch)('refresh'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "refresh", null);
 AuthController = __decorate([
     (0, swagger_1.ApiTags)('Auth'),
     (0, common_1.Controller)('auth'),

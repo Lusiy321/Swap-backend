@@ -12,12 +12,12 @@ const mongoose_1 = require("@nestjs/mongoose");
 const config_1 = require("@nestjs/config");
 const users_module_1 = require("./users/users.module");
 const users_model_1 = require("./users/users.model");
-const auth_module_1 = require("./auth/auth.module");
 const passport_1 = require("@nestjs/passport");
 const posts_controller_1 = require("./posts/posts.controller");
 const posts_service_1 = require("./posts/posts.service");
 const posts_module_1 = require("./posts/posts.module");
 const posts_model_1 = require("./posts/posts.model");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -25,12 +25,18 @@ AppModule = __decorate([
         imports: [
             auth_module_1.AuthModule,
             config_1.ConfigModule.forRoot({
-                envFilePath: `.env`
+                envFilePath: `.env`,
             }),
             mongoose_1.MongooseModule.forRoot(process.env.DB_HOST),
-            mongoose_1.MongooseModule.forFeature([{ name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' }]),
-            mongoose_1.MongooseModule.forFeature([{ name: posts_model_1.Posts.name, schema: posts_model_1.PostSchema, collection: 'posts' }]),
-            users_module_1.UsersModule, passport_1.PassportModule.register({ session: true }), posts_module_1.PostsModule,
+            mongoose_1.MongooseModule.forFeature([
+                { name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' },
+            ]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: posts_model_1.Posts.name, schema: posts_model_1.PostSchema, collection: 'posts' },
+            ]),
+            users_module_1.UsersModule,
+            passport_1.PassportModule.register({ session: true }),
+            posts_module_1.PostsModule,
         ],
         controllers: [posts_controller_1.PostsController],
         providers: [posts_service_1.PostsService],

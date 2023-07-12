@@ -1,9 +1,15 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Req, Res, UseGuards } from '@nestjs/common';
 import { GoogleAuthGuard } from './utils/Guards';
 import { UsersService } from 'src/users/users.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GoogleUserDto } from 'src/users/dto/google.user.dto';
+import { refreshAccessToken } from 'src/users/utils/JWT.middleware';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -36,5 +42,12 @@ export class AuthController {
     } else {
       return { msg: 'Not Authenticated' };
     }
+  }
+
+  @ApiOperation({ summary: 'Refresh Access Token' })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Patch('refresh')
+  async refresh(@Req() request: any) {
+    return this.usersService.refreshAccessToken(request);
   }
 }

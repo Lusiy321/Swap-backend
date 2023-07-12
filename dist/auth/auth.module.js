@@ -20,7 +20,9 @@ let AuthModule = class AuthModule {
 AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' }]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' },
+            ]),
         ],
         controllers: [auth_controller_1.AuthController],
         providers: [

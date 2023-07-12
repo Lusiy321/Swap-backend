@@ -21,7 +21,7 @@ class VerifyPostDto {
 }
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'new, aprove or rejected',
+        example: 'aprove',
         description: 'Post verify',
     }),
     __metadata("design:type", String)

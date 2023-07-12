@@ -9,7 +9,7 @@ export enum verify {
 
 export class VerifyPostDto {
   @ApiProperty({
-    example: 'new, aprove or rejected',
+    example: 'aprove',
     description: 'Post verify',
   })
   readonly verify: verify;

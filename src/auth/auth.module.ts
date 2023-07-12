@@ -11,7 +11,9 @@ import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema, collection: 'users' }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema, collection: 'users' },
+    ]),
   ],
   controllers: [AuthController],
   providers: [
@@ -20,6 +22,7 @@ import { UsersService } from 'src/users/users.service';
     SessionSerializer,
     { provide: 'AUTH_SERVICE', useClass: AuthService },
     AuthService,
+    
   ],
 })
 export class AuthModule {}

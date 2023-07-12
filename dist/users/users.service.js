@@ -25,14 +25,7 @@ let UsersService = class UsersService {
     }
     async findAll(req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById({ _id: findId.id });
+            const user = await this.findToken(req);
             if (user.role === 'admin') {
                 return this.userModel.find().exec();
             }
@@ -103,14 +96,8 @@ let UsersService = class UsersService {
         }
     }
     async logout(req) {
-        const { authorization = '' } = req.headers;
-        const [bearer, token] = authorization.split(' ');
-        if (bearer !== 'Bearer') {
-            throw new http_errors_1.Unauthorized('Not authorized');
-        }
         try {
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const user = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
+            const user = await this.findToken(req);
             await this.userModel.findByIdAndUpdate({ _id: user.id }, { token: null });
             return await this.userModel.findById({ _id: user.id });
         }
@@ -120,14 +107,8 @@ let UsersService = class UsersService {
     }
     async update(user, req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
             const { firstName, lastName, phone, location, avatarURL, isOnline } = user;
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
+            const findId = await this.findToken(req);
             if (firstName || lastName || phone || location || avatarURL || isOnline) {
                 await this.userModel.findByIdAndUpdate({ _id: findId.id }, { firstName, lastName, phone, location, avatarURL, isOnline });
                 const userUpdate = this.userModel.findById({ _id: findId.id });
@@ -140,14 +121,7 @@ let UsersService = class UsersService {
     }
     async delete(id, req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById({ _id: findId.id });
+            const user = await this.findToken(req);
             if (user.role === 'admin') {
                 const find = await this.userModel.findByIdAndRemove(id).exec();
                 return find;
@@ -162,14 +136,7 @@ let UsersService = class UsersService {
     }
     async setModerator(id, req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const admin = await this.userModel.findById({ _id: findId.id }).exec();
+            const admin = await this.findToken(req);
             const newSub = await this.userModel.findById(id).exec();
             if (!admin || !newSub) {
                 throw new http_errors_1.Conflict('User not found');
@@ -192,19 +159,13 @@ let UsersService = class UsersService {
     }
     async banUser(id, req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const admin = await this.userModel.findById({ _id: findId.id });
+            const admin = await this.findToken(req);
             const newSub = await this.userModel.findById(id);
             if (!admin || !newSub) {
                 throw new http_errors_1.Conflict('User not found');
             }
-            if (admin.role === 'admin' || admin.role === 'moderator' && newSub.ban === false) {
+            if (admin.role === 'admin' ||
+                (admin.role === 'moderator' && newSub.ban === false)) {
                 newSub.ban = true;
                 newSub.save();
                 return this.userModel.findById(id);
@@ -236,18 +197,6 @@ let UsersService = class UsersService {
             throw new http_errors_1.NotFound('User not found');
         }
     }
-    async createToken(authUser) {
-        const payload = {
-            id: authUser._id,
-        };
-        const SECRET_KEY = process.env.SECRET_KEY;
-        const token = (0, jsonwebtoken_1.sign)(payload, SECRET_KEY, { expiresIn: '24h' });
-        await this.userModel.findByIdAndUpdate(authUser._id, { token });
-        const authentificationUser = await this.userModel.findById({
-            _id: authUser._id,
-        });
-        return authentificationUser;
-    }
     async findToken(req) {
         const { authorization = '' } = req.headers;
         const [bearer, token] = authorization.split(' ');
@@ -258,6 +207,45 @@ let UsersService = class UsersService {
         const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
         const user = await this.userModel.findById({ _id: findId.id });
         return user;
+    }
+    async createToken(authUser) {
+        const payload = {
+            id: authUser._id,
+        };
+        const SECRET_KEY = process.env.SECRET_KEY;
+        const token = (0, jsonwebtoken_1.sign)(payload, SECRET_KEY, { expiresIn: '15m' });
+        await this.userModel.findByIdAndUpdate(authUser._id, { token });
+        const authentificationUser = await this.userModel.findById({
+            _id: authUser._id,
+        });
+        return authentificationUser;
+    }
+    async refreshAccessToken(req) {
+        try {
+            const { authorization = '' } = req.headers;
+            const [bearer, token] = authorization.split(' ');
+            if (bearer !== 'Bearer') {
+                throw new http_errors_1.Unauthorized('Not authorized');
+            }
+            const SECRET_KEY = process.env.SECRET_KEY;
+            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
+            const user = await this.userModel.findById({ _id: findId.id });
+            if (!user) {
+                throw new Error('User not found');
+            }
+            const payload = {
+                id: user._id,
+            };
+            const tokenRef = (0, jsonwebtoken_1.sign)(payload, SECRET_KEY, { expiresIn: '24h' });
+            await this.userModel.findByIdAndUpdate(user._id, { token: tokenRef });
+            const authentificationUser = await this.userModel.findById({
+                _id: user.id,
+            });
+            return authentificationUser;
+        }
+        catch (error) {
+            throw new Error('Invalid refresh token');
+        }
     }
 };
 UsersService = __decorate([

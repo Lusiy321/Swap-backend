@@ -5,25 +5,17 @@ import { User, UserSchema } from './users.model';
 import { CreateUserDto } from './dto/create.user.dto';
 import { compareSync, hashSync } from 'bcrypt';
 import { Conflict, NotFound, BadRequest, Unauthorized } from 'http-errors';
-import { sign, verify, JwtPayload } from 'jsonwebtoken';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { GoogleUserDto } from './dto/google.user.dto';
+import { sign, verify, JwtPayload } from 'jsonwebtoken';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: User) {}
 
-  async findAll(req: any) {
+  async findAll(req: any): Promise<User[]> {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
+      const user = await this.findToken(req);
       if (user.role === 'admin') {
         return this.userModel.find().exec();
       } else if (user.role === 'moderator') {
@@ -92,18 +84,9 @@ export class UsersService {
   }
 
   async logout(req: any): Promise<User> {
-    const { authorization = '' } = req.headers;
-    const [bearer, token] = authorization.split(' ');
-
-    if (bearer !== 'Bearer') {
-      throw new Unauthorized('Not authorized');
-    }
     try {
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const user = verify(token, SECRET_KEY) as JwtPayload;
-
+      const user = await this.findToken(req);
       await this.userModel.findByIdAndUpdate({ _id: user.id }, { token: null });
-
       return await this.userModel.findById({ _id: user.id });
     } catch (e) {
       throw new BadRequest(e.message);
@@ -112,16 +95,9 @@ export class UsersService {
 
   async update(user: UpdateUserDto, req: any): Promise<User> {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
       const { firstName, lastName, phone, location, avatarURL, isOnline } =
         user;
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
+      const findId = await this.findToken(req);
 
       if (firstName || lastName || phone || location || avatarURL || isOnline) {
         await this.userModel.findByIdAndUpdate(
@@ -138,16 +114,7 @@ export class UsersService {
 
   async delete(id: string, req: any): Promise<User> {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
+      const user = await this.findToken(req);
       if (user.role === 'admin') {
         const find = await this.userModel.findByIdAndRemove(id).exec();
         return find;
@@ -161,15 +128,7 @@ export class UsersService {
 
   async setModerator(id: string, req: any): Promise<User> {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const admin = await this.userModel.findById({ _id: findId.id }).exec();
+      const admin = await this.findToken(req);
       const newSub = await this.userModel.findById(id).exec();
 
       if (!admin || !newSub) {
@@ -192,24 +151,19 @@ export class UsersService {
     }
   }
 
-async banUser(id: string, req: any): Promise<User> {
+  async banUser(id: string, req: any): Promise<User> {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const admin = await this.userModel.findById({ _id: findId.id });
+      const admin = await this.findToken(req);
       const newSub = await this.userModel.findById(id);
 
       if (!admin || !newSub) {
         throw new Conflict('User not found');
       }
 
-      if (admin.role === 'admin' || admin.role === 'moderator' && newSub.ban === false) {
+      if (
+        admin.role === 'admin' ||
+        (admin.role === 'moderator' && newSub.ban === false)
+      ) {
         newSub.ban = true;
         newSub.save();
         return this.userModel.findById(id);
@@ -217,7 +171,7 @@ async banUser(id: string, req: any): Promise<User> {
         newSub.ban = false;
         newSub.save();
         return this.userModel.findById(id);
-      }      
+      }
     } catch (e) {
       throw new NotFound('User not found');
     }
@@ -243,12 +197,28 @@ async banUser(id: string, req: any): Promise<User> {
       throw new NotFound('User not found');
     }
   }
+
+  async findToken(req: any): Promise<User> {
+    const { authorization = '' } = req.headers;
+    const [bearer, token] = authorization.split(' ');
+
+    if (bearer !== 'Bearer') {
+      throw new Unauthorized('Not authorized');
+    }
+
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const findId = verify(token, SECRET_KEY) as JwtPayload;
+    const user = await this.userModel.findById({ _id: findId.id });
+
+    return user;
+  }
+
   async createToken(authUser: { _id: string }) {
     const payload = {
       id: authUser._id,
     };
     const SECRET_KEY = process.env.SECRET_KEY;
-    const token = sign(payload, SECRET_KEY, { expiresIn: '24h' });
+    const token = sign(payload, SECRET_KEY, { expiresIn: '15m' });
     await this.userModel.findByIdAndUpdate(authUser._id, { token });
     const authentificationUser = await this.userModel.findById({
       _id: authUser._id,
@@ -256,17 +226,34 @@ async banUser(id: string, req: any): Promise<User> {
     return authentificationUser;
   }
 
-  async findToken(req: { headers: { authorization?: '' } }) {
-    const { authorization = '' } = req.headers;
-    const [bearer, token] = authorization.split(' ');
+  async refreshAccessToken(req: any): Promise<User> {
+    try {
+      const { authorization = '' } = req.headers;
+      const [bearer, token] = authorization.split(' ');
 
-    if (bearer !== 'Bearer') {
-      throw new Unauthorized('Not authorized');
+      if (bearer !== 'Bearer') {
+        throw new Unauthorized('Not authorized');
+      }
+      const SECRET_KEY = process.env.SECRET_KEY;
+      const findId = verify(token, SECRET_KEY) as JwtPayload;
+      const user = await this.userModel.findById({ _id: findId.id });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const payload = {
+        id: user._id,
+      };
+      const tokenRef = sign(payload, SECRET_KEY, { expiresIn: '24h' });
+      await this.userModel.findByIdAndUpdate(user._id, { token: tokenRef });
+      const authentificationUser = await this.userModel.findById({
+        _id: user.id,
+      });
+      return authentificationUser;
+    } catch (error) {
+      throw new Error('Invalid refresh token');
     }
-    const SECRET_KEY = process.env.SECRET_KEY;
-    const findId = verify(token, SECRET_KEY) as JwtPayload;
-    const user = await this.userModel.findById({ _id: findId.id });
-    return user;
   }
 }
 

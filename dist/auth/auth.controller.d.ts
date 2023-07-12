@@ -10,4 +10,5 @@ export declare class AuthController {
     user(request: any): {
         msg: string;
     };
+    refresh(request: any): Promise<import("../users/users.model").User>;
 }
