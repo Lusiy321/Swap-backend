@@ -2,9 +2,8 @@
 import { Injectable } from '@nestjs/common';
 import { Posts } from './posts.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Conflict, NotFound, BadRequest, Unauthorized } from 'http-errors';
+import { Conflict, NotFound, BadRequest } from 'http-errors';
 import { CreatePostDto } from './dto/create.post.dto';
-import { verify, JwtPayload } from 'jsonwebtoken';
 import { User } from 'src/users/users.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
 import { UsersService } from 'src/users/users.service';

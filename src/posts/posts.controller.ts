@@ -87,7 +87,7 @@ export class PostsController {
     return this.postService.updatePost(post, id, request);
   }
 
-  @ApiOperation({ summary: 'Delet user (admin only)' })
+  @ApiOperation({ summary: 'Delet user (admin of moderator only)' })
   @ApiResponse({ status: 200, type: Posts })
   @ApiBearerAuth('BearerAuthMethod')
   @Delete('/:id')
@@ -95,7 +95,7 @@ export class PostsController {
     return this.postService.deletePost(id, request);
   }
 
-  @ApiOperation({ summary: 'Verify user enum: [new, aprove, rejected]' })
+  @ApiOperation({ summary: 'Verify user enum: [new, aprove, rejected] (admin of moderator only)' })
   @ApiResponse({ status: 200, type: Posts })
   @ApiBearerAuth('BearerAuthMethod')
   @Patch('/verify/:Id')
