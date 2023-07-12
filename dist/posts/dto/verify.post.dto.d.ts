@@ -3,6 +3,6 @@ export declare enum verify {
     aprove = "aprove",
     rejected = "rejected"
 }
-export declare class CreatePostDto {
+export declare class VerifyPostDto {
     readonly verify: verify;
 }

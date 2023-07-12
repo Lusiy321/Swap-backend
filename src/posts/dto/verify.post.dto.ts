@@ -7,7 +7,10 @@ export enum verify {
   rejected = 'rejected',
 }
 
-export class CreatePostDto {
-  @ApiProperty({ example: 'new, aprove, rejected', description: 'Post verify' })
+export class VerifyPostDto {
+  @ApiProperty({
+    example: 'new, aprove or rejected',
+    description: 'Post verify',
+  })
   readonly verify: verify;
 }

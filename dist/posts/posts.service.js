@@ -35,9 +35,64 @@ let PostsService = class PostsService {
         this.postModel = postModel;
         this.userModel = userModel;
     }
-    async findAllPosts() {
+    async findAllPosts(req) {
         try {
-            const post = await this.postModel.find().exec();
+            const { authorization = '' } = req.headers;
+            const [bearer, token] = authorization.split(' ');
+            if (bearer !== 'Bearer') {
+                throw new http_errors_1.Unauthorized('Not authorized');
+            }
+            const SECRET_KEY = process.env.SECRET_KEY;
+            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
+            const user = await this.userModel.findById({ _id: findId.id });
+            if (user.role === 'admin' || user.role === 'moderator') {
+                return await this.postModel.find().exec();
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
+    async findNewPosts(req) {
+        try {
+            const { authorization = '' } = req.headers;
+            const [bearer, token] = authorization.split(' ');
+            if (bearer !== 'Bearer') {
+                throw new http_errors_1.Unauthorized('Not authorized');
+            }
+            const SECRET_KEY = process.env.SECRET_KEY;
+            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
+            const user = await this.userModel.findById({ _id: findId.id });
+            if (user.role === 'admin' || user.role === 'moderator') {
+                return await this.postModel.find({ verify: 'new' }).exec();
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
+    async findMyPosts(req) {
+        try {
+            const { authorization = '' } = req.headers;
+            const [bearer, token] = authorization.split(' ');
+            if (bearer !== 'Bearer') {
+                throw new http_errors_1.Unauthorized('Not authorized');
+            }
+            const SECRET_KEY = process.env.SECRET_KEY;
+            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
+            const user = await this.userModel.findById({ _id: findId.id });
+            if (user) {
+                const post = await this.postModel.find({ owner: findId.id }).exec();
+                return post;
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
+    async findAllAprovedPosts() {
+        try {
+            const post = await this.postModel.find({ verify: 'aprove' }).exec();
             return post;
         }
         catch (e) {
@@ -120,7 +175,7 @@ let PostsService = class PostsService {
             throw new http_errors_1.NotFound('Post or user not found');
         }
     }
-    async verifyPost(id, req) {
+    async verifyPost(id, req, postUp) {
         try {
             const { authorization = '' } = req.headers;
             const [bearer, token] = authorization.split(' ');
@@ -134,8 +189,10 @@ let PostsService = class PostsService {
             if (!admin || !post) {
                 throw new http_errors_1.Conflict('Not found');
             }
-            if (admin.role === 'admin' || admin.role === 'moderator' && post.verify === 'new') {
-                post.verify = 'aprove';
+            if (admin.role === 'admin' ||
+                (admin.role === 'moderator' && post.verify === 'new')) {
+                const params = __rest(postUp, []);
+                await this.postModel.findByIdAndUpdate({ _id: id }, Object.assign({}, params));
                 post.save();
                 return await this.postModel.findById(id);
             }
@@ -170,7 +227,7 @@ let PostsService = class PostsService {
                 else {
                     array.push(id);
                 }
-                await this.postModel.updateOne({ _id: id, }, { $set: { favorite: array } });
+                await this.postModel.updateOne({ _id: id }, { $set: { favorite: array } });
                 post.save();
                 return await this.postModel.findById(id);
             }
@@ -182,12 +239,32 @@ let PostsService = class PostsService {
             throw new http_errors_1.NotFound('User not found');
         }
     }
+    async viewPost(id) {
+        try {
+            const post = await this.postModel.findById(id);
+            if (!post) {
+                throw new http_errors_1.Conflict('Not found');
+            }
+            if (post) {
+                post.views += 1;
+                post.save();
+                return await this.postModel.findById(id);
+            }
+            else {
+                return await this.postModel.findById(id);
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('User not found');
+        }
+    }
 };
 PostsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(posts_model_1.Posts.name)),
     __param(1, (0, mongoose_1.InjectModel)(users_model_1.User.name)),
-    __metadata("design:paramtypes", [posts_model_1.Posts, users_model_1.User])
+    __metadata("design:paramtypes", [posts_model_1.Posts,
+        users_model_1.User])
 ], PostsService);
 exports.PostsService = PostsService;
 //# sourceMappingURL=posts.service.js.map

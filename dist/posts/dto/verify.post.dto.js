@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreatePostDto = exports.verify = void 0;
+exports.VerifyPostDto = exports.verify = void 0;
 const swagger_1 = require("@nestjs/swagger");
 var verify;
 (function (verify) {
@@ -17,11 +17,14 @@ var verify;
     verify["aprove"] = "aprove";
     verify["rejected"] = "rejected";
 })(verify = exports.verify || (exports.verify = {}));
-class CreatePostDto {
+class VerifyPostDto {
 }
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'new, aprove, rejected', description: 'Post verify' }),
+    (0, swagger_1.ApiProperty)({
+        example: 'new, aprove or rejected',
+        description: 'Post verify',
+    }),
     __metadata("design:type", String)
-], CreatePostDto.prototype, "verify", void 0);
-exports.CreatePostDto = CreatePostDto;
+], VerifyPostDto.prototype, "verify", void 0);
+exports.VerifyPostDto = VerifyPostDto;
 //# sourceMappingURL=verify.post.dto.js.map
