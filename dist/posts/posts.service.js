@@ -28,23 +28,17 @@ const common_1 = require("@nestjs/common");
 const posts_model_1 = require("./posts.model");
 const mongoose_1 = require("@nestjs/mongoose");
 const http_errors_1 = require("http-errors");
-const jsonwebtoken_1 = require("jsonwebtoken");
 const users_model_1 = require("../users/users.model");
+const users_service_1 = require("../users/users.service");
 let PostsService = class PostsService {
-    constructor(postModel, userModel) {
+    constructor(postModel, userModel, userService) {
         this.postModel = postModel;
         this.userModel = userModel;
+        this.userService = userService;
     }
     async findAllPosts(req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById({ _id: findId.id });
+            const user = await this.userService.findToken(req);
             if (user.role === 'admin' || user.role === 'moderator') {
                 return await this.postModel.find().exec();
             }
@@ -55,14 +49,7 @@ let PostsService = class PostsService {
     }
     async findNewPosts(req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById({ _id: findId.id });
+            const user = await this.userService.findToken(req);
             if (user.role === 'admin' || user.role === 'moderator') {
                 return await this.postModel.find({ verify: 'new' }).exec();
             }
@@ -73,16 +60,9 @@ let PostsService = class PostsService {
     }
     async findMyPosts(req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById({ _id: findId.id });
+            const user = await this.userService.findToken(req);
             if (user) {
-                const post = await this.postModel.find({ owner: findId.id }).exec();
+                const post = await this.postModel.find({ "owner.id": user.id });
                 return post;
             }
         }
@@ -110,25 +90,17 @@ let PostsService = class PostsService {
     }
     async createPost(post, req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById(findId.id);
+            const user = await this.userService.findToken(req);
             if (user) {
                 const createdPost = await this.postModel.create(post);
                 createdPost.save();
                 createdPost.owner = {
-                    id: findId.id,
+                    id: user.id,
                     firstName: user.firstName,
                     lastName: user.lastName,
                     phone: user.phone,
                     avatarURL: user.avatarURL,
                     location: user.location,
-                    isOnline: user.isOnline,
                 };
                 return await this.postModel.findById(createdPost._id);
             }
@@ -139,14 +111,7 @@ let PostsService = class PostsService {
     }
     async updatePost(post, id, req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById({ _id: findId.id });
+            const user = await this.userService.findToken(req);
             if (user) {
                 const params = __rest(post, []);
                 await this.postModel.findByIdAndUpdate({ _id: id }, Object.assign({}, params));
@@ -160,14 +125,7 @@ let PostsService = class PostsService {
     }
     async deletePost(id, req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById({ _id: findId.id });
+            const user = await this.userService.findToken(req);
             const post = await this.postModel.findById({ _id: id });
             if (user.role === 'admin' || user.role === 'moderator') {
                 const find = await this.postModel.findByIdAndRemove({ _id: id }).exec();
@@ -185,14 +143,7 @@ let PostsService = class PostsService {
     }
     async verifyPost(id, req, postUp) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const admin = await this.userModel.findById({ _id: findId.id });
+            const admin = await this.userService.findToken(req);
             const post = await this.postModel.findById(id);
             if (!admin || !post) {
                 throw new http_errors_1.Conflict('Not found');
@@ -214,26 +165,19 @@ let PostsService = class PostsService {
     }
     async favoritePost(id, req) {
         try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById({ _id: findId.id });
+            const user = await this.userService.findToken(req);
             const post = await this.postModel.findById(id);
             if (!user || !post) {
                 throw new http_errors_1.Conflict('Not found');
             }
             if (user && post) {
                 const array = post.favorite;
-                const index = array.indexOf(id);
+                const index = array.indexOf(user.id);
                 if (index > -1) {
                     array.splice(index, 1);
                 }
                 else {
-                    array.push(id);
+                    array.push(user.id);
                 }
                 await this.postModel.updateOne({ _id: id }, { $set: { favorite: array } });
                 post.save();
@@ -266,13 +210,24 @@ let PostsService = class PostsService {
             throw new http_errors_1.NotFound('User not found');
         }
     }
+    async findMyFavPosts(req) {
+        try {
+            const user = await this.userService.findToken(req);
+            const post = await this.postModel.find({ favorite: user.id }).exec();
+            return post;
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
 };
 PostsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(posts_model_1.Posts.name)),
     __param(1, (0, mongoose_1.InjectModel)(users_model_1.User.name)),
     __metadata("design:paramtypes", [posts_model_1.Posts,
-        users_model_1.User])
+        users_model_1.User,
+        users_service_1.UsersService])
 ], PostsService);
 exports.PostsService = PostsService;
 //# sourceMappingURL=posts.service.js.map

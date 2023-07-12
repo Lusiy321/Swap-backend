@@ -26,6 +26,7 @@ UsersModule = __decorate([
                 { name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' },
             ]),
         ],
+        exports: [users_service_1.UsersService],
         controllers: [users_controller_1.UsersController],
         providers: [users_service_1.UsersService, jwt_1.JwtService],
     })

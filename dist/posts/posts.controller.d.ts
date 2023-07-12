@@ -15,5 +15,6 @@ export declare class PostsController {
     delete(id: string, request: any): Promise<Posts>;
     setVerify(post: VerifyPostDto, id: string, request: any): Promise<Posts>;
     setFavorite(id: string, request: any): Promise<Posts>;
+    setMyFavorite(request: any): Promise<Posts[]>;
     setViews(id: string): Promise<Posts>;
 }

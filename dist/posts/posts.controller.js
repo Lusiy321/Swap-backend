@@ -53,6 +53,9 @@ let PostsController = class PostsController {
     async setFavorite(id, request) {
         return this.postService.favoritePost(id, request);
     }
+    async setMyFavorite(request) {
+        return this.postService.findMyFavPosts(request);
+    }
     async setViews(id) {
         return this.postService.viewPost(id);
     }
@@ -161,6 +164,16 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "setFavorite", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Get my favorite post' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Get)('/myfav'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "setMyFavorite", null);
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Post views' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),

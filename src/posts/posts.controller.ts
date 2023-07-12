@@ -118,6 +118,16 @@ export class PostsController {
     return this.postService.favoritePost(id, request);
   }
 
+  @ApiOperation({ summary: 'Get my favorite post' })
+  @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Get('/myfav')
+  async setMyFavorite(    
+    @Req() request: any,
+  ): Promise<Posts[]> {
+    return this.postService.findMyFavPosts(request);
+  }
+
   @ApiOperation({ summary: 'Post views' })
   @ApiResponse({ status: 200, type: Posts })
   @Patch('/view/:Id')

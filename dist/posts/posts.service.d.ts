@@ -2,10 +2,12 @@ import { Posts } from './posts.model';
 import { CreatePostDto } from './dto/create.post.dto';
 import { User } from 'src/users/users.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
+import { UsersService } from 'src/users/users.service';
 export declare class PostsService {
     private postModel;
     private userModel;
-    constructor(postModel: Posts, userModel: User);
+    private userService;
+    constructor(postModel: Posts, userModel: User, userService: UsersService);
     findAllPosts(req: any): Promise<any>;
     findNewPosts(req: any): Promise<any>;
     findMyPosts(req: any): Promise<any>;
@@ -17,4 +19,5 @@ export declare class PostsService {
     verifyPost(id: string, req: any, postUp: VerifyPostDto): Promise<Posts>;
     favoritePost(id: string, req: any): Promise<Posts>;
     viewPost(id: string): Promise<Posts>;
+    findMyFavPosts(req: any): Promise<any>;
 }

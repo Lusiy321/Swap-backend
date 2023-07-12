@@ -70,9 +70,12 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({
         example: {
-            id: '6470ad832cfa126519500989',
-            email: 'inga@mail.com',
-            phone: '+38000000000',
+            id: "649aa533a4fc5710d7ceaac3",
+            firstName: "Poroshok",
+            lastName: "Poroh",
+            phone: "+380984561225",
+            avatarURL: "https://res.cloudinary.com/dvt0czglz/image/upload/v1688504857/lsrcstjlmitwcrhhdjon.jpg",
+            location: "Jitomir"
         },
         description: 'Post owner',
     }),

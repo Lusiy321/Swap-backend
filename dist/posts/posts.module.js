@@ -13,11 +13,13 @@ const posts_controller_1 = require("./posts.controller");
 const posts_service_1 = require("./posts.service");
 const posts_model_1 = require("./posts.model");
 const users_model_1 = require("../users/users.model");
+const users_module_1 = require("../users/users.module");
 let PostsModule = class PostsModule {
 };
 PostsModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            users_module_1.UsersModule,
             mongoose_1.MongooseModule.forFeature([
                 { name: posts_model_1.Posts.name, schema: posts_model_1.PostSchema, collection: 'posts' },
             ]),

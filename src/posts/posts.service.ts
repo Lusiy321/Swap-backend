@@ -7,26 +7,19 @@ import { CreatePostDto } from './dto/create.post.dto';
 import { verify, JwtPayload } from 'jsonwebtoken';
 import { User } from 'src/users/users.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectModel(Posts.name) private postModel: Posts,
     @InjectModel(User.name) private userModel: User,
+    private userService: UsersService,
   ) {}
 
   async findAllPosts(req: any) {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
+      const user = await this.userService.findToken(req);
       if (user.role === 'admin' || user.role === 'moderator') {
         return await this.postModel.find().exec();
       }
@@ -37,16 +30,7 @@ export class PostsService {
 
   async findNewPosts(req: any) {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
+      const user = await this.userService.findToken(req);
       if (user.role === 'admin' || user.role === 'moderator') {
         return await this.postModel.find({ verify: 'new' }).exec();
       }
@@ -56,19 +40,11 @@ export class PostsService {
   }
 
   async findMyPosts(req: any) {
-    try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
+    try {      
+      const user = await this.userService.findToken(req);
       if (user) {
-        const post = await this.postModel.find({ owner: findId.id }).exec();
+        
+        const post = await this.postModel.find({ "owner.id": user.id });
         return post;
       }
     } catch (e) {
@@ -96,21 +72,12 @@ export class PostsService {
 
   async createPost(post: CreatePostDto, req: any): Promise<Posts> {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById(findId.id);
+      const user = await this.userService.findToken(req);
       if (user) {
         const createdPost = await this.postModel.create(post);
         createdPost.save();
         createdPost.owner = {
-          id: findId.id,
+          id: user.id,
           firstName: user.firstName,
           lastName: user.lastName,
           phone: user.phone,
@@ -127,16 +94,7 @@ export class PostsService {
 
   async updatePost(post: CreatePostDto, id: string, req: any): Promise<Posts> {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
+      const user = await this.userService.findToken(req);
       if (user) {
         const { ...params } = post;
         await this.postModel.findByIdAndUpdate({ _id: id }, { ...params });
@@ -150,16 +108,7 @@ export class PostsService {
 
   async deletePost(id: string, req: any): Promise<Posts> {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
+      const user = await this.userService.findToken(req);
       const post = await this.postModel.findById({ _id: id });
       if (user.role === 'admin' || user.role === 'moderator') {
         const find = await this.postModel.findByIdAndRemove({ _id: id }).exec();
@@ -181,15 +130,7 @@ export class PostsService {
     postUp: VerifyPostDto,
   ): Promise<Posts> {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const admin = await this.userModel.findById({ _id: findId.id });
+      const admin = await this.userService.findToken(req);
       const post = await this.postModel.findById(id);
 
       if (!admin || !post) {
@@ -214,16 +155,7 @@ export class PostsService {
 
   async favoritePost(id: string, req: any): Promise<Posts> {
     try {
-      const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
-
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
-      }
-
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
+      const user = await this.userService.findToken(req);
       const post = await this.postModel.findById(id);
 
       if (!user || !post) {
@@ -232,11 +164,11 @@ export class PostsService {
 
       if (user && post) {
         const array = post.favorite;
-        const index = array.indexOf(id);
+        const index = array.indexOf(user.id);
         if (index > -1) {
           array.splice(index, 1);
         } else {
-          array.push(id);
+          array.push(user.id);
         }
         await this.postModel.updateOne(
           { _id: id },
@@ -269,6 +201,16 @@ export class PostsService {
       }
     } catch (e) {
       throw new NotFound('User not found');
+    }
+  }
+
+  async findMyFavPosts(req: any) {
+    try {
+      const user = await this.userService.findToken(req);
+      const post = await this.postModel.find({ favorite: user.id }).exec();
+      return post;
+    } catch (e) {
+      throw new NotFound('Post not found');
     }
   }
 }

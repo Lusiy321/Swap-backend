@@ -5,9 +5,12 @@ import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import { Posts, PostSchema } from './posts.model';
 import { User, UserSchema } from 'src/users/users.model';
+import { UsersModule } from 'src/users/users.module';
+
 
 @Module({
-    imports: [
+  imports: [
+    UsersModule,
     MongooseModule.forFeature([
       { name: Posts.name, schema: PostSchema, collection: 'posts' },
     ]),
