@@ -23,6 +23,7 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Model } from 'mongoose';
+import { UpdateUserDto } from 'src/users/dto/update.user.dto';
 import { verify } from './dto/verify.post.dto';
 export type PostDocument = Posts & Document;
 export declare class Posts extends Model<Posts> {
@@ -31,7 +32,7 @@ export declare class Posts extends Model<Posts> {
     category: string;
     img: string;
     favorite: Array<string>;
-    owner: object;
+    owner: UpdateUserDto;
     price: number;
     verify: verify;
     views: number;

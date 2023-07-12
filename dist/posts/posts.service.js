@@ -121,7 +121,15 @@ let PostsService = class PostsService {
             if (user) {
                 const createdPost = await this.postModel.create(post);
                 createdPost.save();
-                createdPost.owner = findId.id;
+                createdPost.owner = {
+                    id: findId.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    phone: user.phone,
+                    avatarURL: user.avatarURL,
+                    location: user.location,
+                    isOnline: user.isOnline,
+                };
                 return await this.postModel.findById(createdPost._id);
             }
         }

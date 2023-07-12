@@ -23,27 +23,33 @@ __decorate([
         type: String,
         minlength: 2,
         maxlength: 50,
-        required: [true, 'Title is required']
+        required: [true, 'Title is required'],
     }),
     __metadata("design:type", String)
 ], Posts.prototype, "title", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Change my item for your item', description: 'Post description' }),
+    (0, swagger_1.ApiProperty)({
+        example: 'Change my item for your item',
+        description: 'Post description',
+    }),
     (0, mongoose_1.Prop)({
         type: String,
         minlength: 2,
         maxlength: 280,
-        required: [true, 'Description is required']
+        required: [true, 'Description is required'],
     }),
     __metadata("design:type", String)
 ], Posts.prototype, "description", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Electronics', description: 'Post category' }),
-    (0, mongoose_1.Prop)({ type: String, }),
+    (0, mongoose_1.Prop)({ type: String }),
     __metadata("design:type", String)
 ], Posts.prototype, "category", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'https://ldsound.info/wp-content/uploads/2013/07/25%D0%B0%D1%81128-ldsound_ru-1.jpg', description: 'Post image' }),
+    (0, swagger_1.ApiProperty)({
+        example: 'https://ldsound.info/wp-content/uploads/2013/07/25%D0%B0%D1%81128-ldsound_ru-1.jpg',
+        description: 'Post image',
+    }),
     (0, mongoose_1.Prop)({
         type: String,
         default: 'https://ldsound.info/wp-content/uploads/2013/07/25%D0%B0%D1%81128-ldsound_ru-1.jpg',
@@ -63,13 +69,17 @@ __decorate([
 ], Posts.prototype, "favorite", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: { id: "6470ad832cfa126519500989", email: "inga@mail.com", phone: "+38000000000" },
+        example: {
+            id: '6470ad832cfa126519500989',
+            email: 'inga@mail.com',
+            phone: '+38000000000',
+        },
         description: 'Post owner',
     }),
     (0, mongoose_1.Prop)({
-        type: update_user_dto_1.UpdateUserDto,
+        type: Object,
     }),
-    __metadata("design:type", Object)
+    __metadata("design:type", update_user_dto_1.UpdateUserDto)
 ], Posts.prototype, "owner", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
