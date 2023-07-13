@@ -221,31 +221,27 @@ let UsersService = class UsersService {
         return authentificationUser;
     }
     async refreshAccessToken(req) {
-        try {
-            const { authorization = '' } = req.headers;
-            const [bearer, token] = authorization.split(' ');
-            if (bearer !== 'Bearer') {
-                throw new http_errors_1.Unauthorized('Not authorized');
-            }
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-            const user = await this.userModel.findById({ _id: findId.id });
-            if (!user) {
-                throw new Error('User not found');
-            }
-            const payload = {
-                id: user._id,
-            };
-            const tokenRef = (0, jsonwebtoken_1.sign)(payload, SECRET_KEY, { expiresIn: '24h' });
-            await this.userModel.findByIdAndUpdate(user._id, { token: tokenRef });
-            const authentificationUser = await this.userModel.findById({
-                _id: user.id,
-            });
-            return authentificationUser;
+        const { authorization = '' } = req.headers;
+        const [bearer, token] = authorization.split(' ');
+        if (bearer !== 'Bearer') {
+            throw new http_errors_1.Unauthorized('Not authorized');
         }
-        catch (error) {
-            throw new Error('Invalid refresh token');
+        const SECRET_KEY = process.env.SECRET_KEY;
+        const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
+        const user = await this.userModel.findById({ _id: findId.id });
+        if (!user) {
+            throw new Error('User not found');
         }
+        user.token = null;
+        const payload = {
+            id: user._id,
+        };
+        const tokenRef = (0, jsonwebtoken_1.sign)(payload, SECRET_KEY, { expiresIn: '24h' });
+        await this.userModel.findByIdAndUpdate(user._id, { token: tokenRef });
+        const authentificationUser = await this.userModel.findById({
+            _id: user.id,
+        });
+        return authentificationUser;
     }
 };
 UsersService = __decorate([

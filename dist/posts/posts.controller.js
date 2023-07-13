@@ -131,7 +131,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "update", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Delet user (admin only)' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Delet user (admin of moderator only)' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
     (0, common_1.Delete)('/:id'),
@@ -142,7 +142,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "delete", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Verify user enum: [new, aprove, rejected]' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Verify user enum: [new, aprove, rejected] (admin of moderator only)' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
     (0, common_1.Patch)('/verify/:Id'),
