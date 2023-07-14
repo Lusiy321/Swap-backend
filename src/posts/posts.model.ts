@@ -22,7 +22,6 @@ export class Posts extends Model<Posts> {
     example: 'Change my item for your item',
     description: 'Post description',
   })
-  
   @Prop({
     type: String,
     minlength: 2,
@@ -59,12 +58,13 @@ export class Posts extends Model<Posts> {
 
   @ApiProperty({
     example: {
-       id: "649aa533a4fc5710d7ceaac3",
-      firstName: "Poroshok",
-      lastName: "Poroh",
-      phone: "+380984561225",
-      avatarURL: "https://res.cloudinary.com/dvt0czglz/image/upload/v1688504857/lsrcstjlmitwcrhhdjon.jpg",
-      location: "Jitomir"
+      id: '649aa533a4fc5710d7ceaac3',
+      firstName: 'Poroshok',
+      lastName: 'Poroh',
+      phone: '+380984561225',
+      avatarURL:
+        'https://res.cloudinary.com/dvt0czglz/image/upload/v1688504857/lsrcstjlmitwcrhhdjon.jpg',
+      location: 'Jitomir',
     },
     description: 'Post owner',
   })
@@ -99,6 +99,12 @@ export class Posts extends Model<Posts> {
     default: '0',
   })
   views: number;
+
+  @ApiProperty({ example: 'true', description: 'Post status' })
+  @Prop({
+    type: Array<{ data: Posts; agree: string }>,
+  })
+  toExchange: [{ data: Posts; agree: string }];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Posts);

@@ -236,7 +236,7 @@ let UsersService = class UsersService {
             id: authUser._id,
         };
         const SECRET_KEY = process.env.SECRET_KEY;
-        const token = (0, jsonwebtoken_1.sign)(payload, SECRET_KEY, { expiresIn: '15m' });
+        const token = (0, jsonwebtoken_1.sign)(payload, SECRET_KEY, { expiresIn: '1m' });
         await this.userModel.findByIdAndUpdate(authUser._id, { token });
         const authentificationUser = await this.userModel.findById({
             _id: authUser._id,
@@ -253,7 +253,7 @@ let UsersService = class UsersService {
             const SECRET_KEY = process.env.SECRET_KEY;
             const user = await this.userModel.findOne({ token: token });
             if (!user) {
-                throw new Error('User not found');
+                throw new http_errors_1.NotFound('User not found');
             }
             const payload = {
                 id: user._id,
@@ -266,7 +266,7 @@ let UsersService = class UsersService {
             return authentificationUser;
         }
         catch (error) {
-            throw new Error('Invalid refresh token');
+            throw new http_errors_1.BadRequest('Invalid refresh token');
         }
     }
 };

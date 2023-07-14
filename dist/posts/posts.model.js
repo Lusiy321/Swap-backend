@@ -70,12 +70,12 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({
         example: {
-            id: "649aa533a4fc5710d7ceaac3",
-            firstName: "Poroshok",
-            lastName: "Poroh",
-            phone: "+380984561225",
-            avatarURL: "https://res.cloudinary.com/dvt0czglz/image/upload/v1688504857/lsrcstjlmitwcrhhdjon.jpg",
-            location: "Jitomir"
+            id: '649aa533a4fc5710d7ceaac3',
+            firstName: 'Poroshok',
+            lastName: 'Poroh',
+            phone: '+380984561225',
+            avatarURL: 'https://res.cloudinary.com/dvt0czglz/image/upload/v1688504857/lsrcstjlmitwcrhhdjon.jpg',
+            location: 'Jitomir',
         },
         description: 'Post owner',
     }),
@@ -114,6 +114,13 @@ __decorate([
     }),
     __metadata("design:type", Number)
 ], Posts.prototype, "views", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'true', description: 'Post status' }),
+    (0, mongoose_1.Prop)({
+        type: (Array),
+    }),
+    __metadata("design:type", Array)
+], Posts.prototype, "toExchange", void 0);
 Posts = __decorate([
     (0, mongoose_1.Schema)({ versionKey: false, timestamps: true })
 ], Posts);

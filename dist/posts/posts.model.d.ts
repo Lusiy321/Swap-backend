@@ -36,6 +36,10 @@ export declare class Posts extends Model<Posts> {
     price: number;
     verify: verify;
     views: number;
+    toExchange: [{
+        data: Posts;
+        agree: string;
+    }];
 }
 export declare const PostSchema: import("mongoose").Schema<Posts, Model<Posts, any, any, any, import("mongoose").Document<unknown, any, Posts> & Omit<Posts & {
     _id: import("mongoose").Types.ObjectId;
