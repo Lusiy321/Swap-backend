@@ -51,9 +51,9 @@ export class PostsService {
     }
   }
 
-  async findAllAprovedPosts() {
+  async findAllApprovedPosts() {
     try {
-      const post = await this.postModel.find({ verify: 'aprove' }).exec();
+      const post = await this.postModel.find({ verify: 'approve' }).exec();
       return post;
     } catch (e) {
       throw new NotFound('Post not found');
@@ -136,10 +136,8 @@ export class PostsService {
         throw new Conflict('Not found');
       }
 
-      if (
-        admin.role === 'admin' ||
-        (admin.role === 'moderator' && post.verify === 'new')
-      ) {
+      if (admin.role === 'admin' || admin.role === 'moderator' && post.verify === 'new')
+      {
         const { ...params } = postUp;
         await this.postModel.findByIdAndUpdate({ _id: id }, { ...params });
         post.save();

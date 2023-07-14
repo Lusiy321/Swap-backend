@@ -22,6 +22,7 @@ export class Posts extends Model<Posts> {
     example: 'Change my item for your item',
     description: 'Post description',
   })
+  
   @Prop({
     type: String,
     minlength: 2,
@@ -84,7 +85,7 @@ export class Posts extends Model<Posts> {
 
   @ApiProperty({ example: 'true', description: 'Post status' })
   @Prop({
-    enum: ['new', 'aprove', 'rejected'],
+    enum: ['new', 'approve', 'rejected'],
     default: 'new',
   })
   verify: verify;

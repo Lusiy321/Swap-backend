@@ -65,7 +65,7 @@ export class PostsController {
   @ApiResponse({ status: 200, type: [Posts] })
   @Get('/')
   async findAllAprove(): Promise<Posts[]> {
-    return this.postService.findAllAprovedPosts();
+    return this.postService.findAllApprovedPosts();
   }
 
   @ApiOperation({ summary: 'Get post by ID' })

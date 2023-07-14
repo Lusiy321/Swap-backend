@@ -16,6 +16,9 @@ export class UsersService {
   async findAll(req: any): Promise<User[]> {
     try {
       const user = await this.findToken(req);
+      if (!user) {
+        throw new Unauthorized('jwt expired');
+      }
       if (user.role === 'admin') {
         return this.userModel.find().exec();
       } else if (user.role === 'moderator') {

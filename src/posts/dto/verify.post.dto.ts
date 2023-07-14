@@ -3,13 +3,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export enum verify {
   new = 'new',
-  aprove = 'aprove',
+  aprove = 'approve',
   rejected = 'rejected',
 }
 
 export class VerifyPostDto {
   @ApiProperty({
-    example: 'aprove',
+    example: 'approve',
     description: 'Post verify',
   })
   readonly verify: verify;
