@@ -24,8 +24,11 @@ let UsersService = class UsersService {
         this.userModel = userModel;
     }
     async findAll(req) {
+        const user = await this.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const user = await this.findToken(req);
             if (user.role === 'admin') {
                 return this.userModel.find().exec();
             }
@@ -96,8 +99,11 @@ let UsersService = class UsersService {
         }
     }
     async logout(req) {
+        const user = await this.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const user = await this.findToken(req);
             await this.userModel.findByIdAndUpdate({ _id: user.id }, { token: null });
             return await this.userModel.findById({ _id: user.id });
         }
@@ -106,9 +112,12 @@ let UsersService = class UsersService {
         }
     }
     async update(user, req) {
+        const { firstName, lastName, phone, location, avatarURL, isOnline } = user;
+        const findId = await this.findToken(req);
+        if (!findId) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const { firstName, lastName, phone, location, avatarURL, isOnline } = user;
-            const findId = await this.findToken(req);
             if (firstName || lastName || phone || location || avatarURL || isOnline) {
                 await this.userModel.findByIdAndUpdate({ _id: findId.id }, { firstName, lastName, phone, location, avatarURL, isOnline });
                 const userUpdate = this.userModel.findById({ _id: findId.id });
@@ -120,8 +129,11 @@ let UsersService = class UsersService {
         }
     }
     async delete(id, req) {
+        const user = await this.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const user = await this.findToken(req);
             if (user.role === 'admin') {
                 const find = await this.userModel.findByIdAndRemove(id).exec();
                 return find;
@@ -135,9 +147,12 @@ let UsersService = class UsersService {
         }
     }
     async setModerator(id, req) {
+        const admin = await this.findToken(req);
+        const newSub = await this.userModel.findById(id).exec();
+        if (!admin) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const admin = await this.findToken(req);
-            const newSub = await this.userModel.findById(id).exec();
             if (!admin || !newSub) {
                 throw new http_errors_1.Conflict('User not found');
             }
@@ -158,9 +173,12 @@ let UsersService = class UsersService {
         }
     }
     async banUser(id, req) {
+        const admin = await this.findToken(req);
+        const newSub = await this.userModel.findById(id);
+        if (!admin) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const admin = await this.findToken(req);
-            const newSub = await this.userModel.findById(id);
             if (!admin || !newSub) {
                 throw new http_errors_1.Conflict('User not found');
             }
@@ -198,15 +216,20 @@ let UsersService = class UsersService {
         }
     }
     async findToken(req) {
-        const { authorization = '' } = req.headers;
-        const [bearer, token] = authorization.split(' ');
-        if (bearer !== 'Bearer') {
-            throw new http_errors_1.Unauthorized('Not authorized');
+        try {
+            const { authorization = '' } = req.headers;
+            const [bearer, token] = authorization.split(' ');
+            if (bearer !== 'Bearer') {
+                throw new http_errors_1.Unauthorized('Not authorized');
+            }
+            const SECRET_KEY = process.env.SECRET_KEY;
+            const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
+            const user = await this.userModel.findById({ _id: findId.id });
+            return user;
         }
-        const SECRET_KEY = process.env.SECRET_KEY;
-        const findId = (0, jsonwebtoken_1.verify)(token, SECRET_KEY);
-        const user = await this.userModel.findById({ _id: findId.id });
-        return user;
+        catch (e) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
     }
     async createToken(authUser) {
         const payload = {

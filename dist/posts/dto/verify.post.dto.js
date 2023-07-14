@@ -14,14 +14,14 @@ const swagger_1 = require("@nestjs/swagger");
 var verify;
 (function (verify) {
     verify["new"] = "new";
-    verify["aprove"] = "aprove";
+    verify["aprove"] = "approve";
     verify["rejected"] = "rejected";
 })(verify = exports.verify || (exports.verify = {}));
 class VerifyPostDto {
 }
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'aprove',
+        example: 'approve',
         description: 'Post verify',
     }),
     __metadata("design:type", String)

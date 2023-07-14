@@ -98,7 +98,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'true', description: 'Post status' }),
     (0, mongoose_1.Prop)({
-        enum: ['new', 'aprove', 'rejected'],
+        enum: ['new', 'approve', 'rejected'],
         default: 'new',
     }),
     __metadata("design:type", String)

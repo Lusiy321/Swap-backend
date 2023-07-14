@@ -36,7 +36,7 @@ let PostsController = class PostsController {
         return this.postService.findMyPosts(request);
     }
     async findAllAprove() {
-        return this.postService.findAllAprovedPosts();
+        return this.postService.findAllApprovedPosts();
     }
     async findById(id) {
         return this.postService.findPostById(id);

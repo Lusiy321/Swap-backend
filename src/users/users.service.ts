@@ -14,11 +14,11 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: User) {}
 
   async findAll(req: any): Promise<User[]> {
+    const user = await this.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
     try {
-      const user = await this.findToken(req);
-      if (!user) {
-        throw new Unauthorized('jwt expired');
-      }
       if (user.role === 'admin') {
         return this.userModel.find().exec();
       } else if (user.role === 'moderator') {
@@ -87,8 +87,11 @@ export class UsersService {
   }
 
   async logout(req: any): Promise<User> {
+    const user = await this.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
     try {
-      const user = await this.findToken(req);
       await this.userModel.findByIdAndUpdate({ _id: user.id }, { token: null });
       return await this.userModel.findById({ _id: user.id });
     } catch (e) {
@@ -97,11 +100,12 @@ export class UsersService {
   }
 
   async update(user: UpdateUserDto, req: any): Promise<User> {
+    const { firstName, lastName, phone, location, avatarURL, isOnline } = user;
+    const findId = await this.findToken(req);
+    if (!findId) {
+      throw new Unauthorized('jwt expired');
+    }
     try {
-      const { firstName, lastName, phone, location, avatarURL, isOnline } =
-        user;
-      const findId = await this.findToken(req);
-
       if (firstName || lastName || phone || location || avatarURL || isOnline) {
         await this.userModel.findByIdAndUpdate(
           { _id: findId.id },
@@ -116,8 +120,11 @@ export class UsersService {
   }
 
   async delete(id: string, req: any): Promise<User> {
+    const user = await this.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
     try {
-      const user = await this.findToken(req);
       if (user.role === 'admin') {
         const find = await this.userModel.findByIdAndRemove(id).exec();
         return find;
@@ -130,10 +137,12 @@ export class UsersService {
   }
 
   async setModerator(id: string, req: any): Promise<User> {
+    const admin = await this.findToken(req);
+    const newSub = await this.userModel.findById(id).exec();
+    if (!admin) {
+      throw new Unauthorized('jwt expired');
+    }
     try {
-      const admin = await this.findToken(req);
-      const newSub = await this.userModel.findById(id).exec();
-
       if (!admin || !newSub) {
         throw new Conflict('User not found');
       }
@@ -155,10 +164,12 @@ export class UsersService {
   }
 
   async banUser(id: string, req: any): Promise<User> {
+    const admin = await this.findToken(req);
+    const newSub = await this.userModel.findById(id);
+    if (!admin) {
+      throw new Unauthorized('jwt expired');
+    }
     try {
-      const admin = await this.findToken(req);
-      const newSub = await this.userModel.findById(id);
-
       if (!admin || !newSub) {
         throw new Conflict('User not found');
       }
@@ -202,18 +213,22 @@ export class UsersService {
   }
 
   async findToken(req: any): Promise<User> {
-    const { authorization = '' } = req.headers;
-    const [bearer, token] = authorization.split(' ');
+    try {
+      const { authorization = '' } = req.headers;
+      const [bearer, token] = authorization.split(' ');
 
-    if (bearer !== 'Bearer') {
-      throw new Unauthorized('Not authorized');
+      if (bearer !== 'Bearer') {
+        throw new Unauthorized('Not authorized');
+      }
+
+      const SECRET_KEY = process.env.SECRET_KEY;
+      const findId = verify(token, SECRET_KEY) as JwtPayload;
+      const user = await this.userModel.findById({ _id: findId.id });
+
+      return user;
+    } catch (e) {
+      throw new Unauthorized('jwt expired');
     }
-
-    const SECRET_KEY = process.env.SECRET_KEY;
-    const findId = verify(token, SECRET_KEY) as JwtPayload;
-    const user = await this.userModel.findById({ _id: findId.id });
-
-    return user;
   }
 
   async createToken(authUser: { _id: string }) {

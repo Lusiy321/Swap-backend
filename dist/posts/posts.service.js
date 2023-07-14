@@ -37,8 +37,11 @@ let PostsService = class PostsService {
         this.userService = userService;
     }
     async findAllPosts(req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const user = await this.userService.findToken(req);
             if (user.role === 'admin' || user.role === 'moderator') {
                 return await this.postModel.find().exec();
             }
@@ -48,8 +51,11 @@ let PostsService = class PostsService {
         }
     }
     async findNewPosts(req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const user = await this.userService.findToken(req);
             if (user.role === 'admin' || user.role === 'moderator') {
                 return await this.postModel.find({ verify: 'new' }).exec();
             }
@@ -59,10 +65,13 @@ let PostsService = class PostsService {
         }
     }
     async findMyPosts(req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const user = await this.userService.findToken(req);
             if (user) {
-                const post = await this.postModel.find({ "owner.id": user.id });
+                const post = await this.postModel.find({ 'owner.id': user.id });
                 return post;
             }
         }
@@ -70,9 +79,9 @@ let PostsService = class PostsService {
             throw new http_errors_1.NotFound('Post not found');
         }
     }
-    async findAllAprovedPosts() {
+    async findAllApprovedPosts() {
         try {
-            const post = await this.postModel.find({ verify: 'aprove' }).exec();
+            const post = await this.postModel.find({ verify: 'approve' }).exec();
             return post;
         }
         catch (e) {
@@ -89,8 +98,11 @@ let PostsService = class PostsService {
         }
     }
     async createPost(post, req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const user = await this.userService.findToken(req);
             if (user) {
                 const createdPost = await this.postModel.create(post);
                 createdPost.save();
@@ -110,8 +122,11 @@ let PostsService = class PostsService {
         }
     }
     async updatePost(post, id, req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const user = await this.userService.findToken(req);
             if (user) {
                 const params = __rest(post, []);
                 await this.postModel.findByIdAndUpdate({ _id: id }, Object.assign({}, params));
@@ -124,9 +139,12 @@ let PostsService = class PostsService {
         }
     }
     async deletePost(id, req) {
+        const user = await this.userService.findToken(req);
+        const post = await this.postModel.findById({ _id: id });
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const user = await this.userService.findToken(req);
-            const post = await this.postModel.findById({ _id: id });
             if (user.role === 'admin' || user.role === 'moderator') {
                 const find = await this.postModel.findByIdAndRemove({ _id: id }).exec();
                 return find;
@@ -142,9 +160,12 @@ let PostsService = class PostsService {
         }
     }
     async verifyPost(id, req, postUp) {
+        const admin = await this.userService.findToken(req);
+        const post = await this.postModel.findById(id);
+        if (!admin) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const admin = await this.userService.findToken(req);
-            const post = await this.postModel.findById(id);
             if (!admin || !post) {
                 throw new http_errors_1.Conflict('Not found');
             }
@@ -164,9 +185,12 @@ let PostsService = class PostsService {
         }
     }
     async favoritePost(id, req) {
+        const user = await this.userService.findToken(req);
+        const post = await this.postModel.findById(id);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const user = await this.userService.findToken(req);
-            const post = await this.postModel.findById(id);
             if (!user || !post) {
                 throw new http_errors_1.Conflict('Not found');
             }
@@ -211,8 +235,11 @@ let PostsService = class PostsService {
         }
     }
     async findMyFavPosts(req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const user = await this.userService.findToken(req);
             const post = await this.postModel.find({ favorite: user.id }).exec();
             return post;
         }

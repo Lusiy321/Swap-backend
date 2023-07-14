@@ -1,6 +1,6 @@
 export declare enum verify {
     new = "new",
-    aprove = "aprove",
+    aprove = "approve",
     rejected = "rejected"
 }
 export declare class VerifyPostDto {
