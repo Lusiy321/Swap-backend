@@ -227,7 +227,7 @@ export class UsersService {
   }
 
   async refreshAccessToken(req: any): Promise<User> {
-    // try {
+    try {
       const { authorization = '' } = req.headers;
       const [bearer, token] = authorization.split(' ');
 
@@ -235,12 +235,10 @@ export class UsersService {
         throw new Unauthorized('Not authorized');
       }
       const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
+      const user = await this.userModel.findOne({ token: token });
       if (!user) {
         throw new Error('User not found');
       }
-      user.token = null;
       const payload = {
         id: user._id,
       };
@@ -250,9 +248,9 @@ export class UsersService {
         _id: user.id,
       });
       return authentificationUser;
-    // } catch (error) {
-    //   throw new Error('Invalid refresh token');
-    // }
+    } catch (error) {
+      throw new Error('Invalid refresh token');
+    }
   }
 }
 
