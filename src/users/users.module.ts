@@ -5,9 +5,11 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { User, UserSchema } from './users.model';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { SendGridModule } from './utils/sendgrid.module';
 
 @Module({
   imports: [
+    SendGridModule,
     JwtModule.register({
       secret: process.env.SECRET_KEY,
       signOptions: { expiresIn: '1day' },

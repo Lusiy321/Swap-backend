@@ -9,7 +9,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GoogleUserDto } from 'src/users/dto/google.user.dto';
-import { refreshAccessToken } from 'src/users/utils/JWT.middleware';
 
 @ApiTags('Auth')
 @Controller('auth')
