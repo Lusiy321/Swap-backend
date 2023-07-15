@@ -30,6 +30,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const http_errors_1 = require("http-errors");
 const users_model_1 = require("../users/users.model");
 const users_service_1 = require("../users/users.service");
+const uuid_1 = require("uuid");
 let PostsService = class PostsService {
     constructor(postModel, userModel, userService) {
         this.postModel = postModel;
@@ -242,6 +243,26 @@ let PostsService = class PostsService {
         try {
             const post = await this.postModel.find({ favorite: user.id }).exec();
             return post;
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
+    async commentPosts(id, req, comments) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            const post = await this.postModel.findById(id);
+            if (post) {
+                comments.id = (0, uuid_1.v4)();
+                const array = post.comments;
+                array.push(comments);
+                await this.postModel.updateOne({ _id: id }, { $set: { comments: array } });
+                post.save();
+                return await this.postModel.findById(id);
+            }
         }
         catch (e) {
             throw new http_errors_1.NotFound('Post not found');

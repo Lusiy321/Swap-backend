@@ -115,9 +115,18 @@ __decorate([
     __metadata("design:type", Number)
 ], Posts.prototype, "views", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'true', description: 'Post status' }),
+    (0, swagger_1.ApiProperty)({ example: 'true', description: 'Post to exchange' }),
     (0, mongoose_1.Prop)({
         type: (Array),
+        default: [],
+    }),
+    __metadata("design:type", Array)
+], Posts.prototype, "comments", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'true', description: 'Post to exchange' }),
+    (0, mongoose_1.Prop)({
+        type: (Array),
+        default: [],
     }),
     __metadata("design:type", Array)
 ], Posts.prototype, "toExchange", void 0);

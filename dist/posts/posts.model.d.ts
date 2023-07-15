@@ -25,6 +25,7 @@
 import { Model } from 'mongoose';
 import { UpdateUserDto } from 'src/users/dto/update.user.dto';
 import { verify } from './dto/verify.post.dto';
+import { CreateCommentDto } from './dto/create.comment.dto';
 export type PostDocument = Posts & Document;
 export declare class Posts extends Model<Posts> {
     title: string;
@@ -36,9 +37,10 @@ export declare class Posts extends Model<Posts> {
     price: number;
     verify: verify;
     views: number;
+    comments: [CreateCommentDto];
     toExchange: [{
-        data: Posts;
-        agree: string;
+        data: string;
+        agree: boolean;
     }];
 }
 export declare const PostSchema: import("mongoose").Schema<Posts, Model<Posts, any, any, any, import("mongoose").Document<unknown, any, Posts> & Omit<Posts & {

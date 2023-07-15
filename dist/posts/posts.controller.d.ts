@@ -2,6 +2,7 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create.post.dto';
 import { Posts } from './posts.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
+import { CreateCommentDto } from './dto/create.comment.dto';
 export declare class PostsController {
     private readonly postService;
     constructor(postService: PostsService);
@@ -17,4 +18,5 @@ export declare class PostsController {
     setFavorite(id: string, request: any): Promise<Posts>;
     setMyFavorite(request: any): Promise<Posts[]>;
     setViews(id: string): Promise<Posts>;
+    setComments(comments: CreateCommentDto, id: string, request: any): Promise<Posts>;
 }

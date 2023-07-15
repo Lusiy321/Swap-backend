@@ -3,6 +3,7 @@ import { CreatePostDto } from './dto/create.post.dto';
 import { User } from 'src/users/users.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
 import { UsersService } from 'src/users/users.service';
+import { CreateCommentDto } from './dto/create.comment.dto';
 export declare class PostsService {
     private postModel;
     private userModel;
@@ -20,4 +21,5 @@ export declare class PostsService {
     favoritePost(id: string, req: any): Promise<Posts>;
     viewPost(id: string): Promise<Posts>;
     findMyFavPosts(req: any): Promise<any>;
+    commentPosts(id: string, req: any, comments: CreateCommentDto): Promise<any>;
 }

@@ -20,6 +20,7 @@ import {
 import { CreatePostDto } from './dto/create.post.dto';
 import { Posts } from './posts.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
+import { CreateCommentDto } from './dto/create.comment.dto';
 
 @ApiTags('Post')
 @Controller('posts')
@@ -95,7 +96,10 @@ export class PostsController {
     return this.postService.deletePost(id, request);
   }
 
-  @ApiOperation({ summary: 'Verify user enum: [new, aprove, rejected] (admin of moderator only)' })
+  @ApiOperation({
+    summary:
+      'Verify user enum: [new, aprove, rejected] (admin of moderator only)',
+  })
   @ApiResponse({ status: 200, type: Posts })
   @ApiBearerAuth('BearerAuthMethod')
   @Patch('/verify/:Id')
@@ -122,9 +126,7 @@ export class PostsController {
   @ApiResponse({ status: 200, type: Posts })
   @ApiBearerAuth('BearerAuthMethod')
   @Get('/myfav')
-  async setMyFavorite(    
-    @Req() request: any,
-  ): Promise<Posts[]> {
+  async setMyFavorite(@Req() request: any): Promise<Posts[]> {
     return this.postService.findMyFavPosts(request);
   }
 
@@ -133,5 +135,19 @@ export class PostsController {
   @Patch('/view/:Id')
   async setViews(@Param('Id') id: string): Promise<Posts> {
     return this.postService.viewPost(id);
+  }
+
+  @ApiOperation({
+    summary: 'Set comments',
+  })
+  @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Post('/comments/:Id')
+  async setComments(
+    @Body() comments: CreateCommentDto,
+    @Param('Id') id: string,
+    @Req() request: any,
+  ): Promise<Posts> {
+    return this.postService.commentPosts(id, request, comments);
   }
 }

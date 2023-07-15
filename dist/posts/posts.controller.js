@@ -19,6 +19,7 @@ const swagger_1 = require("@nestjs/swagger");
 const create_post_dto_1 = require("./dto/create.post.dto");
 const posts_model_1 = require("./posts.model");
 const verify_post_dto_1 = require("./dto/verify.post.dto");
+const create_comment_dto_1 = require("./dto/create.comment.dto");
 let PostsController = class PostsController {
     constructor(postService) {
         this.postService = postService;
@@ -58,6 +59,9 @@ let PostsController = class PostsController {
     }
     async setViews(id) {
         return this.postService.viewPost(id);
+    }
+    async setComments(comments, id, request) {
+        return this.postService.commentPosts(id, request, comments);
     }
 };
 __decorate([
@@ -142,7 +146,9 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "delete", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Verify user enum: [new, aprove, rejected] (admin of moderator only)' }),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Verify user enum: [new, aprove, rejected] (admin of moderator only)',
+    }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
     (0, common_1.Patch)('/verify/:Id'),
@@ -183,6 +189,20 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "setViews", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Set comments',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Post)('/comments/:Id'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Param)('Id')),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_comment_dto_1.CreateCommentDto, String, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "setComments", null);
 PostsController = __decorate([
     (0, swagger_1.ApiTags)('Post'),
     (0, common_1.Controller)('posts'),

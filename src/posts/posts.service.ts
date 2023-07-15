@@ -7,6 +7,8 @@ import { CreatePostDto } from './dto/create.post.dto';
 import { User } from 'src/users/users.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
 import { UsersService } from 'src/users/users.service';
+import { CreateCommentDto } from './dto/create.comment.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class PostsService {
@@ -233,6 +235,29 @@ export class PostsService {
     try {
       const post = await this.postModel.find({ favorite: user.id }).exec();
       return post;
+    } catch (e) {
+      throw new NotFound('Post not found');
+    }
+  }
+
+  async commentPosts(id: string, req: any, comments: CreateCommentDto) {
+    const user = await this.userService.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
+    try {
+      const post = await this.postModel.findById(id);
+      if (post) {
+        comments.id = uuidv4();
+        const array = post.comments;
+        array.push(comments);
+        await this.postModel.updateOne(
+          { _id: id },
+          { $set: { comments: array } },
+        );
+        post.save();
+        return await this.postModel.findById(id);
+      }
     } catch (e) {
       throw new NotFound('Post not found');
     }
