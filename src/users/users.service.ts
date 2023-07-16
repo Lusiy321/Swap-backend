@@ -169,21 +169,22 @@ export class UsersService {
     if (!admin) {
       throw new Unauthorized('jwt expired');
     }
-    try {
-      if (!admin || !newSub) {
-        throw new Conflict('User not found');
-      }
 
-      if (
-        admin.role === 'admin' ||
-        (admin.role === 'moderator' && newSub.ban === false)
-      ) {
+    if (!admin || !newSub) {
+      throw new Conflict('User not found');
+    }
+    try {
+      const adm = admin.role === 'admin' || admin.role === 'moderator';
+
+      if (adm && newSub.ban === false) {
         newSub.ban = true;
         newSub.save();
         return this.userModel.findById(id);
-      } else {
+      } else if (adm && newSub.ban === true) {
         newSub.ban = false;
         newSub.save();
+        return this.userModel.findById(id);
+      } else {
         return this.userModel.findById(id);
       }
     } catch (e) {

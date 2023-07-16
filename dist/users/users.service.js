@@ -178,19 +178,22 @@ let UsersService = class UsersService {
         if (!admin) {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
+        if (!admin || !newSub) {
+            throw new http_errors_1.Conflict('User not found');
+        }
         try {
-            if (!admin || !newSub) {
-                throw new http_errors_1.Conflict('User not found');
-            }
-            if (admin.role === 'admin' ||
-                (admin.role === 'moderator' && newSub.ban === false)) {
+            const adm = admin.role === 'admin' || admin.role === 'moderator';
+            if (adm && newSub.ban === false) {
                 newSub.ban = true;
                 newSub.save();
                 return this.userModel.findById(id);
             }
-            else {
+            else if (adm && newSub.ban === true) {
                 newSub.ban = false;
                 newSub.save();
+                return this.userModel.findById(id);
+            }
+            else {
                 return this.userModel.findById(id);
             }
         }
