@@ -9,33 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateUserDto = void 0;
+exports.CommentUserDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
-class UpdateUserDto {
+class CommentUserDto {
 }
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Petro', description: 'User first name' }),
     __metadata("design:type", String)
-], UpdateUserDto.prototype, "firstName", void 0);
+], CommentUserDto.prototype, "firstName", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Poroshenko', description: 'User last name' }),
     __metadata("design:type", String)
-], UpdateUserDto.prototype, "lastName", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: '+380984561225', description: 'User phone' }),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "phone", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Kyiv', description: 'User location' }),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "location", void 0);
+], CommentUserDto.prototype, "lastName", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'https://', description: 'User avatar' }),
     __metadata("design:type", String)
-], UpdateUserDto.prototype, "avatarURL", void 0);
+], CommentUserDto.prototype, "avatarURL", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'false', description: 'User status' }),
     __metadata("design:type", Boolean)
-], UpdateUserDto.prototype, "isOnline", void 0);
-exports.UpdateUserDto = UpdateUserDto;
-//# sourceMappingURL=update.user.dto.js.map
+], CommentUserDto.prototype, "isOnline", void 0);
+exports.CommentUserDto = CommentUserDto;
+//# sourceMappingURL=comments.user.dto.js.map

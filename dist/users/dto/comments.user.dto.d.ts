@@ -1,8 +1,6 @@
-export declare class UpdateUserDto {
+export declare class CommentUserDto {
     readonly firstName: string;
     readonly lastName: string;
-    readonly phone: string;
-    readonly location: string;
     readonly avatarURL: string;
     readonly isOnline: boolean;
 }

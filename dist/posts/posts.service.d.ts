@@ -22,4 +22,5 @@ export declare class PostsService {
     viewPost(id: string): Promise<Posts>;
     findMyFavPosts(req: any): Promise<any>;
     commentPosts(id: string, req: any, comments: CreateCommentDto): Promise<any>;
+    answerCommentPosts(postId: string, req: any, commentId: string, answer: CreateCommentDto): Promise<any>;
 }

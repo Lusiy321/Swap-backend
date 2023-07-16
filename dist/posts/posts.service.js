@@ -257,12 +257,42 @@ let PostsService = class PostsService {
             const post = await this.postModel.findById(id);
             if (post) {
                 comments.id = (0, uuid_1.v4)();
+                const { firstName, lastName, avatarURL, isOnline } = user;
+                comments.user = { firstName, lastName, avatarURL, isOnline };
+                comments.answer = [];
                 const array = post.comments;
                 array.push(comments);
                 await this.postModel.updateOne({ _id: id }, { $set: { comments: array } });
                 post.save();
                 return await this.postModel.findById(id);
             }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
+    async answerCommentPosts(postId, req, commentId, answer) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            const post = await this.postModel.findById(postId);
+            if (post) {
+                const comments = post.comments;
+                const commentIndex = comments.findIndex((comment) => comment.id === commentId);
+                if (commentIndex !== -1) {
+                    const answerArr = comments[commentIndex].answer;
+                    answer.id = (0, uuid_1.v4)();
+                    const { firstName, lastName, avatarURL, isOnline } = user;
+                    answer.user = { firstName, lastName, avatarURL, isOnline };
+                    answerArr.push(answer);
+                    await this.postModel.updateOne({ _id: postId, 'comments.id': commentId }, { $push: { 'comments.$.answer': answer } });
+                    await post.save();
+                    return await this.postModel.findById(postId);
+                }
+            }
+            throw new http_errors_1.NotFound('Comment not found');
         }
         catch (e) {
             throw new http_errors_1.NotFound('Post not found');

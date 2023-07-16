@@ -19,4 +19,5 @@ export declare class PostsController {
     setMyFavorite(request: any): Promise<Posts[]>;
     setViews(id: string): Promise<Posts>;
     setComments(comments: CreateCommentDto, id: string, request: any): Promise<Posts>;
+    setAnswerComments(answer: CreateCommentDto, postId: string, commentId: string, request: any): Promise<Posts>;
 }

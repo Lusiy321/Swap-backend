@@ -14,18 +14,6 @@ const swagger_1 = require("@nestjs/swagger");
 class CreateCommentDto {
 }
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '64aee11adad509ad58f4f37d', description: 'User ID' }),
-    __metadata("design:type", String)
-], CreateCommentDto.prototype, "user", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Petro', description: 'User first name' }),
-    __metadata("design:type", String)
-], CreateCommentDto.prototype, "firstName", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Poroshenko', description: 'User last name' }),
-    __metadata("design:type", String)
-], CreateCommentDto.prototype, "lastName", void 0);
-__decorate([
     (0, swagger_1.ApiProperty)({
         example: 'Change my item for your item',
         description: 'Comment description',

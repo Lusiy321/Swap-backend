@@ -150,4 +150,24 @@ export class PostsController {
   ): Promise<Posts> {
     return this.postService.commentPosts(id, request, comments);
   }
+
+  @ApiOperation({
+    summary: 'Set comments',
+  })
+  @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Post('/comments/:postId/:commentId')
+  async setAnswerComments(
+    @Body() answer: CreateCommentDto,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Req() request: any,
+  ): Promise<Posts> {
+    return this.postService.answerCommentPosts(
+      postId,
+      request,
+      commentId,
+      answer,
+    );
+  }
 }

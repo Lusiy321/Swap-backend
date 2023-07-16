@@ -249,6 +249,9 @@ export class PostsService {
       const post = await this.postModel.findById(id);
       if (post) {
         comments.id = uuidv4();
+        const { firstName, lastName, avatarURL, isOnline } = user;
+        comments.user = { firstName, lastName, avatarURL, isOnline };
+        comments.answer = [];
         const array = post.comments;
         array.push(comments);
         await this.postModel.updateOne(
@@ -258,6 +261,43 @@ export class PostsService {
         post.save();
         return await this.postModel.findById(id);
       }
+    } catch (e) {
+      throw new NotFound('Post not found');
+    }
+  }
+
+  async answerCommentPosts(
+    postId: string,
+    req: any,
+    commentId: string,
+    answer: CreateCommentDto,
+  ) {
+    const user = await this.userService.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
+    try {
+      const post = await this.postModel.findById(postId);
+      if (post) {
+        const comments = post.comments;
+        const commentIndex = comments.findIndex(
+          (comment: { id: string }) => comment.id === commentId,
+        );
+        if (commentIndex !== -1) {
+          const answerArr = comments[commentIndex].answer;
+          answer.id = uuidv4();
+          const { firstName, lastName, avatarURL, isOnline } = user;
+          answer.user = { firstName, lastName, avatarURL, isOnline };
+          answerArr.push(answer);
+          await this.postModel.updateOne(
+            { _id: postId, 'comments.id': commentId },
+            { $push: { 'comments.$.answer': answer } },
+          );
+          await post.save();
+          return await this.postModel.findById(postId);
+        }
+      }
+      throw new NotFound('Comment not found');
     } catch (e) {
       throw new NotFound('Post not found');
     }

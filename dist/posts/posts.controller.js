@@ -63,6 +63,9 @@ let PostsController = class PostsController {
     async setComments(comments, id, request) {
         return this.postService.commentPosts(id, request, comments);
     }
+    async setAnswerComments(answer, postId, commentId, request) {
+        return this.postService.answerCommentPosts(postId, request, commentId, answer);
+    }
 };
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Create Post' }),
@@ -203,6 +206,21 @@ __decorate([
     __metadata("design:paramtypes", [create_comment_dto_1.CreateCommentDto, String, Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "setComments", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Set comments',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Post)('/comments/:postId/:commentId'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Param)('postId')),
+    __param(2, (0, common_1.Param)('commentId')),
+    __param(3, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_comment_dto_1.CreateCommentDto, String, String, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "setAnswerComments", null);
 PostsController = __decorate([
     (0, swagger_1.ApiTags)('Post'),
     (0, common_1.Controller)('posts'),
