@@ -18,9 +18,13 @@ export declare class PostsService {
     updatePost(post: CreatePostDto, id: string, req: any): Promise<Posts>;
     deletePost(id: string, req: any): Promise<Posts>;
     verifyPost(id: string, req: any, postUp: VerifyPostDto): Promise<Posts>;
+    activePost(id: string, req: any): Promise<Posts>;
     favoritePost(id: string, req: any): Promise<Posts>;
     viewPost(id: string): Promise<Posts>;
     findMyFavPosts(req: any): Promise<any>;
     commentPosts(id: string, req: any, comments: CreateCommentDto): Promise<any>;
     answerCommentPosts(postId: string, req: any, commentId: string, answer: CreateCommentDto): Promise<any>;
+    toExchangePosts(postId: string, userPostId: string, req: any): Promise<any>;
+    exchangeTruePosts(postId: string, userPostId: string, req: any): Promise<any>;
+    exchangeFalsePosts(postId: string, userPostId: string, req: any): Promise<any>;
 }

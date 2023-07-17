@@ -84,12 +84,19 @@ export class Posts extends Model<Posts> {
   })
   price: number;
 
-  @ApiProperty({ example: 'true', description: 'Post status' })
+  @ApiProperty({ example: 'true', description: 'Post moderate status' })
   @Prop({
     enum: ['new', 'approve', 'rejected'],
     default: 'new',
   })
   verify: verify;
+
+  @ApiProperty({ example: 'true', description: 'Post status' })
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  isActive: boolean;
 
   @ApiProperty({
     example: '200',
@@ -101,19 +108,19 @@ export class Posts extends Model<Posts> {
   })
   views: number;
 
-  @ApiProperty({ example: 'true', description: 'Post to exchange' })
+  @ApiProperty({ example: '[]', description: 'Post to exchange' })
   @Prop({
     type: Array<CreateCommentDto>,
     default: [],
   })
   comments: [CreateCommentDto];
 
-  @ApiProperty({ example: 'true', description: 'Post to exchange' })
+  @ApiProperty({ example: '[]', description: 'Post to exchange' })
   @Prop({
-    type: Array<{ data: string; agree: null }>,
+    type: Array<{ id: string; agree: null; data: object }>,
     default: [],
   })
-  toExchange: [{ data: string; agree: boolean }];
+  toExchange: [{ id: string; agree: boolean; data: object }];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Posts);

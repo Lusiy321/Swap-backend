@@ -51,6 +51,9 @@ let PostsController = class PostsController {
     async setVerify(post, id, request) {
         return this.postService.verifyPost(id, request, post);
     }
+    async setActive(id, request) {
+        return this.postService.activePost(id, request);
+    }
     async setFavorite(id, request) {
         return this.postService.favoritePost(id, request);
     }
@@ -65,6 +68,15 @@ let PostsController = class PostsController {
     }
     async setAnswerComments(answer, postId, commentId, request) {
         return this.postService.answerCommentPosts(postId, request, commentId, answer);
+    }
+    async setExchange(postId, userPostId, request) {
+        return this.postService.toExchangePosts(postId, userPostId, request);
+    }
+    async setExchangeTrue(postId, userPostId, request) {
+        return this.postService.exchangeTruePosts(postId, userPostId, request);
+    }
+    async setExchangeFalse(postId, userPostId, request) {
+        return this.postService.exchangeFalsePosts(postId, userPostId, request);
     }
 };
 __decorate([
@@ -163,6 +175,19 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "setVerify", null);
 __decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Post status (active of not active) (This user only)',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Patch)('/active/:Id'),
+    __param(0, (0, common_1.Param)('Id')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "setActive", null);
+__decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Favorite post' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
@@ -208,7 +233,7 @@ __decorate([
 ], PostsController.prototype, "setComments", null);
 __decorate([
     (0, swagger_1.ApiOperation)({
-        summary: 'Set comments',
+        summary: 'Set comment for comments',
     }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
@@ -221,6 +246,48 @@ __decorate([
     __metadata("design:paramtypes", [create_comment_dto_1.CreateCommentDto, String, String, Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "setAnswerComments", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Set propouse for exchange',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Post)('/to-exchange/:postId/:userPostId'),
+    __param(0, (0, common_1.Param)('postId')),
+    __param(1, (0, common_1.Param)('userPostId')),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "setExchange", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Set propouse for exchange',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Post)('/to-exchange-true/:postId/:userPostId'),
+    __param(0, (0, common_1.Param)('postId')),
+    __param(1, (0, common_1.Param)('userPostId')),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "setExchangeTrue", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Set propouse for exchange',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Post)('/to-exchange-false/:postId/:userPostId'),
+    __param(0, (0, common_1.Param)('postId')),
+    __param(1, (0, common_1.Param)('userPostId')),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "setExchangeFalse", null);
 PostsController = __decorate([
     (0, swagger_1.ApiTags)('Post'),
     (0, common_1.Controller)('posts'),

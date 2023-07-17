@@ -36,11 +36,13 @@ export declare class Posts extends Model<Posts> {
     owner: UpdateUserDto;
     price: number;
     verify: verify;
+    isActive: boolean;
     views: number;
     comments: [CreateCommentDto];
     toExchange: [{
-        data: string;
+        id: string;
         agree: boolean;
+        data: object;
     }];
 }
 export declare const PostSchema: import("mongoose").Schema<Posts, Model<Posts, any, any, any, import("mongoose").Document<unknown, any, Posts> & Omit<Posts & {

@@ -96,13 +96,21 @@ __decorate([
     __metadata("design:type", Number)
 ], Posts.prototype, "price", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'true', description: 'Post status' }),
+    (0, swagger_1.ApiProperty)({ example: 'true', description: 'Post moderate status' }),
     (0, mongoose_1.Prop)({
         enum: ['new', 'approve', 'rejected'],
         default: 'new',
     }),
     __metadata("design:type", String)
 ], Posts.prototype, "verify", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'true', description: 'Post status' }),
+    (0, mongoose_1.Prop)({
+        type: Boolean,
+        default: true,
+    }),
+    __metadata("design:type", Boolean)
+], Posts.prototype, "isActive", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         example: '200',
@@ -115,7 +123,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Posts.prototype, "views", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'true', description: 'Post to exchange' }),
+    (0, swagger_1.ApiProperty)({ example: '[]', description: 'Post to exchange' }),
     (0, mongoose_1.Prop)({
         type: (Array),
         default: [],
@@ -123,7 +131,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Posts.prototype, "comments", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'true', description: 'Post to exchange' }),
+    (0, swagger_1.ApiProperty)({ example: '[]', description: 'Post to exchange' }),
     (0, mongoose_1.Prop)({
         type: (Array),
         default: [],

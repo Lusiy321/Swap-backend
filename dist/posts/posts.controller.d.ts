@@ -15,9 +15,13 @@ export declare class PostsController {
     update(post: CreatePostDto, request: any, id: string): Promise<Posts>;
     delete(id: string, request: any): Promise<Posts>;
     setVerify(post: VerifyPostDto, id: string, request: any): Promise<Posts>;
+    setActive(id: string, request: any): Promise<Posts>;
     setFavorite(id: string, request: any): Promise<Posts>;
     setMyFavorite(request: any): Promise<Posts[]>;
     setViews(id: string): Promise<Posts>;
     setComments(comments: CreateCommentDto, id: string, request: any): Promise<Posts>;
     setAnswerComments(answer: CreateCommentDto, postId: string, commentId: string, request: any): Promise<Posts>;
+    setExchange(postId: string, userPostId: string, request: any): Promise<Posts>;
+    setExchangeTrue(postId: string, userPostId: string, request: any): Promise<Posts>;
+    setExchangeFalse(postId: string, userPostId: string, request: any): Promise<Posts>;
 }

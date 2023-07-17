@@ -111,6 +111,19 @@ export class PostsController {
     return this.postService.verifyPost(id, request, post);
   }
 
+  @ApiOperation({
+    summary: 'Post status (active of not active) (This user only)',
+  })
+  @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Patch('/active/:Id')
+  async setActive(
+    @Param('Id') id: string,
+    @Req() request: any,
+  ): Promise<Posts> {
+    return this.postService.activePost(id, request);
+  }
+
   @ApiOperation({ summary: 'Favorite post' })
   @ApiResponse({ status: 200, type: Posts })
   @ApiBearerAuth('BearerAuthMethod')
@@ -152,7 +165,7 @@ export class PostsController {
   }
 
   @ApiOperation({
-    summary: 'Set comments',
+    summary: 'Set comment for comments',
   })
   @ApiResponse({ status: 200, type: Posts })
   @ApiBearerAuth('BearerAuthMethod')
@@ -169,5 +182,47 @@ export class PostsController {
       commentId,
       answer,
     );
+  }
+
+  @ApiOperation({
+    summary: 'Set propouse for exchange',
+  })
+  @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Post('/to-exchange/:postId/:userPostId')
+  async setExchange(
+    @Param('postId') postId: string,
+    @Param('userPostId') userPostId: string,
+    @Req() request: any,
+  ): Promise<Posts> {
+    return this.postService.toExchangePosts(postId, userPostId, request);
+  }
+
+  @ApiOperation({
+    summary: 'Set propouse for exchange',
+  })
+  @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Post('/to-exchange-true/:postId/:userPostId')
+  async setExchangeTrue(
+    @Param('postId') postId: string,
+    @Param('userPostId') userPostId: string,
+    @Req() request: any,
+  ): Promise<Posts> {
+    return this.postService.exchangeTruePosts(postId, userPostId, request);
+  }
+
+  @ApiOperation({
+    summary: 'Set propouse for exchange',
+  })
+  @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Post('/to-exchange-false/:postId/:userPostId')
+  async setExchangeFalse(
+    @Param('postId') postId: string,
+    @Param('userPostId') userPostId: string,
+    @Req() request: any,
+  ): Promise<Posts> {
+    return this.postService.exchangeFalsePosts(postId, userPostId, request);
   }
 }

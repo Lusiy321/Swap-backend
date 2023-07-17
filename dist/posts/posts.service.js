@@ -166,12 +166,12 @@ let PostsService = class PostsService {
         if (!admin) {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
+        if (!admin || !post) {
+            throw new http_errors_1.Conflict('Not found');
+        }
         try {
-            if (!admin || !post) {
-                throw new http_errors_1.Conflict('Not found');
-            }
-            if (admin.role === 'admin' ||
-                (admin.role === 'moderator' && post.verify === 'new')) {
+            const adm = admin.role === 'admin' || admin.role === 'moderator';
+            if (adm && post.verify === 'new') {
                 const params = __rest(postUp, []);
                 await this.postModel.findByIdAndUpdate({ _id: id }, Object.assign({}, params));
                 post.save();
@@ -179,6 +179,35 @@ let PostsService = class PostsService {
             }
             else {
                 return post;
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('User not found');
+        }
+    }
+    async activePost(id, req) {
+        const user = await this.userService.findToken(req);
+        const post = await this.postModel.findById(id);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        if (!user || !post) {
+            throw new http_errors_1.Conflict('Not found');
+        }
+        const own = user.id === post.owner.id;
+        try {
+            if (own && post.isActive === true) {
+                await this.postModel.findByIdAndUpdate({ _id: id }, { isActive: false });
+                post.save();
+                return await this.postModel.findById(id);
+            }
+            else if (own && post.isActive === false) {
+                await this.postModel.findByIdAndUpdate({ _id: id }, { isActive: true });
+                post.save();
+                return await this.postModel.findById(id);
+            }
+            else {
+                return;
             }
         }
         catch (e) {
@@ -293,6 +322,60 @@ let PostsService = class PostsService {
                 }
             }
             throw new http_errors_1.NotFound('Comment not found');
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
+    async toExchangePosts(postId, userPostId, req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            const post = await this.postModel.findById(postId);
+            const userPost = await this.postModel.findById(userPostId);
+            if (post) {
+                const array = post.toExchange;
+                array.push({ id: (0, uuid_1.v4)(), agree: null, data: userPost });
+                await this.postModel.updateOne({ _id: postId }, { $set: { toExchange: array } });
+                post.save();
+                return await this.postModel.findById(postId);
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
+    async exchangeTruePosts(postId, userPostId, req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            const updatedPost = await this.postModel.updateOne({ _id: postId, 'toExchange.id': userPostId }, { $set: { 'toExchange.$.agree': true } });
+            if (updatedPost.nModified === 0) {
+                throw new http_errors_1.NotFound('Post or exchange item not found');
+            }
+            const updatedPostData = await this.postModel.findById(postId);
+            return updatedPostData;
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
+    async exchangeFalsePosts(postId, userPostId, req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            const updatedPost = await this.postModel.updateOne({ _id: postId, 'toExchange.id': userPostId }, { $set: { 'toExchange.$.agree': false } });
+            if (updatedPost.nModified === 0) {
+                throw new http_errors_1.NotFound('Post or exchange item not found');
+            }
+            const updatedPostData = await this.postModel.findById(postId);
+            return updatedPostData;
         }
         catch (e) {
             throw new http_errors_1.NotFound('Post not found');
