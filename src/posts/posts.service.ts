@@ -61,6 +61,15 @@ export class PostsService {
     }
   }
 
+  async findUserPosts(id: string) {
+    try {
+      const post = await this.postModel.find({ 'owner.id': id });
+      return post;
+    } catch (e) {
+      throw new NotFound('Post not found');
+    }
+  }
+
   async findAllApprovedPosts() {
     try {
       const post = await this.postModel.find({ verify: 'approve' }).exec();

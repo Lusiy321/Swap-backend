@@ -62,6 +62,13 @@ export class PostsController {
     return this.postService.findMyPosts(request);
   }
 
+  @ApiOperation({ summary: 'Get user Posts' })
+  @ApiResponse({ status: 200, type: [Posts] })
+  @Get('/user-posts/:id')
+  async findUserPost(@Param('id') id: string): Promise<Posts[]> {
+    return this.postService.findUserPosts(id);
+  }
+
   @ApiOperation({ summary: 'Get all aproved Post' })
   @ApiResponse({ status: 200, type: [Posts] })
   @Get('/')
