@@ -60,6 +60,9 @@ let PostsController = class PostsController {
     async setMyFavorite(request) {
         return this.postService.findMyFavPosts(request);
     }
+    async getMyExchenge(request) {
+        return this.postService.findMyOwnPosts(request);
+    }
     async setViews(id) {
         return this.postService.viewPost(id);
     }
@@ -208,6 +211,16 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "setMyFavorite", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Get my exchanges' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Get)('/my-exchange'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "getMyExchenge", null);
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Post views' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),

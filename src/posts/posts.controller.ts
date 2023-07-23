@@ -143,6 +143,14 @@ export class PostsController {
     return this.postService.findMyFavPosts(request);
   }
 
+  @ApiOperation({ summary: 'Get my exchanges' })
+  @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Get('/my-exchange')
+  async getMyExchenge(@Req() request: any): Promise<Posts[]> {
+    return this.postService.findMyOwnPosts(request);
+  }
+
   @ApiOperation({ summary: 'Post views' })
   @ApiResponse({ status: 200, type: Posts })
   @Patch('/view/:Id')

@@ -381,6 +381,21 @@ let PostsService = class PostsService {
             throw new http_errors_1.NotFound('Post not found');
         }
     }
+    async findMyOwnPosts(req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            const post = await this.postModel
+                .find({ 'toExchange.data.owner.id': user.id })
+                .exec();
+            return post;
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
 };
 PostsService = __decorate([
     (0, common_1.Injectable)(),

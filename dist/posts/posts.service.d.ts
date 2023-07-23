@@ -27,4 +27,5 @@ export declare class PostsService {
     toExchangePosts(postId: string, userPostId: string, req: any): Promise<any>;
     exchangeTruePosts(postId: string, userPostId: string, req: any): Promise<any>;
     exchangeFalsePosts(postId: string, userPostId: string, req: any): Promise<any>;
+    findMyOwnPosts(req: any): Promise<any>;
 }

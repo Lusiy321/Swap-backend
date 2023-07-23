@@ -398,4 +398,19 @@ export class PostsService {
       throw new NotFound('Post not found');
     }
   }
+
+  async findMyOwnPosts(req: any) {
+    const user = await this.userService.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
+    try {
+      const post = await this.postModel
+        .find({ 'toExchange.data.owner.id': user.id })
+        .exec();
+      return post;
+    } catch (e) {
+      throw new NotFound('Post not found');
+    }
+  }
 }
