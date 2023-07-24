@@ -105,6 +105,16 @@ export class UsersService {
     if (!findId) {
       throw new Unauthorized('jwt expired');
     }
+    if (
+      !firstName ||
+      !lastName ||
+      !phone ||
+      !location ||
+      !avatarURL ||
+      !isOnline
+    ) {
+      throw new BadRequest('Bad request');
+    }
     try {
       if (firstName || lastName || phone || location || avatarURL || isOnline) {
         await this.userModel.findByIdAndUpdate(

@@ -117,6 +117,14 @@ let UsersService = class UsersService {
         if (!findId) {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
+        if (!firstName ||
+            !lastName ||
+            !phone ||
+            !location ||
+            !avatarURL ||
+            !isOnline) {
+            throw new http_errors_1.BadRequest('Bad request');
+        }
         try {
             if (firstName || lastName || phone || location || avatarURL || isOnline) {
                 await this.userModel.findByIdAndUpdate({ _id: findId.id }, { firstName, lastName, phone, location, avatarURL, isOnline });
