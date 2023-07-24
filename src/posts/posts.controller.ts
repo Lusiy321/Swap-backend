@@ -70,7 +70,7 @@ export class PostsController {
     return this.postService.findUserPosts(id);
   }
 
-  @ApiOperation({ summary: 'Get all aproved Post if post active' })
+  @ApiOperation({ summary: 'Get all approved Post if post active' })
   @ApiResponse({ status: 200, type: [Posts] })
   @Get('/')
   async findAllAprove(): Promise<Posts[]> {

@@ -139,7 +139,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "findUserPost", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Get all aproved Post if post active' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all approved Post if post active' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: [posts_model_1.Posts] }),
     (0, common_1.Get)('/'),
     __metadata("design:type", Function),

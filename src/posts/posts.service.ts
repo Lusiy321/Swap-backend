@@ -18,7 +18,7 @@ export class PostsService {
     private userService: UsersService,
   ) {}
 
-  async findAllPosts(req: any) {
+  async findAllPosts(req: any): Promise<Posts[]> {
     const user = await this.userService.findToken(req);
     if (!user) {
       throw new Unauthorized('jwt expired');
@@ -32,7 +32,7 @@ export class PostsService {
     }
   }
 
-  async findNewPosts(req: any) {
+  async findNewPosts(req: any): Promise<Posts[]> {
     const user = await this.userService.findToken(req);
     if (!user) {
       throw new Unauthorized('jwt expired');
@@ -46,7 +46,7 @@ export class PostsService {
     }
   }
 
-  async findMyPosts(req: any) {
+  async findMyPosts(req: any): Promise<Posts[]> {
     const user = await this.userService.findToken(req);
     if (!user) {
       throw new Unauthorized('jwt expired');
@@ -61,7 +61,7 @@ export class PostsService {
     }
   }
 
-  async searchPosts(query: any) {
+  async searchPosts(query: any): Promise<Posts[]> {
     const titleRegex = new RegExp(query.title, 'i');
     const descriptionRegex = new RegExp(query.description, 'i');
     const matchQuery = {
@@ -71,7 +71,7 @@ export class PostsService {
     return this.postModel.find(matchQuery).exec();
   }
 
-  async findUserPosts(id: string) {
+  async findUserPosts(id: string): Promise<Posts[]> {
     try {
       const post = await this.postModel.find({ 'owner.id': id });
       return post;
@@ -80,7 +80,7 @@ export class PostsService {
     }
   }
 
-  async findAllApprovedPosts() {
+  async findAllApprovedPosts(): Promise<Posts[]> {
     try {
       const post = await this.postModel
         .find({ verify: 'approve', isActive: true })
@@ -277,7 +277,7 @@ export class PostsService {
     }
   }
 
-  async findMyFavPosts(req: any) {
+  async findMyFavPosts(req: any): Promise<Posts[]> {
     const user = await this.userService.findToken(req);
     if (!user) {
       throw new Unauthorized('jwt expired');
@@ -290,7 +290,11 @@ export class PostsService {
     }
   }
 
-  async commentPosts(id: string, req: any, comments: CreateCommentDto) {
+  async commentPosts(
+    id: string,
+    req: any,
+    comments: CreateCommentDto,
+  ): Promise<Posts> {
     const user = await this.userService.findToken(req);
     if (!user) {
       throw new Unauthorized('jwt expired');
@@ -321,7 +325,7 @@ export class PostsService {
     req: any,
     commentId: string,
     answer: CreateCommentDto,
-  ) {
+  ): Promise<Posts> {
     const user = await this.userService.findToken(req);
     if (!user) {
       throw new Unauthorized('jwt expired');
