@@ -10,7 +10,9 @@ export declare class PostsController {
     findAll(request: any): Promise<Posts[]>;
     findNew(request: any): Promise<Posts[]>;
     findMy(request: any): Promise<Posts[]>;
+    findUserPost(id: string): Promise<Posts[]>;
     findAllAprove(): Promise<Posts[]>;
+    searchPosts(query: any): Promise<Posts[]>;
     findById(id: string): Promise<Posts>;
     update(post: CreatePostDto, request: any, id: string): Promise<Posts>;
     delete(id: string, request: any): Promise<Posts>;

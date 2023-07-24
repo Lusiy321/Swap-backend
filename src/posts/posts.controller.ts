@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Req,
 } from '@nestjs/common';
 import {
@@ -69,11 +70,18 @@ export class PostsController {
     return this.postService.findUserPosts(id);
   }
 
-  @ApiOperation({ summary: 'Get all aproved Post' })
+  @ApiOperation({ summary: 'Get all aproved Post if post active' })
   @ApiResponse({ status: 200, type: [Posts] })
   @Get('/')
   async findAllAprove(): Promise<Posts[]> {
     return this.postService.findAllApprovedPosts();
+  }
+
+  @ApiOperation({ summary: 'Search posts from query' })
+  @ApiResponse({ status: 200, type: [Posts] })
+  @Get('/search')
+  async searchPosts(@Query() query: any): Promise<Posts[]> {
+    return this.postService.searchPosts(query);
   }
 
   @ApiOperation({ summary: 'Get post by ID' })

@@ -12,6 +12,8 @@ export declare class PostsService {
     findAllPosts(req: any): Promise<any>;
     findNewPosts(req: any): Promise<any>;
     findMyPosts(req: any): Promise<any>;
+    searchPosts(query: any): Promise<any>;
+    findUserPosts(id: string): Promise<any>;
     findAllApprovedPosts(): Promise<any>;
     findPostById(id: string): Promise<Posts>;
     createPost(post: CreatePostDto, req: any): Promise<Posts>;

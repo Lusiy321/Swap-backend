@@ -61,6 +61,16 @@ export class PostsService {
     }
   }
 
+  async searchPosts(query: any) {
+    const titleRegex = new RegExp(query.title, 'i');
+    const descriptionRegex = new RegExp(query.description, 'i');
+    const matchQuery = {
+      title: { $regex: titleRegex },
+      description: { $regex: descriptionRegex },
+    };
+    return this.postModel.find(matchQuery).exec();
+  }
+
   async findUserPosts(id: string) {
     try {
       const post = await this.postModel.find({ 'owner.id': id });
@@ -72,7 +82,9 @@ export class PostsService {
 
   async findAllApprovedPosts() {
     try {
-      const post = await this.postModel.find({ verify: 'approve' }).exec();
+      const post = await this.postModel
+        .find({ verify: 'approve', isActive: true })
+        .exec();
       return post;
     } catch (e) {
       throw new NotFound('Post not found');

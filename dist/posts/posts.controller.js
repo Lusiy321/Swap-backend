@@ -36,8 +36,14 @@ let PostsController = class PostsController {
     async findMy(request) {
         return this.postService.findMyPosts(request);
     }
+    async findUserPost(id) {
+        return this.postService.findUserPosts(id);
+    }
     async findAllAprove() {
         return this.postService.findAllApprovedPosts();
+    }
+    async searchPosts(query) {
+        return this.postService.searchPosts(query);
     }
     async findById(id) {
         return this.postService.findPostById(id);
@@ -124,13 +130,31 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "findMy", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Get all aproved Post' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get user Posts' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: [posts_model_1.Posts] }),
+    (0, common_1.Get)('/user-posts/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "findUserPost", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Get all aproved Post if post active' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: [posts_model_1.Posts] }),
     (0, common_1.Get)('/'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "findAllAprove", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Search posts from query' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: [posts_model_1.Posts] }),
+    (0, common_1.Get)('/search'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "searchPosts", null);
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Get post by ID' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),

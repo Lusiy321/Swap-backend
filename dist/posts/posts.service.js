@@ -80,9 +80,29 @@ let PostsService = class PostsService {
             throw new http_errors_1.NotFound('Post not found');
         }
     }
+    async searchPosts(query) {
+        const titleRegex = new RegExp(query.title, 'i');
+        const descriptionRegex = new RegExp(query.description, 'i');
+        const matchQuery = {
+            title: { $regex: titleRegex },
+            description: { $regex: descriptionRegex },
+        };
+        return this.postModel.find(matchQuery).exec();
+    }
+    async findUserPosts(id) {
+        try {
+            const post = await this.postModel.find({ 'owner.id': id });
+            return post;
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
     async findAllApprovedPosts() {
         try {
-            const post = await this.postModel.find({ verify: 'approve' }).exec();
+            const post = await this.postModel
+                .find({ verify: 'approve', isActive: true })
+                .exec();
             return post;
         }
         catch (e) {

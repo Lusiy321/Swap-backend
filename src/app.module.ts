@@ -12,7 +12,6 @@ import { PostsModule } from './posts/posts.module';
 import { PostSchema, Posts } from './posts/posts.model';
 import { AuthModule } from './auth/auth.module';
 
-
 @Module({
   imports: [
     AuthModule,
