@@ -103,7 +103,7 @@ export class PostsController {
     return this.postService.updatePost(post, id, request);
   }
 
-  @ApiOperation({ summary: 'Delet user (admin of moderator only)' })
+  @ApiOperation({ summary: 'Delet post' })
   @ApiResponse({ status: 200, type: Posts })
   @ApiBearerAuth('BearerAuthMethod')
   @Delete('/:id')
@@ -187,6 +187,18 @@ export class PostsController {
     return this.postService.commentPosts(id, request, comments);
   }
 
+  @ApiOperation({ summary: 'Delet comments' })
+  @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Delete('/comments/:postId/:commentId')
+  async deleteComment(
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Req() request: any,
+  ): Promise<Posts> {
+    return this.postService.deleteComment(postId, commentId, request);
+  }
+
   @ApiOperation({
     summary: 'Set comment for comments',
   })
@@ -219,6 +231,18 @@ export class PostsController {
     @Req() request: any,
   ): Promise<Posts> {
     return this.postService.toExchangePosts(postId, userPostId, request);
+  }
+
+  @ApiOperation({ summary: 'Delet exchanges' })
+  @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Delete('/to-exchange/:postId/:exchangeId')
+  async deleteExchange(
+    @Param('postId') postId: string,
+    @Param('exchangeId') exchangeId: string,
+    @Req() request: any,
+  ): Promise<Posts> {
+    return this.postService.deleteExchange(postId, exchangeId, request);
   }
 
   @ApiOperation({

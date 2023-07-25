@@ -25,7 +25,8 @@
 import { Model } from 'mongoose';
 import { UpdateUserDto } from 'src/users/dto/update.user.dto';
 import { verify } from './dto/verify.post.dto';
-import { CreateCommentDto } from './dto/create.comment.dto';
+import { Comment } from './utils/comment.interface';
+import { Exchange } from './utils/exchange.interface';
 export type PostDocument = Posts & Document;
 export declare class Posts extends Model<Posts> {
     title: string;
@@ -38,12 +39,8 @@ export declare class Posts extends Model<Posts> {
     verify: verify;
     isActive: boolean;
     views: number;
-    comments: [CreateCommentDto];
-    toExchange: [{
-        id: string;
-        agree: boolean;
-        data: object;
-    }];
+    comments: Comment[];
+    toExchange: Exchange[];
 }
 export declare const PostSchema: import("mongoose").Schema<Posts, Model<Posts, any, any, any, import("mongoose").Document<unknown, any, Posts> & Omit<Posts & {
     _id: import("mongoose").Types.ObjectId;

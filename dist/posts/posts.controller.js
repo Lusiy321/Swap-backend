@@ -75,11 +75,17 @@ let PostsController = class PostsController {
     async setComments(comments, id, request) {
         return this.postService.commentPosts(id, request, comments);
     }
+    async deleteComment(postId, commentId, request) {
+        return this.postService.deleteComment(postId, commentId, request);
+    }
     async setAnswerComments(answer, postId, commentId, request) {
         return this.postService.answerCommentPosts(postId, request, commentId, answer);
     }
     async setExchange(postId, userPostId, request) {
         return this.postService.toExchangePosts(postId, userPostId, request);
+    }
+    async deleteExchange(postId, exchangeId, request) {
+        return this.postService.deleteExchange(postId, exchangeId, request);
     }
     async setExchangeTrue(postId, userPostId, request) {
         return this.postService.exchangeTruePosts(postId, userPostId, request);
@@ -177,7 +183,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "update", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Delet user (admin of moderator only)' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Delet post' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
     (0, common_1.Delete)('/:id'),
@@ -269,6 +275,18 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "setComments", null);
 __decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Delet comments' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Delete)('/comments/:postId/:commentId'),
+    __param(0, (0, common_1.Param)('postId')),
+    __param(1, (0, common_1.Param)('commentId')),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "deleteComment", null);
+__decorate([
     (0, swagger_1.ApiOperation)({
         summary: 'Set comment for comments',
     }),
@@ -297,6 +315,18 @@ __decorate([
     __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "setExchange", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Delet exchanges' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Delete)('/to-exchange/:postId/:exchangeId'),
+    __param(0, (0, common_1.Param)('postId')),
+    __param(1, (0, common_1.Param)('exchangeId')),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "deleteExchange", null);
 __decorate([
     (0, swagger_1.ApiOperation)({
         summary: 'Set propouse for exchange',

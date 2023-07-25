@@ -170,14 +170,66 @@ let PostsService = class PostsService {
                 const find = await this.postModel.findByIdAndRemove({ _id: id }).exec();
                 return find;
             }
-            if (post.owner === user.id) {
+            else if (post.owner.id === user.id) {
                 const find = await this.postModel.findByIdAndRemove({ _id: id }).exec();
                 return find;
             }
-            return;
+            else {
+                throw new http_errors_1.NotFound('Post or user not found');
+            }
         }
         catch (e) {
             throw new http_errors_1.NotFound('Post or user not found');
+        }
+    }
+    async deleteComment(postId, commentId, req) {
+        const user = await this.userService.findToken(req);
+        const post = await this.postModel.findById({ _id: postId });
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            if (user.role === 'admin' || user.role === 'moderator') {
+                const find = await this.postModel.findOneAndUpdate({ _id: postId }, { $pull: { comments: { id: commentId } } }, { new: true });
+                return find;
+            }
+            else if (post.owner.id === user.id) {
+                const find = await this.postModel.findOneAndUpdate({ _id: postId }, { $pull: { comments: { id: commentId } } }, { new: true });
+                return find;
+            }
+            else {
+                throw new http_errors_1.NotFound('Comment or user not found');
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Comment or user not found');
+        }
+    }
+    async deleteExchange(postId, exchangeId, req) {
+        const user = await this.userService.findToken(req);
+        const post = await this.postModel.findById({ _id: postId });
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            if (user.role === 'admin' || user.role === 'moderator') {
+                const find = await this.postModel.findOneAndUpdate({ _id: postId }, { $pull: { toExchange: { id: exchangeId } } }, { new: true });
+                return find;
+            }
+            else if (post.owner.id === user.id) {
+                const find = await this.postModel.findOneAndUpdate({ _id: postId }, { $pull: { toExchange: { id: exchangeId } } }, { new: true });
+                return find;
+            }
+            else if (post.toExchange[0].data.owner.id === user.id) {
+                const find = await this.postModel.findOneAndUpdate({ _id: postId }, { $pull: { toExchange: { id: exchangeId } } }, { new: true });
+                return find;
+            }
+            else {
+                throw new http_errors_1.NotFound('Exchange not found');
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Exchange not found');
         }
     }
     async verifyPost(id, req, postUp) {

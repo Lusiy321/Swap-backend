@@ -23,8 +23,10 @@ export declare class PostsController {
     getMyExchenge(request: any): Promise<Posts[]>;
     setViews(id: string): Promise<Posts>;
     setComments(comments: CreateCommentDto, id: string, request: any): Promise<Posts>;
+    deleteComment(postId: string, commentId: string, request: any): Promise<Posts>;
     setAnswerComments(answer: CreateCommentDto, postId: string, commentId: string, request: any): Promise<Posts>;
     setExchange(postId: string, userPostId: string, request: any): Promise<Posts>;
+    deleteExchange(postId: string, exchangeId: string, request: any): Promise<Posts>;
     setExchangeTrue(postId: string, userPostId: string, request: any): Promise<Posts>;
     setExchangeFalse(postId: string, userPostId: string, request: any): Promise<Posts>;
 }

@@ -4,7 +4,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Model } from 'mongoose';
 import { UpdateUserDto } from 'src/users/dto/update.user.dto';
 import { verify } from './dto/verify.post.dto';
-import { CreateCommentDto } from './dto/create.comment.dto';
+import { Comment } from './utils/comment.interface';
+import { Exchange } from './utils/exchange.interface';
 
 export type PostDocument = Posts & Document;
 
@@ -108,19 +109,19 @@ export class Posts extends Model<Posts> {
   })
   views: number;
 
-  @ApiProperty({ example: '[]', description: 'Post to exchange' })
+  @ApiProperty({ example: '[]', description: 'Post comments' })
   @Prop({
-    type: Array<CreateCommentDto>,
+    type: [],
     default: [],
   })
-  comments: [CreateCommentDto];
+  comments: Comment[];
 
   @ApiProperty({ example: '[]', description: 'Post to exchange' })
   @Prop({
     type: Array<{ id: string; agree: null; data: object }>,
     default: [],
   })
-  toExchange: [{ id: string; agree: boolean; data: object }];
+  toExchange: Exchange[];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Posts);

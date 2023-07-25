@@ -123,9 +123,9 @@ __decorate([
     __metadata("design:type", Number)
 ], Posts.prototype, "views", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '[]', description: 'Post to exchange' }),
+    (0, swagger_1.ApiProperty)({ example: '[]', description: 'Post comments' }),
     (0, mongoose_1.Prop)({
-        type: (Array),
+        type: [],
         default: [],
     }),
     __metadata("design:type", Array)
