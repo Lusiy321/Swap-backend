@@ -211,6 +211,15 @@ let PostsService = class PostsService {
         if (!user) {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
+        const ownerId = user.id;
+        const toExchangeArray = post.toExchange;
+        const foundUser = function findInToExchange(toExchangeArray, ownerId) {
+            const foundItem = toExchangeArray.find((item) => item.data.owner.id === ownerId);
+            return foundItem ? foundItem.data : null;
+        };
+        if (foundUser(toExchangeArray, ownerId) === null) {
+            throw new http_errors_1.NotFound('Exchange not found');
+        }
         try {
             if (user.role === 'admin' || user.role === 'moderator') {
                 const find = await this.postModel.findOneAndUpdate({ _id: postId }, { $pull: { toExchange: { id: exchangeId } } }, { new: true });
@@ -220,7 +229,7 @@ let PostsService = class PostsService {
                 const find = await this.postModel.findOneAndUpdate({ _id: postId }, { $pull: { toExchange: { id: exchangeId } } }, { new: true });
                 return find;
             }
-            else if (post.toExchange[0].data.owner.id === user.id) {
+            else if (foundUser(toExchangeArray, ownerId).owner.id === user.id) {
                 const find = await this.postModel.findOneAndUpdate({ _id: postId }, { $pull: { toExchange: { id: exchangeId } } }, { new: true });
                 return find;
             }
