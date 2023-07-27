@@ -82,8 +82,7 @@ let PostsController = class PostsController {
         return this.postService.answerCommentPosts(postId, request, commentId, answer);
     }
     async setExchange(postId, userPostId, request) {
-        this.postService.toExchangePosts(postId, userPostId, request);
-        return;
+        return this.postService.toExchangePosts(postId, userPostId, request);
     }
     async deleteExchange(postId, exchangeId, request) {
         return this.postService.deleteExchange(postId, exchangeId, request);

@@ -28,7 +28,7 @@ export declare class PostsService {
     findMyFavPosts(req: any): Promise<Posts[]>;
     commentPosts(id: string, req: any, comments: CreateCommentDto): Promise<Posts>;
     answerCommentPosts(postId: string, req: any, commentId: string, answer: CreateCommentDto): Promise<Posts>;
-    toExchangePosts(postId: string, userPostId: string, req: any): Promise<any>;
+    toExchangePosts(postId: string, userPostId: string, req: any): Promise<Posts>;
     exchangeTruePosts(postId: string, userPostId: string, req: any): Promise<any>;
     exchangeFalsePosts(postId: string, userPostId: string, req: any): Promise<any>;
     findMyOwnPosts(req: any): Promise<any>;

@@ -214,7 +214,7 @@ let PostsService = class PostsService {
         const ownerId = user.id;
         const toExchangeArray = post.toExchange;
         const foundUser = function findInToExchange(toExchangeArray, ownerId) {
-            const foundItem = toExchangeArray.find((item) => item.data.owner.id === ownerId);
+            const foundItem = toExchangeArray.find((item) => item.user === ownerId);
             return foundItem ? foundItem.data : null;
         };
         if (foundUser(toExchangeArray, ownerId) === null) {
@@ -229,7 +229,7 @@ let PostsService = class PostsService {
                 const find = await this.postModel.findOneAndUpdate({ _id: postId }, { $pull: { toExchange: { id: exchangeId } } }, { new: true });
                 return find;
             }
-            else if (foundUser(toExchangeArray, ownerId).owner.id === user.id) {
+            else if (foundUser(toExchangeArray, ownerId).user === user.id) {
                 const find = await this.postModel.findOneAndUpdate({ _id: postId }, { $pull: { toExchange: { id: exchangeId } } }, { new: true });
                 return find;
             }
@@ -408,19 +408,36 @@ let PostsService = class PostsService {
         }
     }
     async toExchangePosts(postId, userPostId, req) {
-        const user = await this.userService.findToken(req);
-        if (!user) {
-            throw new http_errors_1.Unauthorized('jwt expired');
-        }
         try {
+            const user = await this.userService.findToken(req);
+            if (!user) {
+                throw new http_errors_1.Unauthorized('jwt expired');
+            }
             const post = await this.postModel.findById(postId);
-            const userPost = await this.postModel.findById(userPostId);
+            if (!post) {
+                throw new http_errors_1.NotFound('Post not found');
+            }
+            const foundUser = function findInToExchange(toExchangeArray, ownerId) {
+                const foundItem = toExchangeArray.find((item) => item.user === ownerId);
+                return foundItem ? foundItem.user : null;
+            };
             if (post) {
-                const array = post.toExchange;
-                array.push({ id: (0, uuid_1.v4)(), agree: null, data: userPost });
-                await this.postModel.updateOne({ _id: postId }, { $set: { toExchange: array } });
-                post.save();
-                return await this.postModel.findById(postId);
+                if (foundUser(post.toExchange, user.id) === null) {
+                    const array = post.toExchange;
+                    array.push({
+                        id: (0, uuid_1.v4)(),
+                        agree: null,
+                        data: userPostId,
+                        user: user.id,
+                    });
+                    await this.postModel.updateOne({ _id: postId }, { $set: { toExchange: array } });
+                    post.save();
+                    const newPost = await this.postModel.findById(postId);
+                    return newPost;
+                }
+                else {
+                    throw new http_errors_1.NotFound('Offer already exist');
+                }
             }
         }
         catch (e) {

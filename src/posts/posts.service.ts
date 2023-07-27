@@ -214,9 +214,7 @@ export class PostsService {
       toExchangeArray: any[],
       ownerId: string,
     ) {
-      const foundItem = toExchangeArray.find(
-        (item) => item.data.owner.id === ownerId,
-      );
+      const foundItem = toExchangeArray.find((item) => item.user === ownerId);
       return foundItem ? foundItem.data : null;
     };
     if (foundUser(toExchangeArray, ownerId) === null) {
@@ -238,7 +236,7 @@ export class PostsService {
           { new: true },
         );
         return find;
-      } else if (foundUser(toExchangeArray, ownerId).owner.id === user.id) {
+      } else if (foundUser(toExchangeArray, ownerId).user === user.id) {
         const find = await this.postModel.findOneAndUpdate(
           { _id: postId },
           { $pull: { toExchange: { id: exchangeId } } },
@@ -445,23 +443,50 @@ export class PostsService {
     }
   }
 
-  async toExchangePosts(postId: string, userPostId: string, req: any) {
-    const user = await this.userService.findToken(req);
-    if (!user) {
-      throw new Unauthorized('jwt expired');
-    }
+  async toExchangePosts(
+    postId: string,
+    userPostId: string,
+    req: any,
+  ): Promise<Posts> {
     try {
+      const user = await this.userService.findToken(req);
+      if (!user) {
+        throw new Unauthorized('jwt expired');
+      }
+
       const post = await this.postModel.findById(postId);
-      const userPost = await this.postModel.findById(userPostId);
+
+      if (!post) {
+        throw new NotFound('Post not found');
+      }
+      const foundUser = function findInToExchange(
+        toExchangeArray: any[],
+        ownerId: string,
+      ) {
+        const foundItem = toExchangeArray.find((item) => item.user === ownerId);
+        return foundItem ? foundItem.user : null;
+      };
+
       if (post) {
-        const array = post.toExchange;
-        array.push({ id: uuidv4(), agree: null, data: userPost });
-        await this.postModel.updateOne(
-          { _id: postId },
-          { $set: { toExchange: array } },
-        );
-        post.save();
-        return await this.postModel.findById(postId);
+        if (foundUser(post.toExchange, user.id) === null) {
+          const array = post.toExchange;
+          array.push({
+            id: uuidv4(),
+            agree: null,
+            data: userPostId,
+            user: user.id,
+          });
+
+          await this.postModel.updateOne(
+            { _id: postId },
+            { $set: { toExchange: array } },
+          );
+          post.save();
+          const newPost = await this.postModel.findById(postId);
+          return newPost;
+        } else {
+          throw new NotFound('Offer already exist');
+        }
       }
     } catch (e) {
       throw new NotFound('Post not found');
