@@ -401,7 +401,6 @@ export class PostsService {
           { _id: id },
           { $set: { comments: array } },
         );
-        post.save();
         return await this.postModel.findById(id);
       }
     } catch (e) {

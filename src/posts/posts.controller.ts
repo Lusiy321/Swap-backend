@@ -230,7 +230,8 @@ export class PostsController {
     @Param('userPostId') userPostId: string,
     @Req() request: any,
   ): Promise<Posts> {
-    return this.postService.toExchangePosts(postId, userPostId, request);
+    this.postService.toExchangePosts(postId, userPostId, request);
+    return;
   }
 
   @ApiOperation({ summary: 'Delet exchanges' })

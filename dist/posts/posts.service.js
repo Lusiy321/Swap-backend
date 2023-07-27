@@ -373,7 +373,6 @@ let PostsService = class PostsService {
                 const array = post.comments;
                 array.push(comments);
                 await this.postModel.updateOne({ _id: id }, { $set: { comments: array } });
-                post.save();
                 return await this.postModel.findById(id);
             }
         }
