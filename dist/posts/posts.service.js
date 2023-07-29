@@ -357,22 +357,29 @@ let PostsService = class PostsService {
             throw new http_errors_1.NotFound('Post not found');
         }
     }
-    async commentPosts(id, req, comments) {
+    async commentPosts(postId, req, comments) {
         const user = await this.userService.findToken(req);
         if (!user) {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
         try {
-            const post = await this.postModel.findById(id);
+            const post = await this.postModel.findById(postId);
             if (post) {
                 comments.id = (0, uuid_1.v4)();
-                const { firstName, lastName, avatarURL, isOnline } = user;
-                comments.user = { firstName, lastName, avatarURL, isOnline };
+                const { id, firstName, lastName, phone, avatarURL, location } = user;
+                comments.user = {
+                    id,
+                    firstName,
+                    lastName,
+                    phone,
+                    avatarURL,
+                    location,
+                };
                 comments.answer = [];
                 const array = post.comments;
                 array.push(comments);
-                await this.postModel.updateOne({ _id: id }, { $set: { comments: array } });
-                return await this.postModel.findById(id);
+                await this.postModel.updateOne({ _id: postId }, { $set: { comments: array } });
+                return await this.postModel.findById(postId);
             }
         }
         catch (e) {
@@ -392,8 +399,8 @@ let PostsService = class PostsService {
                 if (commentIndex !== -1) {
                     const answerArr = comments[commentIndex].answer;
                     answer.id = (0, uuid_1.v4)();
-                    const { firstName, lastName, avatarURL, isOnline } = user;
-                    answer.user = { firstName, lastName, avatarURL, isOnline };
+                    const { id, firstName, lastName, phone, avatarURL, location } = user;
+                    answer.user = { id, firstName, lastName, phone, avatarURL, location };
                     answerArr.push(answer);
                     await this.postModel.updateOne({ _id: postId, 'comments.id': commentId }, { $push: { 'comments.$.answer': answer } });
                     await post.save();

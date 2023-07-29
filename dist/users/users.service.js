@@ -140,6 +140,35 @@ let UsersService = class UsersService {
                 },
             },
         });
+        await this.postModel.updateMany({ 'comments.user.id': user.id }, {
+            $set: {
+                'comments.$[comment].user': {
+                    id: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    phone: user.phone,
+                    avatarURL: user.avatarURL,
+                    location: user.location,
+                },
+            },
+        }, { arrayFilters: [{ 'comment.user.id': user.id }] });
+        await this.postModel.updateMany({ 'comments.answer.user.id': user.id }, {
+            $set: {
+                'comments.$[comment].answer.$[ans].user': {
+                    id: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    phone: user.phone,
+                    avatarURL: user.avatarURL,
+                    location: user.location,
+                },
+            },
+        }, {
+            arrayFilters: [
+                { 'comment.user.id': user.id },
+                { 'ans.user.id': user.id },
+            ],
+        });
         return;
     }
     async delete(id, req) {

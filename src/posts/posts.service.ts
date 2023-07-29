@@ -378,7 +378,7 @@ export class PostsService {
   }
 
   async commentPosts(
-    id: string,
+    postId: string,
     req: any,
     comments: CreateCommentDto,
   ): Promise<Posts> {
@@ -386,20 +386,29 @@ export class PostsService {
     if (!user) {
       throw new Unauthorized('jwt expired');
     }
+
     try {
-      const post = await this.postModel.findById(id);
+      const post = await this.postModel.findById(postId);
       if (post) {
         comments.id = uuidv4();
-        const { firstName, lastName, avatarURL, isOnline } = user;
-        comments.user = { firstName, lastName, avatarURL, isOnline };
+
+        const { id, firstName, lastName, phone, avatarURL, location } = user;
+        comments.user = {
+          id,
+          firstName,
+          lastName,
+          phone,
+          avatarURL,
+          location,
+        };
         comments.answer = [];
         const array = post.comments;
         array.push(comments);
         await this.postModel.updateOne(
-          { _id: id },
+          { _id: postId },
           { $set: { comments: array } },
         );
-        return await this.postModel.findById(id);
+        return await this.postModel.findById(postId);
       }
     } catch (e) {
       throw new NotFound('Post not found');
@@ -426,8 +435,8 @@ export class PostsService {
         if (commentIndex !== -1) {
           const answerArr = comments[commentIndex].answer;
           answer.id = uuidv4();
-          const { firstName, lastName, avatarURL, isOnline } = user;
-          answer.user = { firstName, lastName, avatarURL, isOnline };
+          const { id, firstName, lastName, phone, avatarURL, location } = user;
+          answer.user = { id, firstName, lastName, phone, avatarURL, location };
           answerArr.push(answer);
           await this.postModel.updateOne(
             { _id: postId, 'comments.id': commentId },

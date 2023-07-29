@@ -9,7 +9,6 @@ import { UpdateUserDto } from './dto/update.user.dto';
 import { GoogleUserDto } from './dto/google.user.dto';
 import { sign, verify, JwtPayload } from 'jsonwebtoken';
 import { Posts } from 'src/posts/posts.model';
-import { parseUser } from './utils/parse.user';
 
 @Injectable()
 export class UsersService {
@@ -140,7 +139,43 @@ export class UsersService {
         },
       },
     );
-
+    await this.postModel.updateMany(
+      { 'comments.user.id': user.id },
+      {
+        $set: {
+          'comments.$[comment].user': {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            avatarURL: user.avatarURL,
+            location: user.location,
+          },
+        },
+      },
+      { arrayFilters: [{ 'comment.user.id': user.id }] },
+    );
+    await this.postModel.updateMany(
+      { 'comments.answer.user.id': user.id },
+      {
+        $set: {
+          'comments.$[comment].answer.$[ans].user': {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            avatarURL: user.avatarURL,
+            location: user.location,
+          },
+        },
+      },
+      {
+        arrayFilters: [
+          { 'comment.user.id': user.id },
+          { 'ans.user.id': user.id },
+        ],
+      },
+    );
     return;
   }
 

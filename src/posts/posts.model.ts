@@ -123,7 +123,34 @@ export class Posts extends Model<Posts> {
 
   @ApiProperty({ example: '[]', description: 'Post comments' })
   @Prop({
-    type: [],
+    type: [
+      {
+        id: { type: String },
+        text: { type: String, required: true },
+        user: {
+          id: { type: String },
+          firstName: String,
+          lastName: String,
+          phone: String,
+          avatarURL: String,
+          location: String,
+        },
+        answer: [
+          {
+            id: { type: String },
+            text: { type: String, required: true },
+            user: {
+              id: { type: String },
+              firstName: String,
+              lastName: String,
+              phone: String,
+              avatarURL: String,
+              location: String,
+            },
+          },
+        ],
+      },
+    ],
     default: [],
   })
   comments: Comment[];
