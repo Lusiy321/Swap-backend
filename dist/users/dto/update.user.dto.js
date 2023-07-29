@@ -14,6 +14,10 @@ const swagger_1 = require("@nestjs/swagger");
 class UpdateUserDto {
 }
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'fksldflk88789dksfjl', description: 'User ID' }),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "id", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({ example: 'Petro', description: 'User first name' }),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "firstName", void 0);
@@ -33,9 +37,5 @@ __decorate([
     (0, swagger_1.ApiProperty)({ example: 'https://', description: 'User avatar' }),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "avatarURL", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 'false', description: 'User status' }),
-    __metadata("design:type", Boolean)
-], UpdateUserDto.prototype, "isOnline", void 0);
 exports.UpdateUserDto = UpdateUserDto;
 //# sourceMappingURL=update.user.dto.js.map

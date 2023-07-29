@@ -11,6 +11,8 @@ import { PostsService } from './posts/posts.service';
 import { PostsModule } from './posts/posts.module';
 import { PostSchema, Posts } from './posts/posts.model';
 import { AuthModule } from './auth/auth.module';
+import { OrderService } from './orders/orders.service';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -28,8 +30,9 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     PassportModule.register({ session: true }),
     PostsModule,
+    OrdersModule,
   ],
   controllers: [PostsController],
-  providers: [PostsService],
+  providers: [PostsService, OrderService],
 })
 export class AppModule {}

@@ -8,10 +8,15 @@ import { Conflict, NotFound, BadRequest, Unauthorized } from 'http-errors';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { GoogleUserDto } from './dto/google.user.dto';
 import { sign, verify, JwtPayload } from 'jsonwebtoken';
+import { Posts } from 'src/posts/posts.model';
+import { parseUser } from './utils/parse.user';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: User) {}
+  constructor(
+    @InjectModel(User.name) private userModel: User,
+    @InjectModel(Posts.name) private postModel: Posts,
+  ) {}
 
   async findAll(req: any): Promise<User[]> {
     const user = await this.findToken(req);
@@ -100,33 +105,43 @@ export class UsersService {
   }
 
   async update(user: UpdateUserDto, req: any): Promise<User> {
-    const { firstName, lastName, phone, location, avatarURL, isOnline } = user;
+    const { firstName, lastName, phone, location, avatarURL } = user;
     const findId = await this.findToken(req);
     if (!findId) {
       throw new Unauthorized('jwt expired');
     }
-    if (
-      !firstName ||
-      !lastName ||
-      !phone ||
-      !location ||
-      !avatarURL ||
-      !isOnline
-    ) {
-      throw new BadRequest('Bad request');
+
+    if (firstName || lastName || phone || location || avatarURL) {
+      await this.userModel.findByIdAndUpdate(
+        { _id: findId.id },
+        { firstName, lastName, phone, location, avatarURL },
+      );
+      const userUpdate = this.userModel.findById({ _id: findId.id });
+      this.updateUserData(findId.id);
+
+      return userUpdate;
     }
-    try {
-      if (firstName || lastName || phone || location || avatarURL || isOnline) {
-        await this.userModel.findByIdAndUpdate(
-          { _id: findId.id },
-          { firstName, lastName, phone, location, avatarURL, isOnline },
-        );
-        const userUpdate = this.userModel.findById({ _id: findId.id });
-        return userUpdate;
-      }
-    } catch (e) {
-      throw new NotFound('User not found');
-    }
+  }
+
+  async updateUserData(findId: string): Promise<Posts[]> {
+    const user = await this.userModel.findById({ _id: findId });
+    await this.postModel.updateMany(
+      { 'owner.id': user.id },
+      {
+        $set: {
+          owner: {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            avatarURL: user.avatarURL,
+            location: user.location,
+          },
+        },
+      },
+    );
+
+    return;
   }
 
   async delete(id: string, req: any): Promise<User> {

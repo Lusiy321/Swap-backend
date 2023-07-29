@@ -23,27 +23,15 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Model } from 'mongoose';
-import { verify } from './dto/verify.post.dto';
-import { Comment } from './utils/comment.interface';
-import { Exchange } from './utils/exchange.interface';
-export type PostDocument = Posts & Document;
-export declare class Posts extends Model<Posts> {
-    title: string;
-    description: string;
-    category: string;
-    location: string;
-    img: string;
-    favorite: Array<string>;
-    owner: object;
-    price: number;
-    verify: verify;
-    isActive: boolean;
-    views: number;
-    comments: Comment[];
-    toExchange: Exchange[];
+export type OrderDocument = Orders & Document;
+export declare class Orders extends Model<Orders> {
+    product: string;
+    offer: string;
+    status: boolean;
+    chat: Array<object>;
 }
-export declare const PostSchema: import("mongoose").Schema<Posts, Model<Posts, any, any, any, import("mongoose").Document<unknown, any, Posts> & Omit<Posts & {
+export declare const OrderSchema: import("mongoose").Schema<Orders, Model<Orders, any, any, any, import("mongoose").Document<unknown, any, Orders> & Omit<Orders & {
     _id: import("mongoose").Types.ObjectId;
-}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Posts, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Posts>> & Omit<import("mongoose").FlatRecord<Posts> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Orders, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Orders>> & Omit<import("mongoose").FlatRecord<Orders> & {
     _id: import("mongoose").Types.ObjectId;
 }, never>>;

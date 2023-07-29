@@ -151,8 +151,7 @@ let PostsService = class PostsService {
             if (user) {
                 const params = __rest(post, []);
                 await this.postModel.findByIdAndUpdate({ _id: id }, Object.assign({}, params));
-                const postUpdate = this.postModel.findById({ _id: id });
-                return postUpdate;
+                return this.postModel.findById({ _id: id });
             }
         }
         catch (e) {

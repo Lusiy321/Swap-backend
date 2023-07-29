@@ -6,11 +6,11 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { GoogleStrategy } from './utils/GoogleStrategy';
 import { SessionSerializer } from './utils/Serializer';
-import { UsersService } from 'src/users/users.service';
-
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
+    UsersModule,
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema, collection: 'users' },
     ]),
@@ -18,11 +18,9 @@ import { UsersService } from 'src/users/users.service';
   controllers: [AuthController],
   providers: [
     GoogleStrategy,
-    UsersService,
     SessionSerializer,
     { provide: 'AUTH_SERVICE', useClass: AuthService },
     AuthService,
-    
   ],
 })
 export class AuthModule {}

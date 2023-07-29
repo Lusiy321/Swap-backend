@@ -18,6 +18,8 @@ const posts_service_1 = require("./posts/posts.service");
 const posts_module_1 = require("./posts/posts.module");
 const posts_model_1 = require("./posts/posts.model");
 const auth_module_1 = require("./auth/auth.module");
+const orders_service_1 = require("./orders/orders.service");
+const orders_module_1 = require("./orders/orders.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -37,9 +39,10 @@ AppModule = __decorate([
             users_module_1.UsersModule,
             passport_1.PassportModule.register({ session: true }),
             posts_module_1.PostsModule,
+            orders_module_1.OrdersModule,
         ],
         controllers: [posts_controller_1.PostsController],
-        providers: [posts_service_1.PostsService],
+        providers: [posts_service_1.PostsService, orders_service_1.OrderService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

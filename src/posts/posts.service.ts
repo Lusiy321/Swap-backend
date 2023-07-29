@@ -134,8 +134,8 @@ export class PostsService {
       if (user) {
         const { ...params } = post;
         await this.postModel.findByIdAndUpdate({ _id: id }, { ...params });
-        const postUpdate = this.postModel.findById({ _id: id });
-        return postUpdate;
+
+        return this.postModel.findById({ _id: id });
       }
     } catch (e) {
       throw new NotFound('Post not found');

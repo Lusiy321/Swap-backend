@@ -37,6 +37,18 @@ export class Posts extends Model<Posts> {
   category: string;
 
   @ApiProperty({
+    example: 'Kyiv',
+    description: 'Item location',
+  })
+  @Prop({
+    type: String,
+    minlength: 2,
+    maxlength: 20,
+    default: 'Kyiv',
+  })
+  location: string;
+
+  @ApiProperty({
     example:
       'https://ldsound.info/wp-content/uploads/2013/07/25%D0%B0%D1%81128-ldsound_ru-1.jpg',
     description: 'Post image',
@@ -73,7 +85,7 @@ export class Posts extends Model<Posts> {
   @Prop({
     type: Object,
   })
-  owner: UpdateUserDto;
+  owner: object;
 
   @ApiProperty({
     example: '100',

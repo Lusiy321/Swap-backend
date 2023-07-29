@@ -6,6 +6,7 @@ import { UsersService } from './users.service';
 import { User, UserSchema } from './users.model';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { SendGridModule } from './utils/sendgrid.module';
+import { PostSchema, Posts } from 'src/posts/posts.model';
 
 @Module({
   imports: [
@@ -16,6 +17,9 @@ import { SendGridModule } from './utils/sendgrid.module';
     }),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema, collection: 'users' },
+    ]),
+    MongooseModule.forFeature([
+      { name: Posts.name, schema: PostSchema, collection: 'posts' },
     ]),
   ],
   exports: [UsersService],

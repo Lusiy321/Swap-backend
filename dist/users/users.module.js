@@ -14,6 +14,7 @@ const users_service_1 = require("./users.service");
 const users_model_1 = require("./users.model");
 const jwt_1 = require("@nestjs/jwt");
 const sendgrid_module_1 = require("./utils/sendgrid.module");
+const posts_model_1 = require("../posts/posts.model");
 let UsersModule = class UsersModule {
 };
 UsersModule = __decorate([
@@ -26,6 +27,9 @@ UsersModule = __decorate([
             }),
             mongoose_1.MongooseModule.forFeature([
                 { name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' },
+            ]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: posts_model_1.Posts.name, schema: posts_model_1.PostSchema, collection: 'posts' },
             ]),
         ],
         exports: [users_service_1.UsersService],

@@ -14,12 +14,13 @@ const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
 const GoogleStrategy_1 = require("./utils/GoogleStrategy");
 const Serializer_1 = require("./utils/Serializer");
-const users_service_1 = require("../users/users.service");
+const users_module_1 = require("../users/users.module");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            users_module_1.UsersModule,
             mongoose_1.MongooseModule.forFeature([
                 { name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' },
             ]),
@@ -27,7 +28,6 @@ AuthModule = __decorate([
         controllers: [auth_controller_1.AuthController],
         providers: [
             GoogleStrategy_1.GoogleStrategy,
-            users_service_1.UsersService,
             Serializer_1.SessionSerializer,
             { provide: 'AUTH_SERVICE', useClass: auth_service_1.AuthService },
             auth_service_1.AuthService,

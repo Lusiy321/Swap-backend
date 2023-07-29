@@ -19,9 +19,11 @@ const users_model_1 = require("./users.model");
 const bcrypt_1 = require("bcrypt");
 const http_errors_1 = require("http-errors");
 const jsonwebtoken_1 = require("jsonwebtoken");
+const posts_model_1 = require("../posts/posts.model");
 let UsersService = class UsersService {
-    constructor(userModel) {
+    constructor(userModel, postModel) {
         this.userModel = userModel;
+        this.postModel = postModel;
     }
     async findAll(req) {
         const user = await this.findToken(req);
@@ -112,29 +114,33 @@ let UsersService = class UsersService {
         }
     }
     async update(user, req) {
-        const { firstName, lastName, phone, location, avatarURL, isOnline } = user;
+        const { firstName, lastName, phone, location, avatarURL } = user;
         const findId = await this.findToken(req);
         if (!findId) {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
-        if (!firstName ||
-            !lastName ||
-            !phone ||
-            !location ||
-            !avatarURL ||
-            !isOnline) {
-            throw new http_errors_1.BadRequest('Bad request');
+        if (firstName || lastName || phone || location || avatarURL) {
+            await this.userModel.findByIdAndUpdate({ _id: findId.id }, { firstName, lastName, phone, location, avatarURL });
+            const userUpdate = this.userModel.findById({ _id: findId.id });
+            this.updateUserData(findId.id);
+            return userUpdate;
         }
-        try {
-            if (firstName || lastName || phone || location || avatarURL || isOnline) {
-                await this.userModel.findByIdAndUpdate({ _id: findId.id }, { firstName, lastName, phone, location, avatarURL, isOnline });
-                const userUpdate = this.userModel.findById({ _id: findId.id });
-                return userUpdate;
-            }
-        }
-        catch (e) {
-            throw new http_errors_1.NotFound('User not found');
-        }
+    }
+    async updateUserData(findId) {
+        const user = await this.userModel.findById({ _id: findId });
+        await this.postModel.updateMany({ 'owner.id': user.id }, {
+            $set: {
+                owner: {
+                    id: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    phone: user.phone,
+                    avatarURL: user.avatarURL,
+                    location: user.location,
+                },
+            },
+        });
+        return;
     }
     async delete(id, req) {
         const user = await this.findToken(req);
@@ -284,7 +290,9 @@ let UsersService = class UsersService {
 UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(users_model_1.User.name)),
-    __metadata("design:paramtypes", [users_model_1.User])
+    __param(1, (0, mongoose_1.InjectModel)(posts_model_1.Posts.name)),
+    __metadata("design:paramtypes", [users_model_1.User,
+        posts_model_1.Posts])
 ], UsersService);
 exports.UsersService = UsersService;
 users_model_1.UserSchema.methods.setPassword = async function (password) {
