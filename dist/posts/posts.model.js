@@ -172,7 +172,21 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '[]', description: 'Post to exchange' }),
     (0, mongoose_1.Prop)({
-        type: (Array),
+        type: [
+            {
+                id: { type: String },
+                agree: { type: Boolean, required: null },
+                data: Object,
+                user: {
+                    id: { type: String },
+                    firstName: String,
+                    lastName: String,
+                    phone: String,
+                    avatarURL: String,
+                    location: String,
+                },
+            },
+        ],
         default: [],
     }),
     __metadata("design:type", Array)

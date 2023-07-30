@@ -2,7 +2,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Model } from 'mongoose';
-import { UpdateUserDto } from 'src/users/dto/update.user.dto';
 import { verify } from './dto/verify.post.dto';
 import { Comment } from './utils/comment.interface';
 import { Exchange } from './utils/exchange.interface';
@@ -157,7 +156,21 @@ export class Posts extends Model<Posts> {
 
   @ApiProperty({ example: '[]', description: 'Post to exchange' })
   @Prop({
-    type: Array<{ id: string; agree: null; data: object }>,
+    type: [
+      {
+        id: { type: String },
+        agree: { type: Boolean, required: null },
+        data: Object,
+        user: {
+          id: { type: String },
+          firstName: String,
+          lastName: String,
+          phone: String,
+          avatarURL: String,
+          location: String,
+        },
+      },
+    ],
     default: [],
   })
   toExchange: Exchange[];

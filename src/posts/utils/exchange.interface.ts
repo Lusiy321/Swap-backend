@@ -2,11 +2,10 @@
 import { Posts } from '../posts.model';
 
 export interface Exchange {
-  id: string;
   agree: boolean;
   data: Posts;
   user: {
-    userID: string;
+    id: string;
     firstName: string;
     lastName: string;
     phone: string;

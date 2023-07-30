@@ -427,17 +427,23 @@ let PostsService = class PostsService {
                 const foundItem = toExchangeArray.find((item) => item.user === ownerId);
                 return foundItem ? foundItem.user : null;
             };
+            const userPost = await this.postModel.findById(userPostId);
             if (post) {
                 if (foundUser(post.toExchange, user.id) === null) {
                     const array = post.toExchange;
                     array.push({
-                        id: (0, uuid_1.v4)(),
                         agree: null,
-                        data: userPostId,
-                        user: user.id,
+                        data: userPost,
+                        user: {
+                            id: user.id,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            phone: user.phone,
+                            avatarURL: user.avatarURL,
+                            location: user.location,
+                        },
                     });
                     await this.postModel.updateOne({ _id: postId }, { $set: { toExchange: array } });
-                    post.save();
                     const newPost = await this.postModel.findById(postId);
                     return newPost;
                 }
