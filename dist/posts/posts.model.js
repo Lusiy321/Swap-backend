@@ -139,7 +139,7 @@ __decorate([
     (0, mongoose_1.Prop)({
         type: [
             {
-                id: { type: String },
+                id: String,
                 text: { type: String, required: true },
                 user: {
                     id: { type: String },
@@ -151,7 +151,7 @@ __decorate([
                 },
                 answer: [
                     {
-                        id: { type: String },
+                        id: String,
                         text: { type: String, required: true },
                         user: {
                             id: { type: String },

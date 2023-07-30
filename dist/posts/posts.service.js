@@ -374,6 +374,7 @@ let PostsService = class PostsService {
                     avatarURL,
                     location,
                 };
+                comments.id = (0, uuid_1.v4)();
                 comments.answer = [];
                 const array = post.comments;
                 array.push(comments);
@@ -402,7 +403,6 @@ let PostsService = class PostsService {
                     answer.user = { id, firstName, lastName, phone, avatarURL, location };
                     answerArr.push(answer);
                     await this.postModel.updateOne({ _id: postId, 'comments.id': commentId }, { $push: { 'comments.$.answer': answer } });
-                    await post.save();
                     return await this.postModel.findById(postId);
                 }
             }

@@ -399,6 +399,7 @@ export class PostsService {
           avatarURL,
           location,
         };
+        comments.id = uuidv4();
         comments.answer = [];
         const array = post.comments;
         array.push(comments);
@@ -440,7 +441,6 @@ export class PostsService {
             { _id: postId, 'comments.id': commentId },
             { $push: { 'comments.$.answer': answer } },
           );
-          await post.save();
           return await this.postModel.findById(postId);
         }
       }

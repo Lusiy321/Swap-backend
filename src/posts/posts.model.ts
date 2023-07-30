@@ -124,7 +124,7 @@ export class Posts extends Model<Posts> {
   @Prop({
     type: [
       {
-        id: { type: String },
+        id: String,
         text: { type: String, required: true },
         user: {
           id: { type: String },
@@ -136,7 +136,7 @@ export class Posts extends Model<Posts> {
         },
         answer: [
           {
-            id: { type: String },
+            id: String,
             text: { type: String, required: true },
             user: {
               id: { type: String },
