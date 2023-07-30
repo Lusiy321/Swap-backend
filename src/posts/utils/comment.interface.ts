@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 export interface Comment {
-  id: string;
   text: string;
   user: {
     id: string;

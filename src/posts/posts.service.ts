@@ -390,8 +390,6 @@ export class PostsService {
     try {
       const post = await this.postModel.findById(postId);
       if (post) {
-        comments.id = uuidv4();
-
         const { id, firstName, lastName, phone, avatarURL, location } = user;
         comments.user = {
           id,

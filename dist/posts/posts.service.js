@@ -365,7 +365,6 @@ let PostsService = class PostsService {
         try {
             const post = await this.postModel.findById(postId);
             if (post) {
-                comments.id = (0, uuid_1.v4)();
                 const { id, firstName, lastName, phone, avatarURL, location } = user;
                 comments.user = {
                     id,
