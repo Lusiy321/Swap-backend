@@ -455,14 +455,13 @@ export class PostsService {
     userPostId: string,
     req: any,
   ): Promise<Posts> {
+    const user = await this.userService.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
+
+    const post = await this.postModel.findById(postId);
     try {
-      const user = await this.userService.findToken(req);
-      if (!user) {
-        throw new Unauthorized('jwt expired');
-      }
-
-      const post = await this.postModel.findById(postId);
-
       if (!post) {
         throw new NotFound('Post not found');
       }
@@ -477,8 +476,10 @@ export class PostsService {
 
       if (post) {
         if (foundUser(post.toExchange, user.id) === null) {
+          const exchId = uuidv4();
           const array = post.toExchange;
           array.push({
+            id: exchId,
             agree: null,
             data: userPost,
             user: {
@@ -490,7 +491,7 @@ export class PostsService {
               location: user.location,
             },
           });
-
+          delete array._id;
           await this.postModel.updateOne(
             { _id: postId },
             { $set: { toExchange: array } },

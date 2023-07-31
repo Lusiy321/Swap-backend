@@ -139,7 +139,7 @@ export class Posts extends Model<Posts> {
             id: String,
             text: { type: String, required: true },
             user: {
-              id: { type: String },
+              id: String,
               firstName: String,
               lastName: String,
               phone: String,
@@ -149,6 +149,7 @@ export class Posts extends Model<Posts> {
           },
         ],
       },
+      { _id: false },
     ],
     default: [],
   })
@@ -158,7 +159,7 @@ export class Posts extends Model<Posts> {
   @Prop({
     type: [
       {
-        id: { type: String },
+        id: String,
         agree: { type: Boolean, required: null },
         data: Object,
         user: {
@@ -170,6 +171,7 @@ export class Posts extends Model<Posts> {
           location: String,
         },
       },
+      { _id: false },
     ],
     default: [],
   })

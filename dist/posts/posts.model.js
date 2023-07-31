@@ -154,7 +154,7 @@ __decorate([
                         id: String,
                         text: { type: String, required: true },
                         user: {
-                            id: { type: String },
+                            id: String,
                             firstName: String,
                             lastName: String,
                             phone: String,
@@ -164,6 +164,7 @@ __decorate([
                     },
                 ],
             },
+            { _id: false },
         ],
         default: [],
     }),
@@ -174,7 +175,7 @@ __decorate([
     (0, mongoose_1.Prop)({
         type: [
             {
-                id: { type: String },
+                id: String,
                 agree: { type: Boolean, required: null },
                 data: Object,
                 user: {
@@ -186,6 +187,7 @@ __decorate([
                     location: String,
                 },
             },
+            { _id: false },
         ],
         default: [],
     }),

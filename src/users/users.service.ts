@@ -156,6 +156,22 @@ export class UsersService {
       { arrayFilters: [{ 'comment.user.id': user.id }] },
     );
     await this.postModel.updateMany(
+      { 'toExchange.user.id': user.id },
+      {
+        $set: {
+          'toExchange.$[toExchange].user': {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            avatarURL: user.avatarURL,
+            location: user.location,
+          },
+        },
+      },
+      { arrayFilters: [{ 'toExchange.user.id': user.id }] },
+    );
+    await this.postModel.updateMany(
       { 'comments.answer.user.id': user.id },
       {
         $set: {
