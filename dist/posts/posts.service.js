@@ -83,10 +83,14 @@ let PostsService = class PostsService {
     async searchPosts(query) {
         const { req } = query;
         try {
-            const find = await this.postModel.find({ title: { $regex: req } }).exec();
+            const searchItem = req;
+            const regex = new RegExp(searchItem, 'i');
+            const find = await this.postModel
+                .find({ title: { $regex: regex } })
+                .exec();
             if (Array.isArray(find) && find.length === 0) {
                 const descr = await this.postModel
-                    .find({ description: { $regex: req } })
+                    .find({ description: { $regex: regex } })
                     .exec();
                 if (Array.isArray(descr) && descr.length === 0) {
                     return await this.postModel.find();
@@ -163,12 +167,28 @@ let PostsService = class PostsService {
             if (user) {
                 const params = __rest(post, []);
                 await this.postModel.findByIdAndUpdate({ _id: id }, Object.assign({}, params));
+                this.updatePostData(id);
                 return this.postModel.findById({ _id: id });
             }
         }
         catch (e) {
             throw new http_errors_1.NotFound('Post not found');
         }
+    }
+    async updatePostData(findId) {
+        const post = await this.postModel.findById({ _id: findId });
+        await this.postModel.updateMany({ 'toExchange.data.id': post.id }, {
+            $set: {
+                'toExchange.$[toExchange].data': {
+                    id: post.id,
+                    title: post.title,
+                    description: post.description,
+                    img: post.img,
+                    price: post.price,
+                },
+            },
+        }, { arrayFilters: [{ 'toExchange.data.id': post.id }] });
+        return;
     }
     async deletePost(id, req) {
         const user = await this.userService.findToken(req);
@@ -439,14 +459,23 @@ let PostsService = class PostsService {
                 return foundItem ? foundItem.user : null;
             };
             const userPost = await this.postModel.findById(userPostId);
-            if (post) {
+            if (!userPost) {
+                throw new http_errors_1.NotFound('Post not found');
+            }
+            if (userPost.verify === 'approve') {
                 if (foundUser(post.toExchange, user.id) === null) {
                     const exchId = (0, uuid_1.v4)();
                     const array = post.toExchange;
                     array.push({
                         id: exchId,
                         agree: null,
-                        data: userPost,
+                        data: {
+                            id: userPost.id,
+                            title: userPost.title,
+                            description: userPost.description,
+                            img: userPost.img,
+                            price: userPost.price,
+                        },
                         user: {
                             id: user.id,
                             firstName: user.firstName,

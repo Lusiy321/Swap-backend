@@ -148,12 +148,33 @@ export class PostsService {
       if (user) {
         const { ...params } = post;
         await this.postModel.findByIdAndUpdate({ _id: id }, { ...params });
-
+        this.updatePostData(id);
         return this.postModel.findById({ _id: id });
       }
     } catch (e) {
       throw new NotFound('Post not found');
     }
+  }
+
+  async updatePostData(findId: string): Promise<Posts[]> {
+    const post = await this.postModel.findById({ _id: findId });
+
+    await this.postModel.updateMany(
+      { 'toExchange.data.id': post.id },
+      {
+        $set: {
+          'toExchange.$[toExchange].data': {
+            id: post.id,
+            title: post.title,
+            description: post.description,
+            img: post.img,
+            price: post.price,
+          },
+        },
+      },
+      { arrayFilters: [{ 'toExchange.data.id': post.id }] },
+    );
+    return;
   }
 
   async deletePost(id: string, req: any): Promise<Posts> {
@@ -487,15 +508,23 @@ export class PostsService {
         return foundItem ? foundItem.user : null;
       };
       const userPost = await this.postModel.findById(userPostId);
-
-      if (post) {
+      if (!userPost) {
+        throw new NotFound('Post not found');
+      }
+      if (userPost.verify === 'approve') {
         if (foundUser(post.toExchange, user.id) === null) {
           const exchId = uuidv4();
           const array = post.toExchange;
           array.push({
             id: exchId,
             agree: null,
-            data: userPost,
+            data: {
+              id: userPost.id,
+              title: userPost.title,
+              description: userPost.description,
+              img: userPost.img,
+              price: userPost.price,
+            },
             user: {
               id: user.id,
               firstName: user.firstName,

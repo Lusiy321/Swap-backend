@@ -18,11 +18,21 @@ __decorate([
     __metadata("design:type", String)
 ], CreatePostDto.prototype, "title", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Change my item for your item', description: 'Post description' }),
+    (0, swagger_1.ApiProperty)({ example: 'Kyiv', description: 'User location' }),
+    __metadata("design:type", String)
+], CreatePostDto.prototype, "location", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'Change my item for your item',
+        description: 'Post description',
+    }),
     __metadata("design:type", String)
 ], CreatePostDto.prototype, "description", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'https://ldsound.info/wp-content/uploads/2013/07/25%D0%B0%D1%81128-ldsound_ru-1.jpg', description: 'Post image' }),
+    (0, swagger_1.ApiProperty)({
+        example: 'https://ldsound.info/wp-content/uploads/2013/07/25%D0%B0%D1%81128-ldsound_ru-1.jpg',
+        description: 'Post image',
+    }),
     __metadata("design:type", String)
 ], CreatePostDto.prototype, "img", void 0);
 exports.CreatePostDto = CreatePostDto;
