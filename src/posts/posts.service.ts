@@ -64,10 +64,14 @@ export class PostsService {
   async searchPosts(query: any): Promise<Posts[]> {
     const { req } = query;
     try {
-      const find = await this.postModel.find({ title: { $regex: req } }).exec();
+      const searchItem = req;
+      const regex = new RegExp(searchItem, 'i');
+      const find = await this.postModel
+        .find({ title: { $regex: regex } })
+        .exec();
       if (Array.isArray(find) && find.length === 0) {
         const descr = await this.postModel
-          .find({ description: { $regex: req } })
+          .find({ description: { $regex: regex } })
           .exec();
         if (Array.isArray(descr) && descr.length === 0) {
           return await this.postModel.find();
