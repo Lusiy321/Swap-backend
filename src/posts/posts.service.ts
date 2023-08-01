@@ -62,13 +62,23 @@ export class PostsService {
   }
 
   async searchPosts(query: any): Promise<Posts[]> {
-    const titleRegex = new RegExp(query.title, 'i');
-    const descriptionRegex = new RegExp(query.description, 'i');
-    const matchQuery = {
-      title: { $regex: titleRegex },
-      description: { $regex: descriptionRegex },
-    };
-    return this.postModel.find(matchQuery).exec();
+    const { req } = query;
+    try {
+      const find = await this.postModel.find({ title: { $regex: req } }).exec();
+      if (Array.isArray(find) && find.length === 0) {
+        const descr = await this.postModel
+          .find({ description: { $regex: req } })
+          .exec();
+        if (Array.isArray(descr) && descr.length === 0) {
+          return await this.postModel.find();
+        }
+        return descr;
+      } else {
+        return find;
+      }
+    } catch (e) {
+      throw new NotFound('Post not found');
+    }
   }
 
   async findUserPosts(id: string): Promise<Posts[]> {

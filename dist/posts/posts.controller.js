@@ -153,7 +153,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "findAllAprove", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Search posts from query' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Search posts from query ( ?req= )' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: [posts_model_1.Posts] }),
     (0, common_1.Get)('/search'),
     __param(0, (0, common_1.Query)()),

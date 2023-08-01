@@ -77,7 +77,7 @@ export class PostsController {
     return this.postService.findAllApprovedPosts();
   }
 
-  @ApiOperation({ summary: 'Search posts from query' })
+  @ApiOperation({ summary: 'Search posts from query ( ?req= )' })
   @ApiResponse({ status: 200, type: [Posts] })
   @Get('/search')
   async searchPosts(@Query() query: any): Promise<Posts[]> {
