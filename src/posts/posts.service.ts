@@ -4,7 +4,6 @@ import { Posts } from './posts.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Conflict, NotFound, BadRequest, Unauthorized } from 'http-errors';
 import { CreatePostDto } from './dto/create.post.dto';
-import { User } from 'src/users/users.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
 import { UsersService } from 'src/users/users.service';
 import { CreateCommentDto } from './dto/create.comment.dto';
@@ -14,7 +13,6 @@ import { v4 as uuidv4 } from 'uuid';
 export class PostsService {
   constructor(
     @InjectModel(Posts.name) private postModel: Posts,
-    @InjectModel(User.name) private userModel: User,
     private userService: UsersService,
   ) {}
 
@@ -214,9 +212,7 @@ export class PostsService {
       commentArr: any[],
       ownerId: string,
     ) {
-      const foundItem = commentArr.find(
-        (item) => item.user.id === ownerId,
-      );
+      const foundItem = commentArr.find((item) => item.user.id === ownerId);
       return foundItem ? foundItem.user.id : null;
     };
     try {
@@ -227,7 +223,7 @@ export class PostsService {
           { new: true },
         );
         return find;
-      } else if (foundUser(commentArr, user.id) === user.id) {        
+      } else if (foundUser(commentArr, user.id) === user.id) {
         const find = await this.postModel.findOneAndUpdate(
           { _id: postId },
           { $pull: { comments: { id: commentId } } },

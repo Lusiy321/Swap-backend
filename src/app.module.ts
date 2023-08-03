@@ -13,6 +13,7 @@ import { PostSchema, Posts } from './posts/posts.model';
 import { AuthModule } from './auth/auth.module';
 import { OrderService } from './orders/orders.service';
 import { OrdersModule } from './orders/orders.module';
+import { OrderSchema, Orders } from './orders/orders.model';
 
 @Module({
   imports: [
@@ -21,6 +22,9 @@ import { OrdersModule } from './orders/orders.module';
       envFilePath: `.env`,
     }),
     MongooseModule.forRoot(process.env.DB_HOST),
+    MongooseModule.forFeature([
+      { name: Orders.name, schema: OrderSchema, collection: 'orders' },
+    ]),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema, collection: 'users' },
     ]),

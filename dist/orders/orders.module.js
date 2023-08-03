@@ -12,6 +12,8 @@ const orders_controller_1 = require("./orders.controller");
 const orders_model_1 = require("./orders.model");
 const mongoose_1 = require("@nestjs/mongoose");
 const orders_service_1 = require("./orders.service");
+const users_model_1 = require("../users/users.model");
+const posts_model_1 = require("../posts/posts.model");
 let OrdersModule = class OrdersModule {
 };
 OrdersModule = __decorate([
@@ -19,6 +21,12 @@ OrdersModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: orders_model_1.Orders.name, schema: orders_model_1.OrderSchema, collection: 'orders' },
+            ]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' },
+            ]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: posts_model_1.Posts.name, schema: posts_model_1.PostSchema, collection: 'posts' },
             ]),
         ],
         controllers: [orders_controller_1.OrdersController],

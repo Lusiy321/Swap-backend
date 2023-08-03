@@ -28,13 +28,11 @@ const common_1 = require("@nestjs/common");
 const posts_model_1 = require("./posts.model");
 const mongoose_1 = require("@nestjs/mongoose");
 const http_errors_1 = require("http-errors");
-const users_model_1 = require("../users/users.model");
 const users_service_1 = require("../users/users.service");
 const uuid_1 = require("uuid");
 let PostsService = class PostsService {
-    constructor(postModel, userModel, userService) {
+    constructor(postModel, userService) {
         this.postModel = postModel;
-        this.userModel = userModel;
         this.userService = userService;
     }
     async findAllPosts(req) {
@@ -551,9 +549,7 @@ let PostsService = class PostsService {
 PostsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(posts_model_1.Posts.name)),
-    __param(1, (0, mongoose_1.InjectModel)(users_model_1.User.name)),
     __metadata("design:paramtypes", [posts_model_1.Posts,
-        users_model_1.User,
         users_service_1.UsersService])
 ], PostsService);
 exports.PostsService = PostsService;

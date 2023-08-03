@@ -20,6 +20,7 @@ const posts_model_1 = require("./posts/posts.model");
 const auth_module_1 = require("./auth/auth.module");
 const orders_service_1 = require("./orders/orders.service");
 const orders_module_1 = require("./orders/orders.module");
+const orders_model_1 = require("./orders/orders.model");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -30,6 +31,9 @@ AppModule = __decorate([
                 envFilePath: `.env`,
             }),
             mongoose_1.MongooseModule.forRoot(process.env.DB_HOST),
+            mongoose_1.MongooseModule.forFeature([
+                { name: orders_model_1.Orders.name, schema: orders_model_1.OrderSchema, collection: 'orders' },
+            ]),
             mongoose_1.MongooseModule.forFeature([
                 { name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' },
             ]),
