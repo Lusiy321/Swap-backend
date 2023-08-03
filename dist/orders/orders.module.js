@@ -29,6 +29,7 @@ OrdersModule = __decorate([
                 { name: posts_model_1.Posts.name, schema: posts_model_1.PostSchema, collection: 'posts' },
             ]),
         ],
+        exports: [orders_service_1.OrderService],
         controllers: [orders_controller_1.OrdersController],
         providers: [orders_service_1.OrderService],
     })

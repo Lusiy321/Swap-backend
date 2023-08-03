@@ -19,6 +19,7 @@ import { PostSchema, Posts } from 'src/posts/posts.model';
       { name: Posts.name, schema: PostSchema, collection: 'posts' },
     ]),
   ],
+  exports: [OrderService],
   controllers: [OrdersController],
   providers: [OrderService],
 })

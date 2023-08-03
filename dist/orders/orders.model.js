@@ -13,6 +13,7 @@ exports.OrderSchema = exports.Orders = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const mongoose_2 = require("mongoose");
+const posts_model_1 = require("../posts/posts.model");
 let Orders = class Orders extends mongoose_2.Model {
 };
 __decorate([
@@ -21,9 +22,9 @@ __decorate([
         description: 'Item for exchange',
     }),
     (0, mongoose_1.Prop)({
-        type: String,
+        type: Object,
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", posts_model_1.Posts)
 ], Orders.prototype, "product", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
@@ -31,16 +32,15 @@ __decorate([
         description: 'Offer for exchange',
     }),
     (0, mongoose_1.Prop)({
-        type: String,
-        required: [true, 'Title is required'],
+        type: Object,
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", posts_model_1.Posts)
 ], Orders.prototype, "offer", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'true', description: 'order status' }),
     (0, mongoose_1.Prop)({
         type: Boolean,
-        default: true,
+        default: null,
     }),
     __metadata("design:type", Boolean)
 ], Orders.prototype, "status", void 0);

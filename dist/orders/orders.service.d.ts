@@ -6,4 +6,5 @@ export declare class OrderService {
     private userModel;
     private postModel;
     constructor(orderModel: Orders, userModel: User, postModel: Posts);
+    createOrder(postId: string, userPostId: string): Promise<Orders>;
 }

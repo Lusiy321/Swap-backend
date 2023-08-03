@@ -23,12 +23,14 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Model } from 'mongoose';
+import { Posts } from 'src/posts/posts.model';
+import { Chat } from './utils/chat.interface';
 export type OrderDocument = Orders & Document;
 export declare class Orders extends Model<Orders> {
-    product: string;
-    offer: string;
+    product: Posts;
+    offer: Posts;
     status: boolean;
-    chat: Array<object>;
+    chat: Array<Chat>;
 }
 export declare const OrderSchema: import("mongoose").Schema<Orders, Model<Orders, any, any, any, import("mongoose").Document<unknown, any, Orders> & Omit<Orders & {
     _id: import("mongoose").Types.ObjectId;

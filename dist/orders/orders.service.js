@@ -18,11 +18,30 @@ const orders_model_1 = require("./orders.model");
 const mongoose_1 = require("@nestjs/mongoose");
 const posts_model_1 = require("../posts/posts.model");
 const users_model_1 = require("../users/users.model");
+const http_errors_1 = require("http-errors");
 let OrderService = class OrderService {
     constructor(orderModel, userModel, postModel) {
         this.orderModel = orderModel;
         this.userModel = userModel;
         this.postModel = postModel;
+    }
+    async createOrder(postId, userPostId) {
+        try {
+            const prod = await this.postModel.findById(postId);
+            const offer = await this.postModel.findById(userPostId);
+            if (!prod || !offer) {
+                throw new http_errors_1.NotFound('Product or Offer not found');
+            }
+            const order = {
+                product: prod,
+                offer: offer,
+            };
+            const newOrder = await this.orderModel.create(order);
+            return newOrder;
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Product or Offer not found');
+        }
     }
 };
 OrderService = __decorate([

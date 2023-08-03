@@ -2,6 +2,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Model } from 'mongoose';
+import { Posts } from 'src/posts/posts.model';
+import { Chat } from './utils/chat.interface';
 
 export type OrderDocument = Orders & Document;
 
@@ -12,24 +14,23 @@ export class Orders extends Model<Orders> {
     description: 'Item for exchange',
   })
   @Prop({
-    type: String,
+    type: Object,
   })
-  product: string;
+  product: Posts;
 
   @ApiProperty({
     example: '649aa533a4fc5710d7ceaaAA',
     description: 'Offer for exchange',
   })
   @Prop({
-    type: String,
-    required: [true, 'Title is required'],
+    type: Object,
   })
-  offer: string;
+  offer: Posts;
 
   @ApiProperty({ example: 'true', description: 'order status' })
   @Prop({
     type: Boolean,
-    default: true,
+    default: null,
   })
   status: boolean;
 
@@ -45,7 +46,7 @@ export class Orders extends Model<Orders> {
     type: Array,
     default: [],
   })
-  chat: Array<object>;
+  chat: Array<Chat>;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Orders);

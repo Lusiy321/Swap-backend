@@ -6,10 +6,12 @@ import { PostsService } from './posts.service';
 import { Posts, PostSchema } from './posts.model';
 import { User, UserSchema } from 'src/users/users.model';
 import { UsersModule } from 'src/users/users.module';
+import { OrdersModule } from 'src/orders/orders.module';
 
 @Module({
   imports: [
     UsersModule,
+    OrdersModule,
     MongooseModule.forFeature([
       { name: Posts.name, schema: PostSchema, collection: 'posts' },
     ]),

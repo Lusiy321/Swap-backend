@@ -14,12 +14,14 @@ const posts_service_1 = require("./posts.service");
 const posts_model_1 = require("./posts.model");
 const users_model_1 = require("../users/users.model");
 const users_module_1 = require("../users/users.module");
+const orders_module_1 = require("../orders/orders.module");
 let PostsModule = class PostsModule {
 };
 PostsModule = __decorate([
     (0, common_1.Module)({
         imports: [
             users_module_1.UsersModule,
+            orders_module_1.OrdersModule,
             mongoose_1.MongooseModule.forFeature([
                 { name: posts_model_1.Posts.name, schema: posts_model_1.PostSchema, collection: 'posts' },
             ]),

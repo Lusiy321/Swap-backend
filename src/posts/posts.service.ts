@@ -8,12 +8,15 @@ import { VerifyPostDto } from './dto/verify.post.dto';
 import { UsersService } from 'src/users/users.service';
 import { CreateCommentDto } from './dto/create.comment.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { OrderService } from 'src/orders/orders.service';
+import { CreateOredrDto } from 'src/orders/utils/create.order.dto';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectModel(Posts.name) private postModel: Posts,
     private userService: UsersService,
+    private orderService: OrderService,
   ) {}
 
   async findAllPosts(req: any): Promise<Posts[]> {
@@ -565,21 +568,22 @@ export class PostsService {
     if (!user) {
       throw new Unauthorized('jwt expired');
     }
-    try {
-      const updatedPost = await this.postModel.updateOne(
-        { _id: postId, 'toExchange.id': userPostId },
-        { $set: { 'toExchange.$.agree': true } },
-      );
+    // try {
+    const updatedPost = await this.postModel.updateOne(
+      { _id: postId, 'toExchange.data.id': userPostId },
+      { $set: { 'toExchange.$.agree': true } },
+    );
 
-      if (updatedPost.nModified === 0) {
-        throw new NotFound('Post or exchange item not found');
-      }
-
-      const updatedPostData = await this.postModel.findById(postId);
-      return updatedPostData;
-    } catch (e) {
-      throw new NotFound('Post not found');
+    if (updatedPost.nModified === 0) {
+      throw new NotFound('Post or exchange item not found');
     }
+
+    await this.orderService.createOrder(postId, userPostId);
+    const updatedPostData = await this.postModel.findById(postId);
+    return updatedPostData;
+    // } catch (e) {
+    //   throw new NotFound('Post not found');
+    // }
   }
 
   async exchangeFalsePosts(postId: string, userPostId: string, req: any) {
