@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Posts } from 'src/posts/posts.model';
 import { User } from 'src/users/users.model';
 import { CreateOredrDto } from './utils/create.order.dto';
-import { Conflict, NotFound, BadRequest, Unauthorized } from 'http-errors';
+import { NotFound } from 'http-errors';
 
 @Injectable()
 export class OrderService {

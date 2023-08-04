@@ -9,12 +9,14 @@ import { UpdateUserDto } from './dto/update.user.dto';
 import { GoogleUserDto } from './dto/google.user.dto';
 import { sign, verify, JwtPayload } from 'jsonwebtoken';
 import { Posts } from 'src/posts/posts.model';
+import { Orders } from 'src/orders/orders.model';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: User,
     @InjectModel(Posts.name) private postModel: Posts,
+    @InjectModel(Orders.name) private orderModel: Orders,
   ) {}
 
   async findAll(req: any): Promise<User[]> {
@@ -190,6 +192,36 @@ export class UsersService {
           { 'comment.user.id': user.id },
           { 'ans.user.id': user.id },
         ],
+      },
+    );
+    await this.orderModel.updateMany(
+      { 'product.owner.id': user.id },
+      {
+        $set: {
+          owner: {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            avatarURL: user.avatarURL,
+            location: user.location,
+          },
+        },
+      },
+    );
+    await this.orderModel.updateMany(
+      { 'offer.owner.id': user.id },
+      {
+        $set: {
+          owner: {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            avatarURL: user.avatarURL,
+            location: user.location,
+          },
+        },
       },
     );
     return;

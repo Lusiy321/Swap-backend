@@ -9,12 +9,13 @@ import { UsersService } from 'src/users/users.service';
 import { CreateCommentDto } from './dto/create.comment.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { OrderService } from 'src/orders/orders.service';
-import { CreateOredrDto } from 'src/orders/utils/create.order.dto';
+import { Orders } from 'src/orders/orders.model';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectModel(Posts.name) private postModel: Posts,
+    @InjectModel(Orders.name) private orderModel: Orders,
     private userService: UsersService,
     private orderService: OrderService,
   ) {}
@@ -174,6 +175,23 @@ export class PostsService {
         },
       },
       { arrayFilters: [{ 'toExchange.data.id': post.id }] },
+    );
+
+    await this.orderModel.updateMany(
+      { product: { _id: post.id } },
+      {
+        $set: {
+          product: post,
+        },
+      },
+    );
+    await this.orderModel.updateMany(
+      { offer: { _id: post.id } },
+      {
+        $set: {
+          offer: post,
+        },
+      },
     );
     return;
   }
