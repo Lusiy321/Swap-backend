@@ -47,9 +47,12 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({
         example: {
-            userId: '649aa533a4fc5710d7ceaac3',
-            text: 'Go to change',
-            time: '20.01.2023 17:59',
+            id: String,
+            firstName: String,
+            lastName: String,
+            phone: String,
+            avatarURL: String,
+            location: String,
         },
         description: 'Order chat',
     }),

@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { OrderService } from './orders/orders.service';
 import { OrdersModule } from './orders/orders.module';
 import { OrderSchema, Orders } from './orders/orders.model';
+import { UsersService } from './users/users.service';
 
 @Module({
   imports: [
@@ -37,6 +38,6 @@ import { OrderSchema, Orders } from './orders/orders.model';
     OrdersModule,
   ],
   controllers: [PostsController],
-  providers: [PostsService, OrderService],
+  providers: [PostsService, OrderService, UsersService],
 })
 export class AppModule {}

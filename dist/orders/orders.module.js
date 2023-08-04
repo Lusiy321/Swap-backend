@@ -14,11 +14,14 @@ const mongoose_1 = require("@nestjs/mongoose");
 const orders_service_1 = require("./orders.service");
 const users_model_1 = require("../users/users.model");
 const posts_model_1 = require("../posts/posts.model");
+const users_module_1 = require("../users/users.module");
+const users_service_1 = require("../users/users.service");
 let OrdersModule = class OrdersModule {
 };
 OrdersModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            (0, common_1.forwardRef)(() => users_module_1.UsersModule),
             mongoose_1.MongooseModule.forFeature([
                 { name: orders_model_1.Orders.name, schema: orders_model_1.OrderSchema, collection: 'orders' },
             ]),
@@ -31,7 +34,7 @@ OrdersModule = __decorate([
         ],
         exports: [orders_service_1.OrderService],
         controllers: [orders_controller_1.OrdersController],
-        providers: [orders_service_1.OrderService],
+        providers: [orders_service_1.OrderService, users_service_1.UsersService],
     })
 ], OrdersModule);
 exports.OrdersModule = OrdersModule;

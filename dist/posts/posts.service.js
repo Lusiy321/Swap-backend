@@ -427,7 +427,7 @@ let PostsService = class PostsService {
                 comments.answer = [];
                 const array = post.comments;
                 array.push(comments);
-                await this.postModel.updateOne({ _id: postId }, { $set: { comments: array } });
+                await this.postModel.updateOne({ _id: postId }, { $set: { chat: array } });
                 return await this.postModel.findById(postId);
             }
         }

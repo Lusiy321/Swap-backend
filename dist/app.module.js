@@ -21,6 +21,7 @@ const auth_module_1 = require("./auth/auth.module");
 const orders_service_1 = require("./orders/orders.service");
 const orders_module_1 = require("./orders/orders.module");
 const orders_model_1 = require("./orders/orders.model");
+const users_service_1 = require("./users/users.service");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -46,7 +47,7 @@ AppModule = __decorate([
             orders_module_1.OrdersModule,
         ],
         controllers: [posts_controller_1.PostsController],
-        providers: [posts_service_1.PostsService, orders_service_1.OrderService],
+        providers: [posts_service_1.PostsService, orders_service_1.OrderService, users_service_1.UsersService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

@@ -3,9 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { Orders } from './orders.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Posts } from 'src/posts/posts.model';
+import { v4 as uuidv4 } from 'uuid';
 import { User } from 'src/users/users.model';
 import { CreateOredrDto } from './utils/create.order.dto';
-import { NotFound } from 'http-errors';
+import { NotFound, Unauthorized } from 'http-errors';
+import { UsersService } from 'src/users/users.service';
+import { CreateMessageDto } from './utils/dto/create.message.dto';
 
 @Injectable()
 export class OrderService {
@@ -13,6 +16,7 @@ export class OrderService {
     @InjectModel(Orders.name) private orderModel: Orders,
     @InjectModel(User.name) private userModel: User,
     @InjectModel(Posts.name) private postModel: Posts,
+    private userService: UsersService,
   ) {}
 
   async createOrder(postId: string, userPostId: string): Promise<Orders> {
@@ -34,6 +38,65 @@ export class OrderService {
       return newOrder;
     } catch (e) {
       throw new NotFound('Product or Offer not found');
+    }
+  }
+
+  async findMyOwnOrder(req: any) {
+    const user = await this.userService.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
+    console.log(user.id);
+    try {
+      const post = await this.orderModel
+        .find({ 'product.owner.id': user.id })
+        .exec();
+
+      if (Array.isArray(post) && post.length === 0) {
+        return await this.orderModel.find({ 'offer.owner.id': user.id }).exec();
+      }
+      return post;
+    } catch (e) {
+      throw new NotFound('Post not found');
+    }
+  }
+
+  async chatMessage(
+    postId: string,
+    req: any,
+    message: CreateMessageDto,
+  ): Promise<Orders> {
+    const user = await this.userService.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
+
+    try {
+      const post = await this.orderModel.findById(postId);
+
+      if (post) {
+        const { id, firstName, lastName, phone, avatarURL, location } = user;
+
+        message.user = {
+          id,
+          firstName,
+          lastName,
+          phone,
+          avatarURL,
+          location,
+        };
+        message.id = uuidv4();
+        message.time = Date.now();
+        const array = post.chat;
+        array.push(message);
+        await this.orderModel.updateOne(
+          { _id: postId },
+          { $set: { chat: array } },
+        );
+        return await this.orderModel.findById(postId);
+      }
+    } catch (e) {
+      throw new NotFound('Post not found');
     }
   }
 }

@@ -24,13 +24,12 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { Model } from 'mongoose';
 import { Posts } from 'src/posts/posts.model';
-import { Chat } from './utils/chat.interface';
 export type OrderDocument = Orders & Document;
 export declare class Orders extends Model<Orders> {
     product: Posts;
     offer: Posts;
     status: boolean;
-    chat: Array<Chat>;
+    chat: Array<object>;
 }
 export declare const OrderSchema: import("mongoose").Schema<Orders, Model<Orders, any, any, any, import("mongoose").Document<unknown, any, Orders> & Omit<Orders & {
     _id: import("mongoose").Types.ObjectId;

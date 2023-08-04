@@ -3,7 +3,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Model } from 'mongoose';
 import { Posts } from 'src/posts/posts.model';
-import { Chat } from './utils/chat.interface';
 
 export type OrderDocument = Orders & Document;
 
@@ -36,9 +35,12 @@ export class Orders extends Model<Orders> {
 
   @ApiProperty({
     example: {
-      userId: '649aa533a4fc5710d7ceaac3',
-      text: 'Go to change',
-      time: '20.01.2023 17:59',
+      id: String,
+      firstName: String,
+      lastName: String,
+      phone: String,
+      avatarURL: String,
+      location: String,
     },
     description: 'Order chat',
   })
@@ -46,7 +48,7 @@ export class Orders extends Model<Orders> {
     type: Array,
     default: [],
   })
-  chat: Array<Chat>;
+  chat: Array<object>;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Orders);

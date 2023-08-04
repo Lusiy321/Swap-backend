@@ -470,7 +470,7 @@ export class PostsService {
         array.push(comments);
         await this.postModel.updateOne(
           { _id: postId },
-          { $set: { comments: array } },
+          { $set: { chat: array } },
         );
         return await this.postModel.findById(postId);
       }
