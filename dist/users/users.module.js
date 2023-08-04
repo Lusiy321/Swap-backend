@@ -15,12 +15,15 @@ const users_model_1 = require("./users.model");
 const jwt_1 = require("@nestjs/jwt");
 const sendgrid_module_1 = require("./utils/sendgrid.module");
 const posts_model_1 = require("../posts/posts.model");
+const orders_module_1 = require("../orders/orders.module");
+const orders_model_1 = require("../orders/orders.model");
 let UsersModule = class UsersModule {
 };
 UsersModule = __decorate([
     (0, common_1.Module)({
         imports: [
             sendgrid_module_1.SendGridModule,
+            orders_module_1.OrdersModule,
             jwt_1.JwtModule.register({
                 secret: process.env.SECRET_KEY,
                 signOptions: { expiresIn: '1day' },
@@ -30,6 +33,9 @@ UsersModule = __decorate([
             ]),
             mongoose_1.MongooseModule.forFeature([
                 { name: posts_model_1.Posts.name, schema: posts_model_1.PostSchema, collection: 'posts' },
+            ]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: orders_model_1.Orders.name, schema: orders_model_1.OrderSchema, collection: 'orders' },
             ]),
         ],
         exports: [users_service_1.UsersService],

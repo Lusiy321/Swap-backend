@@ -20,10 +20,12 @@ const bcrypt_1 = require("bcrypt");
 const http_errors_1 = require("http-errors");
 const jsonwebtoken_1 = require("jsonwebtoken");
 const posts_model_1 = require("../posts/posts.model");
+const orders_model_1 = require("../orders/orders.model");
 let UsersService = class UsersService {
-    constructor(userModel, postModel) {
+    constructor(userModel, postModel, orderModel) {
         this.userModel = userModel;
         this.postModel = postModel;
+        this.orderModel = orderModel;
     }
     async findAll(req) {
         const user = await this.findToken(req);
@@ -181,6 +183,30 @@ let UsersService = class UsersService {
                 { 'ans.user.id': user.id },
             ],
         });
+        await this.orderModel.updateMany({ 'product.owner.id': user.id }, {
+            $set: {
+                owner: {
+                    id: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    phone: user.phone,
+                    avatarURL: user.avatarURL,
+                    location: user.location,
+                },
+            },
+        });
+        await this.orderModel.updateMany({ 'offer.owner.id': user.id }, {
+            $set: {
+                owner: {
+                    id: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    phone: user.phone,
+                    avatarURL: user.avatarURL,
+                    location: user.location,
+                },
+            },
+        });
         return;
     }
     async delete(id, req) {
@@ -332,8 +358,10 @@ UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(users_model_1.User.name)),
     __param(1, (0, mongoose_1.InjectModel)(posts_model_1.Posts.name)),
+    __param(2, (0, mongoose_1.InjectModel)(orders_model_1.Orders.name)),
     __metadata("design:paramtypes", [users_model_1.User,
-        posts_model_1.Posts])
+        posts_model_1.Posts,
+        orders_model_1.Orders])
 ], UsersService);
 exports.UsersService = UsersService;
 users_model_1.UserSchema.methods.setPassword = async function (password) {

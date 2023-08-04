@@ -4,11 +4,13 @@ import { VerifyPostDto } from './dto/verify.post.dto';
 import { UsersService } from 'src/users/users.service';
 import { CreateCommentDto } from './dto/create.comment.dto';
 import { OrderService } from 'src/orders/orders.service';
+import { Orders } from 'src/orders/orders.model';
 export declare class PostsService {
     private postModel;
+    private orderModel;
     private userService;
     private orderService;
-    constructor(postModel: Posts, userService: UsersService, orderService: OrderService);
+    constructor(postModel: Posts, orderModel: Orders, userService: UsersService, orderService: OrderService);
     findAllPosts(req: any): Promise<Posts[]>;
     findNewPosts(req: any): Promise<Posts[]>;
     findMyPosts(req: any): Promise<Posts[]>;

@@ -15,6 +15,7 @@ const posts_model_1 = require("./posts.model");
 const users_model_1 = require("../users/users.model");
 const users_module_1 = require("../users/users.module");
 const orders_module_1 = require("../orders/orders.module");
+const orders_model_1 = require("../orders/orders.model");
 let PostsModule = class PostsModule {
 };
 PostsModule = __decorate([
@@ -27,6 +28,9 @@ PostsModule = __decorate([
             ]),
             mongoose_1.MongooseModule.forFeature([
                 { name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' },
+            ]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: orders_model_1.Orders.name, schema: orders_model_1.OrderSchema, collection: 'orders' },
             ]),
         ],
         controllers: [posts_controller_1.PostsController],

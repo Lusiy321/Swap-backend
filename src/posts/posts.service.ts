@@ -586,22 +586,22 @@ export class PostsService {
     if (!user) {
       throw new Unauthorized('jwt expired');
     }
-    // try {
-    const updatedPost = await this.postModel.updateOne(
-      { _id: postId, 'toExchange.data.id': userPostId },
-      { $set: { 'toExchange.$.agree': true } },
-    );
+    try {
+      const updatedPost = await this.postModel.updateOne(
+        { _id: postId, 'toExchange.data.id': userPostId },
+        { $set: { 'toExchange.$.agree': true } },
+      );
 
-    if (updatedPost.nModified === 0) {
-      throw new NotFound('Post or exchange item not found');
+      if (updatedPost.nModified === 0) {
+        throw new NotFound('Post or exchange item not found');
+      }
+
+      await this.orderService.createOrder(postId, userPostId);
+      const updatedPostData = await this.postModel.findById(postId);
+      return updatedPostData;
+    } catch (e) {
+      throw new NotFound('Post not found');
     }
-
-    await this.orderService.createOrder(postId, userPostId);
-    const updatedPostData = await this.postModel.findById(postId);
-    return updatedPostData;
-    // } catch (e) {
-    //   throw new NotFound('Post not found');
-    // }
   }
 
   async exchangeFalsePosts(postId: string, userPostId: string, req: any) {

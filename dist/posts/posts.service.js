@@ -31,9 +31,11 @@ const http_errors_1 = require("http-errors");
 const users_service_1 = require("../users/users.service");
 const uuid_1 = require("uuid");
 const orders_service_1 = require("../orders/orders.service");
+const orders_model_1 = require("../orders/orders.model");
 let PostsService = class PostsService {
-    constructor(postModel, userService, orderService) {
+    constructor(postModel, orderModel, userService, orderService) {
         this.postModel = postModel;
+        this.orderModel = orderModel;
         this.userService = userService;
         this.orderService = orderService;
     }
@@ -188,6 +190,16 @@ let PostsService = class PostsService {
                 },
             },
         }, { arrayFilters: [{ 'toExchange.data.id': post.id }] });
+        await this.orderModel.updateMany({ product: { _id: post.id } }, {
+            $set: {
+                product: post,
+            },
+        });
+        await this.orderModel.updateMany({ offer: { _id: post.id } }, {
+            $set: {
+                offer: post,
+            },
+        });
         return;
     }
     async deletePost(id, req) {
@@ -503,13 +515,18 @@ let PostsService = class PostsService {
         if (!user) {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
-        const updatedPost = await this.postModel.updateOne({ _id: postId, 'toExchange.data.id': userPostId }, { $set: { 'toExchange.$.agree': true } });
-        if (updatedPost.nModified === 0) {
-            throw new http_errors_1.NotFound('Post or exchange item not found');
+        try {
+            const updatedPost = await this.postModel.updateOne({ _id: postId, 'toExchange.data.id': userPostId }, { $set: { 'toExchange.$.agree': true } });
+            if (updatedPost.nModified === 0) {
+                throw new http_errors_1.NotFound('Post or exchange item not found');
+            }
+            await this.orderService.createOrder(postId, userPostId);
+            const updatedPostData = await this.postModel.findById(postId);
+            return updatedPostData;
         }
-        await this.orderService.createOrder(postId, userPostId);
-        const updatedPostData = await this.postModel.findById(postId);
-        return updatedPostData;
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
     }
     async exchangeFalsePosts(postId, userPostId, req) {
         const user = await this.userService.findToken(req);
@@ -547,7 +564,9 @@ let PostsService = class PostsService {
 PostsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(posts_model_1.Posts.name)),
+    __param(1, (0, mongoose_1.InjectModel)(orders_model_1.Orders.name)),
     __metadata("design:paramtypes", [posts_model_1.Posts,
+        orders_model_1.Orders,
         users_service_1.UsersService,
         orders_service_1.OrderService])
 ], PostsService);

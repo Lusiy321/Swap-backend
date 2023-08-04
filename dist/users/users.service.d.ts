@@ -3,10 +3,12 @@ import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { GoogleUserDto } from './dto/google.user.dto';
 import { Posts } from 'src/posts/posts.model';
+import { Orders } from 'src/orders/orders.model';
 export declare class UsersService {
     private userModel;
     private postModel;
-    constructor(userModel: User, postModel: Posts);
+    private orderModel;
+    constructor(userModel: User, postModel: Posts, orderModel: Orders);
     findAll(req: any): Promise<User[]>;
     findById(id: string): Promise<User>;
     create(user: CreateUserDto): Promise<User>;
