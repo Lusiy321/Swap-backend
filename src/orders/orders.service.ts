@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Posts } from 'src/posts/posts.model';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from 'src/users/users.model';
-import { CreateOredrDto } from './utils/create.order.dto';
+import { CreateOredrDto } from './utils/dto/create.order.dto';
 import { NotFound, Unauthorized } from 'http-errors';
 import { UsersService } from 'src/users/users.service';
 import { CreateMessageDto } from './utils/dto/create.message.dto';
@@ -46,7 +46,6 @@ export class OrderService {
     if (!user) {
       throw new Unauthorized('jwt expired');
     }
-    console.log(user.id);
     try {
       const post = await this.orderModel
         .find({ 'product.owner.id': user.id })
@@ -58,6 +57,15 @@ export class OrderService {
       return post;
     } catch (e) {
       throw new NotFound('Post not found');
+    }
+  }
+
+  async findOrderById(id: string): Promise<Orders> {
+    try {
+      const find = await this.orderModel.findById(id).exec();
+      return find;
+    } catch (e) {
+      throw new NotFound('Order not found');
     }
   }
 

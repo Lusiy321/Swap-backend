@@ -27,6 +27,9 @@ let OrdersController = class OrdersController {
     async setMessage(message, id, request) {
         return this.orderService.chatMessage(id, request, message);
     }
+    async findById(id) {
+        return this.orderService.findOrderById(id);
+    }
 };
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Find my orders' }),
@@ -42,7 +45,7 @@ __decorate([
     (0, swagger_1.ApiOperation)({
         summary: 'Set chat message',
     }),
-    (0, swagger_1.ApiResponse)({ status: 200, type: [Object] }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: Object }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
     (0, common_1.Post)('/message/:Id'),
     __param(0, (0, common_1.Body)()),
@@ -52,6 +55,15 @@ __decorate([
     __metadata("design:paramtypes", [create_message_dto_1.CreateMessageDto, String, Object]),
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "setMessage", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Get order by ID' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: Object }),
+    (0, common_1.Get)('/find/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], OrdersController.prototype, "findById", null);
 OrdersController = __decorate([
     (0, swagger_1.ApiTags)('Order'),
     (0, common_1.Controller)('orders'),

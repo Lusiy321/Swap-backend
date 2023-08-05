@@ -2,7 +2,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Model } from 'mongoose';
-import { Posts } from 'src/posts/posts.model';
 
 export type OrderDocument = Orders & Document;
 
@@ -15,7 +14,7 @@ export class Orders extends Model<Orders> {
   @Prop({
     type: Object,
   })
-  product: Posts;
+  product: object;
 
   @ApiProperty({
     example: '649aa533a4fc5710d7ceaaAA',
@@ -24,7 +23,7 @@ export class Orders extends Model<Orders> {
   @Prop({
     type: Object,
   })
-  offer: Posts;
+  offer: object;
 
   @ApiProperty({ example: 'true', description: 'order status' })
   @Prop({

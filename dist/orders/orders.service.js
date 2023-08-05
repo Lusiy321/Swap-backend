@@ -51,7 +51,6 @@ let OrderService = class OrderService {
         if (!user) {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
-        console.log(user.id);
         try {
             const post = await this.orderModel
                 .find({ 'product.owner.id': user.id })
@@ -63,6 +62,15 @@ let OrderService = class OrderService {
         }
         catch (e) {
             throw new http_errors_1.NotFound('Post not found');
+        }
+    }
+    async findOrderById(id) {
+        try {
+            const find = await this.orderModel.findById(id).exec();
+            return find;
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Order not found');
         }
     }
     async chatMessage(postId, req, message) {

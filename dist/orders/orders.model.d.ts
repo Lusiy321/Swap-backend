@@ -23,11 +23,10 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Model } from 'mongoose';
-import { Posts } from 'src/posts/posts.model';
 export type OrderDocument = Orders & Document;
 export declare class Orders extends Model<Orders> {
-    product: Posts;
-    offer: Posts;
+    product: object;
+    offer: object;
     status: boolean;
     chat: Array<object>;
 }

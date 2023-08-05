@@ -633,7 +633,7 @@ export class PostsService {
     }
     try {
       const post = await this.postModel
-        .find({ 'toExchange.data.owner.id': user.id })
+        .find({ 'toExchange.user.id': user.id })
         .exec();
       return post;
     } catch (e) {

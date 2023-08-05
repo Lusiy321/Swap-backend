@@ -11,5 +11,6 @@ export declare class OrderService {
     constructor(orderModel: Orders, userModel: User, postModel: Posts, userService: UsersService);
     createOrder(postId: string, userPostId: string): Promise<Orders>;
     findMyOwnOrder(req: any): Promise<any>;
+    findOrderById(id: string): Promise<Orders>;
     chatMessage(postId: string, req: any, message: CreateMessageDto): Promise<Orders>;
 }

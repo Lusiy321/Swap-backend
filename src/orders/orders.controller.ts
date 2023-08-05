@@ -18,14 +18,14 @@ export class OrdersController {
   @ApiResponse({ status: 200, type: [Object] })
   @ApiBearerAuth('BearerAuthMethod')
   @Get('/')
-  async createOrder(@Req() req: any): Promise<Orders> {
+  async createOrder(@Req() req: any): Promise<Orders[]> {
     return this.orderService.findMyOwnOrder(req);
   }
 
   @ApiOperation({
     summary: 'Set chat message',
   })
-  @ApiResponse({ status: 200, type: [Object] })
+  @ApiResponse({ status: 200, type: Object })
   @ApiBearerAuth('BearerAuthMethod')
   @Post('/message/:Id')
   async setMessage(
@@ -34,5 +34,12 @@ export class OrdersController {
     @Req() request: any,
   ): Promise<Orders> {
     return this.orderService.chatMessage(id, request, message);
+  }
+
+  @ApiOperation({ summary: 'Get order by ID' })
+  @ApiResponse({ status: 200, type: Object })
+  @Get('/find/:id')
+  async findById(@Param('id') id: string): Promise<Orders> {
+    return this.orderService.findOrderById(id);
   }
 }
