@@ -1,1 +1,0 @@
-{"version":3,"file":"create.message.dto.js","sourceRoot":"","sources":["../../../../src/orders/utils/dto/create.message.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AACA,6CAA8C;AAG9C,MAAa,gBAAgB;CAS5B;AAPC;IAAC,IAAA,qBAAW,EAAC;QACX,OAAO,EAAE,8BAA8B;QACvC,WAAW,EAAE,qBAAqB;KACnC,CAAC;;8CACoB;AANxB,4CASC"}

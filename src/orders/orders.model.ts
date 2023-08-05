@@ -2,6 +2,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Model } from 'mongoose';
+import { Posts } from 'src/posts/posts.model';
+import { Chat } from './utils/chat.interface';
 
 export type OrderDocument = Orders & Document;
 
@@ -14,7 +16,7 @@ export class Orders extends Model<Orders> {
   @Prop({
     type: Object,
   })
-  product: object;
+  product: Posts;
 
   @ApiProperty({
     example: '649aa533a4fc5710d7ceaaAA',
@@ -23,7 +25,7 @@ export class Orders extends Model<Orders> {
   @Prop({
     type: Object,
   })
-  offer: object;
+  offer: Posts;
 
   @ApiProperty({ example: 'true', description: 'order status' })
   @Prop({
@@ -35,19 +37,36 @@ export class Orders extends Model<Orders> {
   @ApiProperty({
     example: {
       id: String,
-      firstName: String,
-      lastName: String,
-      phone: String,
-      avatarURL: String,
-      location: String,
+      text: { type: String, required: true },
+      user: {
+        id: String,
+        firstName: String,
+        lastName: String,
+        phone: String,
+        avatarURL: String,
+        location: String,
+      },
     },
     description: 'Order chat',
   })
   @Prop({
-    type: Array,
+    type: [
+      {
+        id: String,
+        text: { type: String, required: true },
+        user: {
+          id: String,
+          firstName: String,
+          lastName: String,
+          phone: String,
+          avatarURL: String,
+          location: String,
+        },
+      },
+    ],
     default: [],
   })
-  chat: Array<object>;
+  chat: Chat[];
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Orders);

@@ -13,6 +13,7 @@ exports.OrderSchema = exports.Orders = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const mongoose_2 = require("mongoose");
+const posts_model_1 = require("../posts/posts.model");
 let Orders = class Orders extends mongoose_2.Model {
 };
 __decorate([
@@ -23,7 +24,7 @@ __decorate([
     (0, mongoose_1.Prop)({
         type: Object,
     }),
-    __metadata("design:type", Object)
+    __metadata("design:type", posts_model_1.Posts)
 ], Orders.prototype, "product", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
@@ -33,7 +34,7 @@ __decorate([
     (0, mongoose_1.Prop)({
         type: Object,
     }),
-    __metadata("design:type", Object)
+    __metadata("design:type", posts_model_1.Posts)
 ], Orders.prototype, "offer", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'true', description: 'order status' }),
@@ -47,16 +48,33 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         example: {
             id: String,
-            firstName: String,
-            lastName: String,
-            phone: String,
-            avatarURL: String,
-            location: String,
+            text: { type: String, required: true },
+            user: {
+                id: String,
+                firstName: String,
+                lastName: String,
+                phone: String,
+                avatarURL: String,
+                location: String,
+            },
         },
         description: 'Order chat',
     }),
     (0, mongoose_1.Prop)({
-        type: Array,
+        type: [
+            {
+                id: String,
+                text: { type: String, required: true },
+                user: {
+                    id: String,
+                    firstName: String,
+                    lastName: String,
+                    phone: String,
+                    avatarURL: String,
+                    location: String,
+                },
+            },
+        ],
         default: [],
     }),
     __metadata("design:type", Array)

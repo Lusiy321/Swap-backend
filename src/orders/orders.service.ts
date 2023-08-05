@@ -5,10 +5,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Posts } from 'src/posts/posts.model';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from 'src/users/users.model';
-import { CreateOredrDto } from './utils/dto/create.order.dto';
+import { CreateOredrDto } from './dto/create.order.dto';
 import { NotFound, Unauthorized } from 'http-errors';
 import { UsersService } from 'src/users/users.service';
-import { CreateMessageDto } from './utils/dto/create.message.dto';
+import { CreateMessageDto } from './dto/create.message.dto';
 
 @Injectable()
 export class OrderService {

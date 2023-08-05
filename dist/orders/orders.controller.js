@@ -13,10 +13,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrdersController = void 0;
-const common_1 = require("@nestjs/common");
 const orders_service_1 = require("./orders.service");
+const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
-const create_message_dto_1 = require("./utils/dto/create.message.dto");
+const create_message_dto_1 = require("./dto/create.message.dto");
 let OrdersController = class OrdersController {
     constructor(orderService) {
         this.orderService = orderService;

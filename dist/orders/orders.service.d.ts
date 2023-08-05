@@ -2,7 +2,7 @@ import { Orders } from './orders.model';
 import { Posts } from 'src/posts/posts.model';
 import { User } from 'src/users/users.model';
 import { UsersService } from 'src/users/users.service';
-import { CreateMessageDto } from './utils/dto/create.message.dto';
+import { CreateMessageDto } from './dto/create.message.dto';
 export declare class OrderService {
     private orderModel;
     private userModel;

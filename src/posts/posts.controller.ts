@@ -22,7 +22,7 @@ import { CreatePostDto } from './dto/create.post.dto';
 import { Posts } from './posts.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
 import { CreateCommentDto } from './dto/create.comment.dto';
-
+ 
 @ApiTags('Post')
 @Controller('posts')
 export class PostsController {

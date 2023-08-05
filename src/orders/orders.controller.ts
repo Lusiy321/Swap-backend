@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
 import { OrderService } from './orders.service';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -7,7 +8,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Orders } from './orders.model';
-import { CreateMessageDto } from './utils/dto/create.message.dto';
+import { CreateMessageDto } from './dto/create.message.dto';
 
 @ApiTags('Order')
 @Controller('orders')
