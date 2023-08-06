@@ -52,13 +52,17 @@ let OrderService = class OrderService {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
         try {
-            const post = await this.orderModel
+            const postProduct = await this.orderModel
                 .find({ 'product.owner.id': user.id })
                 .exec();
-            if (Array.isArray(post) && post.length === 0) {
-                return await this.orderModel.find({ 'offer.owner.id': user.id }).exec();
+            const postOffer = await this.orderModel
+                .find({ 'offer.owner.id': user.id })
+                .exec();
+            postProduct.push(...postOffer);
+            if (Array.isArray(postProduct) && postProduct.length === 0) {
+                return new http_errors_1.NotFound('Post not found');
             }
-            return post;
+            return postProduct;
         }
         catch (e) {
             throw new http_errors_1.NotFound('Post not found');
