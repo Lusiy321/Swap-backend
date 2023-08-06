@@ -112,7 +112,7 @@ export class PostsService {
       const find = await this.postModel.findById(id).exec();
       return find;
     } catch (e) {
-      throw new NotFound('Post not found');
+      throw new NotFound('Post Not found');
     }
   }
 
@@ -586,17 +586,29 @@ export class PostsService {
     if (!user) {
       throw new Unauthorized('jwt expired');
     }
-    try {
-      const updatedPost = await this.postModel.updateOne(
-        { _id: postId, 'toExchange.data.id': userPostId },
-        { $set: { 'toExchange.$.agree': true } },
-      );
 
-      if (updatedPost.nModified === 0) {
-        throw new NotFound('Post or exchange item not found');
+    const order = await this.orderModel.findOne({
+      $and: [
+        { 'product._id': { $eq: postId } },
+        { 'offer._id': { $eq: userPostId } },
+      ],
+    });
+
+    try {
+      if (order === null) {
+        await this.orderService.createOrder(postId, userPostId);
+        const updatedPost = await this.postModel.updateOne(
+          { _id: postId, 'toExchange.data.id': userPostId },
+          { $pull: { toExchange: { 'data.id': userPostId } } },
+          { new: true },
+        );
+        if (updatedPost.nModified === 0) {
+          throw new NotFound('Post or exchange item not found');
+        }
+      } else {
+        return NotFound('Post exist');
       }
 
-      await this.orderService.createOrder(postId, userPostId);
       const updatedPostData = await this.postModel.findById(postId);
       return updatedPostData;
     } catch (e) {
@@ -611,8 +623,9 @@ export class PostsService {
     }
     try {
       const updatedPost = await this.postModel.updateOne(
-        { _id: postId, 'toExchange.id': userPostId },
-        { $set: { 'toExchange.$.agree': false } },
+        { _id: postId, 'toExchange.data.id': userPostId },
+        { $pull: { toExchange: { 'data.id': userPostId } } },
+        { new: true },
       );
 
       if (updatedPost.nModified === 0) {

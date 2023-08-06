@@ -14,7 +14,7 @@ export class Orders extends Model<Orders> {
     description: 'Item for exchange',
   })
   @Prop({
-    type: Object,
+    type: Posts,
   })
   product: Posts;
 
@@ -23,7 +23,7 @@ export class Orders extends Model<Orders> {
     description: 'Offer for exchange',
   })
   @Prop({
-    type: Object,
+    type: Posts,
   })
   offer: Posts;
 

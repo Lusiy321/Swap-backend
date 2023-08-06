@@ -22,7 +22,7 @@ __decorate([
         description: 'Item for exchange',
     }),
     (0, mongoose_1.Prop)({
-        type: Object,
+        type: posts_model_1.Posts,
     }),
     __metadata("design:type", posts_model_1.Posts)
 ], Orders.prototype, "product", void 0);
@@ -32,7 +32,7 @@ __decorate([
         description: 'Offer for exchange',
     }),
     (0, mongoose_1.Prop)({
-        type: Object,
+        type: posts_model_1.Posts,
     }),
     __metadata("design:type", posts_model_1.Posts)
 ], Orders.prototype, "offer", void 0);

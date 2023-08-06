@@ -133,7 +133,7 @@ let PostsService = class PostsService {
             return find;
         }
         catch (e) {
-            throw new http_errors_1.NotFound('Post not found');
+            throw new http_errors_1.NotFound('Post Not found');
         }
     }
     async createPost(post, req) {
@@ -515,12 +515,23 @@ let PostsService = class PostsService {
         if (!user) {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
+        const order = await this.orderModel.findOne({
+            $and: [
+                { 'product._id': { $eq: postId } },
+                { 'offer._id': { $eq: userPostId } },
+            ],
+        });
         try {
-            const updatedPost = await this.postModel.updateOne({ _id: postId, 'toExchange.data.id': userPostId }, { $set: { 'toExchange.$.agree': true } });
-            if (updatedPost.nModified === 0) {
-                throw new http_errors_1.NotFound('Post or exchange item not found');
+            if (order === null) {
+                await this.orderService.createOrder(postId, userPostId);
+                const updatedPost = await this.postModel.updateOne({ _id: postId, 'toExchange.data.id': userPostId }, { $pull: { toExchange: { 'data.id': userPostId } } }, { new: true });
+                if (updatedPost.nModified === 0) {
+                    throw new http_errors_1.NotFound('Post or exchange item not found');
+                }
             }
-            await this.orderService.createOrder(postId, userPostId);
+            else {
+                return (0, http_errors_1.NotFound)('Post exist');
+            }
             const updatedPostData = await this.postModel.findById(postId);
             return updatedPostData;
         }
@@ -534,7 +545,7 @@ let PostsService = class PostsService {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
         try {
-            const updatedPost = await this.postModel.updateOne({ _id: postId, 'toExchange.id': userPostId }, { $set: { 'toExchange.$.agree': false } });
+            const updatedPost = await this.postModel.updateOne({ _id: postId, 'toExchange.data.id': userPostId }, { $pull: { toExchange: { 'data.id': userPostId } } }, { new: true });
             if (updatedPost.nModified === 0) {
                 throw new http_errors_1.NotFound('Post or exchange item not found');
             }
