@@ -545,12 +545,20 @@ export class PostsService {
       return foundItem ? foundItem.data.id : null;
     };
 
-    const order = await this.orderModel.findOne({
-      $and: [
-        { 'product._id': { $eq: postId } },
-        { 'offer._id': { $eq: userPostId } },
-      ],
-    });
+    const order = await this.orderModel.findOne(
+      {
+        $and: [
+          { 'product._id': { $eq: postId } },
+          { 'offer._id': { $eq: userPostId } },
+        ],
+      },
+      {
+        $and: [
+          { 'product._id': { $eq: userPostId } },
+          { 'offer._id': { $eq: postId } },
+        ],
+      },
+    );
 
     if (userPost.verify === 'approve') {
       if (foundUser(post.toExchange, userPost.id) === null || order === null) {
