@@ -21,7 +21,7 @@ export declare class PostsController {
     setFavorite(id: string, request: any): Promise<Posts>;
     setMyFavorite(request: any): Promise<Posts[]>;
     getMyExchenge(request: any): Promise<Posts[]>;
-    setViews(id: string): Promise<Posts>;
+    setViews(id: string, request: any): Promise<Posts>;
     setComments(comments: CreateCommentDto, id: string, request: any): Promise<Posts>;
     deleteComment(postId: string, commentId: string, request: any): Promise<Posts>;
     setAnswerComments(answer: CreateCommentDto, postId: string, commentId: string, request: any): Promise<Posts>;

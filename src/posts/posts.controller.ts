@@ -22,7 +22,7 @@ import { CreatePostDto } from './dto/create.post.dto';
 import { Posts } from './posts.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
 import { CreateCommentDto } from './dto/create.comment.dto';
- 
+
 @ApiTags('Post')
 @Controller('posts')
 export class PostsController {
@@ -168,9 +168,10 @@ export class PostsController {
 
   @ApiOperation({ summary: 'Post views' })
   @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
   @Patch('/view/:Id')
-  async setViews(@Param('Id') id: string): Promise<Posts> {
-    return this.postService.viewPost(id);
+  async setViews(@Param('Id') id: string, @Req() request: any): Promise<Posts> {
+    return this.postService.viewPost(id, request);
   }
 
   @ApiOperation({

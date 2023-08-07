@@ -69,8 +69,8 @@ let PostsController = class PostsController {
     async getMyExchenge(request) {
         return this.postService.findMyOwnPosts(request);
     }
-    async setViews(id) {
-        return this.postService.viewPost(id);
+    async setViews(id, request) {
+        return this.postService.viewPost(id, request);
     }
     async setComments(comments, id, request) {
         return this.postService.commentPosts(id, request, comments);
@@ -254,10 +254,12 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Post views' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
     (0, common_1.Patch)('/view/:Id'),
     __param(0, (0, common_1.Param)('Id')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "setViews", null);
 __decorate([

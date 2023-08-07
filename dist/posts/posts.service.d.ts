@@ -27,7 +27,7 @@ export declare class PostsService {
     verifyPost(id: string, req: any, postUp: VerifyPostDto): Promise<Posts>;
     activePost(id: string, req: any): Promise<Posts>;
     favoritePost(id: string, req: any): Promise<Posts>;
-    viewPost(id: string): Promise<Posts>;
+    viewPost(id: string, req: any): Promise<Posts>;
     findMyFavPosts(req: any): Promise<Posts[]>;
     commentPosts(postId: string, req: any, comments: CreateCommentDto): Promise<Posts>;
     answerCommentPosts(postId: string, req: any, commentId: string, answer: CreateCommentDto): Promise<Posts>;

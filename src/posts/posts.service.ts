@@ -409,15 +409,20 @@ export class PostsService {
     }
   }
 
-  async viewPost(id: string): Promise<Posts> {
+  async viewPost(id: string, req: any): Promise<Posts> {
+    const post = await this.postModel.findById(id);
+    const user = await this.userService.findToken(req);
+    if (!post) {
+      throw new Conflict('Not found');
+    }
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
     try {
-      const post = await this.postModel.findById(id);
-
-      if (!post) {
-        throw new Conflict('Not found');
-      }
-
       if (post) {
+        if (post.owner.id === user.id) {
+          return await this.postModel.findById(id);
+        }
         post.views += 1;
         post.save();
         return await this.postModel.findById(id);

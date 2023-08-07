@@ -374,13 +374,20 @@ let PostsService = class PostsService {
             throw new http_errors_1.NotFound('User not found');
         }
     }
-    async viewPost(id) {
+    async viewPost(id, req) {
+        const post = await this.postModel.findById(id);
+        const user = await this.userService.findToken(req);
+        if (!post) {
+            throw new http_errors_1.Conflict('Not found');
+        }
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         try {
-            const post = await this.postModel.findById(id);
-            if (!post) {
-                throw new http_errors_1.Conflict('Not found');
-            }
             if (post) {
+                if (post.owner.id === user.id) {
+                    return await this.postModel.findById(id);
+                }
                 post.views += 1;
                 post.save();
                 return await this.postModel.findById(id);
