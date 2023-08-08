@@ -5,7 +5,6 @@ import { User } from 'src/users/users.model';
 import { GoogleUserDto } from 'src/users/dto/google.user.dto';
 import { NotFound } from 'http-errors';
 import { JwtService } from '@nestjs/jwt';
-import { sign } from 'jsonwebtoken';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
