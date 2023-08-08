@@ -15,6 +15,7 @@ import { GoogleUserDto } from 'src/users/dto/google.user.dto';
 export class AuthController {
   constructor(private readonly usersService: UsersService) {}
   [x: string]: any;
+  
   @ApiOperation({ summary: 'Login Google User' })
   @ApiResponse({ status: 200, type: GoogleUserDto })
   @Get('google/login')
@@ -22,6 +23,7 @@ export class AuthController {
   handleLogin() {
     return { msg: 'Google Authentication' };
   }
+
   @ApiOperation({ summary: 'Google Authentication' })
   @ApiResponse({ status: 200, type: GoogleUserDto })
   @Get('google/redirect')

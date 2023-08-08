@@ -628,7 +628,7 @@ export class PostsService {
           throw new NotFound('Post or exchange item not found');
         }
       } else {
-        return NotFound('Post exist');
+        return new NotFound('Post exist');
       }
 
       const updatedPostData = await this.postModel.findById(postId);

@@ -551,7 +551,7 @@ let PostsService = class PostsService {
                 }
             }
             else {
-                return (0, http_errors_1.NotFound)('Post exist');
+                return new http_errors_1.NotFound('Post exist');
             }
             const updatedPostData = await this.postModel.findById(postId);
             return updatedPostData;
