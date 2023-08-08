@@ -55,7 +55,7 @@ __decorate([
     }),
     (0, mongoose_1.Prop)({
         type: String,
-        minlength: 13,
+        minlength: 10,
         maxlength: 13,
         default: '+380000000000',
     }),

@@ -42,7 +42,7 @@ export class User extends Model<User> {
   })
   @Prop({
     type: String,
-    minlength: 13,
+    minlength: 10,
     maxlength: 13,
     default: '+380000000000',
   })

@@ -1,32 +1,50 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { User } from 'src/users/users.model';
 import { GoogleUserDto } from 'src/users/dto/google.user.dto';
 import { NotFound } from 'http-errors';
+import { JwtService } from '@nestjs/jwt';
+import { sign } from 'jsonwebtoken';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
   static validateUser(): AuthService {
     throw new Error('Method not implemented.');
   }
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: User,
+    private readonly jwtService: JwtService,
+    private userService: UsersService,
+  ) {}
+
   async validateUser(details: GoogleUserDto) {
     try {
-      const user = await this.userModel.findOne({ email: details.email });
+      const user = await this.userModel.findOne({ googleId: details.googleId });
       if (!user) {
         const newUser = this.userModel.create(details);
-        return (await newUser).save();
+        newUser.save();
+        const userUpdateToken = await this.userModel.findOne({
+          email: details.email,
+        });
+        this.userService.createToken(userUpdateToken);
+        return await this.userModel.findById({
+          _id: userUpdateToken._id,
+        });
       }
-      return user;
+      this.userService.createToken(user);
+
+      return await this.userModel.findOne({
+        _id: user.id,
+      });
     } catch (e) {
       throw new NotFound('User not found');
     }
   }
 
-  async findUser(id: number) {
-    const user = await this.userModel.findById({ id });
+  async findUser(id: string) {
+    const user = await this.userModel.findById(id);
     return user;
   }
 }

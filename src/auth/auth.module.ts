@@ -9,10 +9,15 @@ import { SessionSerializer } from './utils/Serializer';
 import { UsersModule } from 'src/users/users.module';
 import { OrderSchema, Orders } from 'src/orders/orders.model';
 import { PostSchema, Posts } from 'src/posts/posts.model';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     UsersModule,
+    JwtModule.register({
+      secret: process.env.SECRET_KEY,
+      signOptions: { expiresIn: '1day' },
+    }),
     MongooseModule.forFeature([
       { name: Posts.name, schema: PostSchema, collection: 'posts' },
     ]),

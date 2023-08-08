@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { User, UserSchema } from './users.model';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { SendGridModule } from './utils/sendgrid.module';
 import { PostSchema, Posts } from 'src/posts/posts.model';
 import { OrdersModule } from 'src/orders/orders.module';
@@ -30,6 +30,6 @@ import { OrderSchema, Orders } from 'src/orders/orders.model';
   ],
   exports: [UsersService],
   controllers: [UsersController],
-  providers: [UsersService, JwtService],
+  providers: [UsersService],
 })
 export class UsersModule {}

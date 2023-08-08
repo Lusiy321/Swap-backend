@@ -6,9 +6,11 @@ export declare class AuthController {
     handleLogin(): {
         msg: string;
     };
-    googleAuthCallback(req: any, res: any): Promise<any>;
-    user(request: any): {
+    googleAuthRedirect(req: any): Promise<{
+        token: any;
+    }>;
+    user(request: any): Promise<{
         msg: string;
-    };
+    }>;
     refresh(request: any): Promise<import("../users/users.model").User>;
 }

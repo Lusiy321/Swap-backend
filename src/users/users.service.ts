@@ -6,7 +6,7 @@ import { CreateUserDto } from './dto/create.user.dto';
 import { compareSync, hashSync } from 'bcrypt';
 import { Conflict, NotFound, BadRequest, Unauthorized } from 'http-errors';
 import { UpdateUserDto } from './dto/update.user.dto';
-import { GoogleUserDto } from './dto/google.user.dto';
+
 import { sign, verify, JwtPayload } from 'jsonwebtoken';
 import { Posts } from 'src/posts/posts.model';
 import { Orders } from 'src/orders/orders.model';
@@ -79,19 +79,7 @@ export class UsersService {
     }
   }
 
-  async GoogleLogin(user: GoogleUserDto): Promise<User> {
-    try {
-      const { email } = user;
-      const authUser = await this.userModel.findOne({ email });
-      if (!authUser) {
-        throw new Unauthorized(`Authorization failure`);
-      }
-      return this.createToken(authUser);
-    } catch (e) {
-      throw new BadRequest(e.message);
-    }
-  }
-
+  
   async logout(req: any): Promise<User> {
     const user = await this.findToken(req);
     if (!user) {

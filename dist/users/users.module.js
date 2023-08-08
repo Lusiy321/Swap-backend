@@ -40,7 +40,7 @@ UsersModule = __decorate([
         ],
         exports: [users_service_1.UsersService],
         controllers: [users_controller_1.UsersController],
-        providers: [users_service_1.UsersService, jwt_1.JwtService],
+        providers: [users_service_1.UsersService],
     })
 ], UsersModule);
 exports.UsersModule = UsersModule;

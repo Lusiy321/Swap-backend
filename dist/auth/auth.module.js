@@ -17,12 +17,17 @@ const Serializer_1 = require("./utils/Serializer");
 const users_module_1 = require("../users/users.module");
 const orders_model_1 = require("../orders/orders.model");
 const posts_model_1 = require("../posts/posts.model");
+const jwt_1 = require("@nestjs/jwt");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
             users_module_1.UsersModule,
+            jwt_1.JwtModule.register({
+                secret: process.env.SECRET_KEY,
+                signOptions: { expiresIn: '1day' },
+            }),
             mongoose_1.MongooseModule.forFeature([
                 { name: posts_model_1.Posts.name, schema: posts_model_1.PostSchema, collection: 'posts' },
             ]),

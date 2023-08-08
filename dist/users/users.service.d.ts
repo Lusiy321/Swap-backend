@@ -1,7 +1,6 @@
 import { User } from './users.model';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
-import { GoogleUserDto } from './dto/google.user.dto';
 import { Posts } from 'src/posts/posts.model';
 import { Orders } from 'src/orders/orders.model';
 export declare class UsersService {
@@ -13,7 +12,6 @@ export declare class UsersService {
     findById(id: string): Promise<User>;
     create(user: CreateUserDto): Promise<User>;
     login(user: CreateUserDto): Promise<User>;
-    GoogleLogin(user: GoogleUserDto): Promise<User>;
     logout(req: any): Promise<User>;
     update(user: UpdateUserDto, req: any): Promise<User>;
     updateUserData(findId: string): Promise<Posts[]>;

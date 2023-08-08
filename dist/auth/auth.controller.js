@@ -25,13 +25,12 @@ let AuthController = class AuthController {
     handleLogin() {
         return { msg: 'Google Authentication' };
     }
-    async googleAuthCallback(req, res) {
-        const user = req.user;
-        req.session.user = user;
-        const authUser = await this.usersService.GoogleLogin(user);
-        return res.json(authUser);
+    async googleAuthRedirect(req) {
+        return {
+            token: req.user,
+        };
     }
-    user(request) {
+    async user(request) {
         if (request.user) {
             return { msg: 'Authenticated' };
         }
@@ -58,18 +57,17 @@ __decorate([
     (0, common_1.Get)('google/redirect'),
     (0, common_1.UseGuards)(Guards_1.GoogleAuthGuard),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "googleAuthCallback", null);
+], AuthController.prototype, "googleAuthRedirect", null);
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Google Authentication status' }),
     (0, common_1.Get)('status'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "user", null);
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Refresh Access Token' }),

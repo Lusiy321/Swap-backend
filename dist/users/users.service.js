@@ -89,19 +89,6 @@ let UsersService = class UsersService {
             throw new http_errors_1.BadRequest(e.message);
         }
     }
-    async GoogleLogin(user) {
-        try {
-            const { email } = user;
-            const authUser = await this.userModel.findOne({ email });
-            if (!authUser) {
-                throw new http_errors_1.Unauthorized(`Authorization failure`);
-            }
-            return this.createToken(authUser);
-        }
-        catch (e) {
-            throw new http_errors_1.BadRequest(e.message);
-        }
-    }
     async logout(req) {
         const user = await this.findToken(req);
         if (!user) {

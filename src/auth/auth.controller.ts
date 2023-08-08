@@ -26,16 +26,15 @@ export class AuthController {
   @ApiResponse({ status: 200, type: GoogleUserDto })
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  async googleAuthCallback(@Req() req: any, @Res() res: any) {
-    const user = req.user;
-    req.session.user = user;
-    const authUser = await this.usersService.GoogleLogin(user);
-    return res.json(authUser);
+  async googleAuthRedirect(@Req() req: any) {
+    return {
+      token: req.user,
+    };
   }
 
   @ApiOperation({ summary: 'Google Authentication status' })
   @Get('status')
-  user(@Req() request: any) {
+  async user(@Req() request: any) {
     if (request.user) {
       return { msg: 'Authenticated' };
     } else {
