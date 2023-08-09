@@ -497,10 +497,18 @@ let PostsService = class PostsService {
                 { 'offer._id': { $eq: postId } },
             ],
         });
+        const toExchangeFind = await this.postModel.findOne({
+            $and: [
+                { _id: { $eq: userPostId } },
+                { 'toExchange.data.id': { $eq: postId } },
+            ],
+        });
+        console.log(toExchangeFind);
         if (userPost.verify === 'approve') {
             if (foundUser(post.toExchange, userPost.id) === null &&
                 orderProduct === null &&
-                orderOffer === null) {
+                orderOffer === null &&
+                toExchangeFind === null) {
                 const exchId = (0, uuid_1.v4)();
                 const array = post.toExchange;
                 array.push({
