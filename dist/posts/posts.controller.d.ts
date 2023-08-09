@@ -27,6 +27,6 @@ export declare class PostsController {
     setAnswerComments(answer: CreateCommentDto, postId: string, commentId: string, request: any): Promise<Posts>;
     setExchange(postId: string, userPostId: string, request: any): Promise<Posts>;
     deleteExchange(postId: string, exchangeId: string, request: any): Promise<Posts>;
-    setExchangeTrue(postId: string, userPostId: string, request: any): Promise<Posts>;
+    setExchangeTrue(postId: string, userPostId: string, request: any): Promise<object>;
     setExchangeFalse(postId: string, userPostId: string, request: any): Promise<Posts>;
 }

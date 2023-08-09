@@ -1,3 +1,4 @@
+/// <reference types="http-errors" />
 import { Posts } from './posts.model';
 import { CreatePostDto } from './dto/create.post.dto';
 import { VerifyPostDto } from './dto/verify.post.dto';
@@ -32,7 +33,10 @@ export declare class PostsService {
     commentPosts(postId: string, req: any, comments: CreateCommentDto): Promise<Posts>;
     answerCommentPosts(postId: string, req: any, commentId: string, answer: CreateCommentDto): Promise<Posts>;
     toExchangePosts(postId: string, userPostId: string, req: any): Promise<Posts>;
-    exchangeTruePosts(postId: string, userPostId: string, req: any): Promise<any>;
+    exchangeTruePosts(postId: string, userPostId: string, req: any): Promise<import("http-errors").HttpError<404> | {
+        data: any;
+        orderId: any;
+    }>;
     exchangeFalsePosts(postId: string, userPostId: string, req: any): Promise<any>;
     findMyOwnPosts(req: any): Promise<any>;
 }

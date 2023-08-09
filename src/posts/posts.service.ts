@@ -637,9 +637,14 @@ export class PostsService {
       } else {
         return new NotFound('Post exist');
       }
-
+      const newOrder = await this.orderModel.findOne({
+        $and: [
+          { 'product._id': { $eq: postId } },
+          { 'offer._id': { $eq: userPostId } },
+        ],
+      });
       const updatedPostData = await this.postModel.findById(postId);
-      return updatedPostData;
+      return { data: updatedPostData, orderId: newOrder.id };
     } catch (e) {
       throw new NotFound('Post not found');
     }

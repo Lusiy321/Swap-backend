@@ -256,7 +256,7 @@ export class PostsController {
     @Param('postId') postId: string,
     @Param('userPostId') userPostId: string,
     @Req() request: any,
-  ): Promise<Posts> {
+  ): Promise<object> {
     return this.postService.exchangeTruePosts(postId, userPostId, request);
   }
 
