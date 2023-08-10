@@ -218,6 +218,17 @@ export class PostsService {
     }
   }
 
+  async removePostData(findId: string): Promise<Posts[]> {
+    await this.postModel.updateMany(
+      { 'toExchange.data.id': findId },
+      { $pull: { 'toExchange.data': { id: findId } } },
+      { new: true },
+      { arrayFilters: [{ 'toExchange.data.id': findId }] },
+    );
+
+    return;
+  }
+
   async deleteComment(
     postId: string,
     commentId: string,
