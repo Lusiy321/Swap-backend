@@ -31,6 +31,8 @@ export declare class Orders extends Model<Orders> {
     offer: Posts;
     status: boolean;
     chat: Chat[];
+    productStatus: boolean;
+    offerStatus: boolean;
 }
 export declare const OrderSchema: import("mongoose").Schema<Orders, Model<Orders, any, any, any, import("mongoose").Document<unknown, any, Orders> & Omit<Orders & {
     _id: import("mongoose").Types.ObjectId;

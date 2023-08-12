@@ -225,7 +225,6 @@ export class PostsService {
       { new: true },
       { arrayFilters: [{ 'toExchange.data.id': findId }] },
     );
-
     return;
   }
 

@@ -79,6 +79,22 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Orders.prototype, "chat", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'true', description: 'Product order status' }),
+    (0, mongoose_1.Prop)({
+        type: Boolean,
+        default: null,
+    }),
+    __metadata("design:type", Boolean)
+], Orders.prototype, "productStatus", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'true', description: 'Offer order status' }),
+    (0, mongoose_1.Prop)({
+        type: Boolean,
+        default: null,
+    }),
+    __metadata("design:type", Boolean)
+], Orders.prototype, "offerStatus", void 0);
 Orders = __decorate([
     (0, mongoose_1.Schema)({ versionKey: false, timestamps: true })
 ], Orders);

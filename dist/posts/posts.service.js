@@ -225,6 +225,10 @@ let PostsService = class PostsService {
             throw new http_errors_1.NotFound('Post or user not found');
         }
     }
+    async removePostData(findId) {
+        await this.postModel.updateMany({ 'toExchange.data.id': findId }, { $pull: { 'toExchange.data': { id: findId } } }, { new: true }, { arrayFilters: [{ 'toExchange.data.id': findId }] });
+        return;
+    }
     async deleteComment(postId, commentId, req) {
         const user = await this.userService.findToken(req);
         const post = await this.postModel.findById({ _id: postId });

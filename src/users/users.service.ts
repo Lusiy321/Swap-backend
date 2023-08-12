@@ -52,12 +52,17 @@ export class UsersService {
   async create(user: CreateUserDto): Promise<User> {
     try {
       const { email } = user;
-      const registrationUser = await this.userModel.findOne({ email });
+      const lowerCaseEmail = email.toLowerCase();
+
+      const registrationUser = await this.userModel.findOne({
+        email: lowerCaseEmail,
+      });
       if (registrationUser) {
         throw new Conflict(`User with ${email} in use`);
       }
+
       const createdUser = await this.userModel.create(user);
-      createdUser.setName(user.email);
+      createdUser.setName(lowerCaseEmail);
       createdUser.setPassword(user.password);
       createdUser.save();
       return await this.userModel.findById(createdUser._id);
@@ -69,7 +74,8 @@ export class UsersService {
   async login(user: CreateUserDto): Promise<User> {
     try {
       const { email, password } = user;
-      const authUser = await this.userModel.findOne({ email });
+      const lowerCaseEmail = email.toLowerCase();
+      const authUser = await this.userModel.findOne({ email: lowerCaseEmail });
       if (!authUser || !authUser.comparePassword(password)) {
         throw new Unauthorized(`Email or password is wrong`);
       }
@@ -79,7 +85,6 @@ export class UsersService {
     }
   }
 
-  
   async logout(req: any): Promise<User> {
     const user = await this.findToken(req);
     if (!user) {

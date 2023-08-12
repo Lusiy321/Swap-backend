@@ -62,12 +62,15 @@ let UsersService = class UsersService {
     async create(user) {
         try {
             const { email } = user;
-            const registrationUser = await this.userModel.findOne({ email });
+            const lowerCaseEmail = email.toLowerCase();
+            const registrationUser = await this.userModel.findOne({
+                email: lowerCaseEmail,
+            });
             if (registrationUser) {
                 throw new http_errors_1.Conflict(`User with ${email} in use`);
             }
             const createdUser = await this.userModel.create(user);
-            createdUser.setName(user.email);
+            createdUser.setName(lowerCaseEmail);
             createdUser.setPassword(user.password);
             createdUser.save();
             return await this.userModel.findById(createdUser._id);
@@ -79,7 +82,8 @@ let UsersService = class UsersService {
     async login(user) {
         try {
             const { email, password } = user;
-            const authUser = await this.userModel.findOne({ email });
+            const lowerCaseEmail = email.toLowerCase();
+            const authUser = await this.userModel.findOne({ email: lowerCaseEmail });
             if (!authUser || !authUser.comparePassword(password)) {
                 throw new http_errors_1.Unauthorized(`Email or password is wrong`);
             }

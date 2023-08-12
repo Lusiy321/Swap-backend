@@ -67,6 +67,20 @@ export class Orders extends Model<Orders> {
     default: [],
   })
   chat: Chat[];
+
+  @ApiProperty({ example: 'true', description: 'Product order status' })
+  @Prop({
+    type: Boolean,
+    default: null,
+  })
+  productStatus: boolean;
+
+  @ApiProperty({ example: 'true', description: 'Offer order status' })
+  @Prop({
+    type: Boolean,
+    default: null,
+  })
+  offerStatus: boolean;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Orders);
