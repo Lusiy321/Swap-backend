@@ -51,11 +51,11 @@ export class OrdersController {
   }
 
   @ApiOperation({
-    summary: 'Set approve deal',
+    summary: 'Set reject deal',
   })
   @ApiResponse({ status: 200, type: Object })
   @ApiBearerAuth('BearerAuthMethod')
-  @Post('/approve/:Id')
+  @Post('/reject/:Id')
   async orderReject(
     @Param('Id') id: string,
     @Req() request: any,

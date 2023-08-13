@@ -76,11 +76,11 @@ __decorate([
 ], OrdersController.prototype, "orderAndArhive", null);
 __decorate([
     (0, swagger_1.ApiOperation)({
-        summary: 'Set approve deal',
+        summary: 'Set reject deal',
     }),
     (0, swagger_1.ApiResponse)({ status: 200, type: Object }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
-    (0, common_1.Post)('/approve/:Id'),
+    (0, common_1.Post)('/reject/:Id'),
     __param(0, (0, common_1.Param)('Id')),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
