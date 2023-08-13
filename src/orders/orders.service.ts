@@ -147,4 +147,37 @@ export class OrderService {
       throw new NotFound('Order not found');
     }
   }
+
+  async rejectOrderAndArhive(orderId: string, req: any): Promise<Orders> {
+    const user = await this.userService.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
+
+    try {
+      const order = await this.orderModel.findById(orderId).exec();
+      if (order.product.owner.id === user.id) {
+        order.productStatus = false;
+        order.status = false;
+        order.save();
+      } else if (order.offer.owner.id === user.id) {
+        order.offerStatus = false;
+        order.status = false;
+        order.save();
+      } else {
+        throw new NotFound('User not found');
+      }
+
+      if (order.productStatus === false && order.offerStatus === false) {
+        const archivedOrder = new this.orderArchiveModel(order.toObject());
+        await archivedOrder.save();
+        await this.orderModel.findByIdAndDelete(orderId);
+        return order;
+      }
+
+      return order;
+    } catch (e) {
+      throw new NotFound('Order not found');
+    }
+  }
 }

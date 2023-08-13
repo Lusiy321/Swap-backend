@@ -7,5 +7,6 @@ export declare class OrdersController {
     createOrder(req: any): Promise<Orders[]>;
     setMessage(message: CreateMessageDto, id: string, request: any): Promise<Orders>;
     orderAndArhive(id: string, request: any): Promise<Orders>;
+    orderReject(id: string, request: any): Promise<Orders>;
     findById(id: string): Promise<Orders>;
 }

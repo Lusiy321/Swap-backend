@@ -17,4 +17,5 @@ export declare class OrderService {
     findOrderById(id: string): Promise<Orders>;
     chatMessage(postId: string, req: any, message: CreateMessageDto): Promise<Orders>;
     approveOrderAndArhive(orderId: string, req: any): Promise<Orders>;
+    rejectOrderAndArhive(orderId: string, req: any): Promise<Orders>;
 }

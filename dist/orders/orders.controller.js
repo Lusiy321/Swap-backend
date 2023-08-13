@@ -30,6 +30,9 @@ let OrdersController = class OrdersController {
     async orderAndArhive(id, request) {
         return this.orderService.approveOrderAndArhive(id, request);
     }
+    async orderReject(id, request) {
+        return this.orderService.rejectOrderAndArhive(id, request);
+    }
     async findById(id) {
         return this.orderService.findOrderById(id);
     }
@@ -71,6 +74,19 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "orderAndArhive", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Set approve deal',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: Object }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Post)('/approve/:Id'),
+    __param(0, (0, common_1.Param)('Id')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], OrdersController.prototype, "orderReject", null);
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Get order by ID' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: Object }),

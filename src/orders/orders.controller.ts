@@ -50,6 +50,19 @@ export class OrdersController {
     return this.orderService.approveOrderAndArhive(id, request);
   }
 
+  @ApiOperation({
+    summary: 'Set approve deal',
+  })
+  @ApiResponse({ status: 200, type: Object })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Post('/approve/:Id')
+  async orderReject(
+    @Param('Id') id: string,
+    @Req() request: any,
+  ): Promise<Orders> {
+    return this.orderService.rejectOrderAndArhive(id, request);
+  }
+
   @ApiOperation({ summary: 'Get order by ID' })
   @ApiResponse({ status: 200, type: Object })
   @Get('/find/:id')

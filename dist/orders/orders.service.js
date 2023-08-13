@@ -141,6 +141,38 @@ let OrderService = class OrderService {
             throw new http_errors_1.NotFound('Order not found');
         }
     }
+    async rejectOrderAndArhive(orderId, req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            const order = await this.orderModel.findById(orderId).exec();
+            if (order.product.owner.id === user.id) {
+                order.productStatus = false;
+                order.status = false;
+                order.save();
+            }
+            else if (order.offer.owner.id === user.id) {
+                order.offerStatus = false;
+                order.status = false;
+                order.save();
+            }
+            else {
+                throw new http_errors_1.NotFound('User not found');
+            }
+            if (order.productStatus === false && order.offerStatus === false) {
+                const archivedOrder = new this.orderArchiveModel(order.toObject());
+                await archivedOrder.save();
+                await this.orderModel.findByIdAndDelete(orderId);
+                return order;
+            }
+            return order;
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Order not found');
+        }
+    }
 };
 OrderService = __decorate([
     (0, common_1.Injectable)(),
