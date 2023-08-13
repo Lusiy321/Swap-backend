@@ -9,6 +9,8 @@ import { CreateOredrDto } from './dto/create.order.dto';
 import { NotFound, Unauthorized } from 'http-errors';
 import { UsersService } from 'src/users/users.service';
 import { CreateMessageDto } from './dto/create.message.dto';
+import { OrdersArhive } from './orders-arhive.model';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class OrderService {
@@ -16,6 +18,8 @@ export class OrderService {
     @InjectModel(Orders.name) private orderModel: Orders,
     @InjectModel(User.name) private userModel: User,
     @InjectModel(Posts.name) private postModel: Posts,
+    @InjectModel(OrdersArhive.name)
+    private orderArchiveModel: Model<OrdersArhive>,
     private userService: UsersService,
   ) {}
 
@@ -109,6 +113,38 @@ export class OrderService {
       }
     } catch (e) {
       throw new NotFound('Post not found');
+    }
+  }
+
+  async approveOrderAndArhive(orderId: string, req: any): Promise<Orders> {
+    const user = await this.userService.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
+
+    try {
+      const order = await this.orderModel.findById(orderId).exec();
+      if (order.product.owner.id === user.id) {
+        order.productStatus = true;
+        order.save();
+      } else if (order.offer.owner.id === user.id) {
+        order.offerStatus = true;
+        order.save();
+      } else {
+        throw new NotFound('User not found');
+      }
+      if (order.productStatus === true && order.offerStatus === true) {
+        order.status = true;
+        order.save();
+        const archivedOrder = new this.orderArchiveModel(order.toObject());
+        await archivedOrder.save();
+        await this.orderModel.findByIdAndDelete(orderId);
+        return order;
+      }
+
+      return order;
+    } catch (e) {
+      throw new NotFound('Order not found');
     }
   }
 }

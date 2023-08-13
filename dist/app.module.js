@@ -22,6 +22,7 @@ const orders_service_1 = require("./orders/orders.service");
 const orders_module_1 = require("./orders/orders.module");
 const orders_model_1 = require("./orders/orders.model");
 const users_service_1 = require("./users/users.service");
+const orders_arhive_model_1 = require("./orders/orders-arhive.model");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -40,6 +41,13 @@ AppModule = __decorate([
             ]),
             mongoose_1.MongooseModule.forFeature([
                 { name: posts_model_1.Posts.name, schema: posts_model_1.PostSchema, collection: 'posts' },
+            ]),
+            mongoose_1.MongooseModule.forFeature([
+                {
+                    name: orders_arhive_model_1.OrdersArhive.name,
+                    schema: orders_arhive_model_1.OrdersArhiveSchema,
+                    collection: 'orders-arhive',
+                },
             ]),
             users_module_1.UsersModule,
             passport_1.PassportModule.register({ session: true }),

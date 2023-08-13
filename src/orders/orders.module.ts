@@ -8,12 +8,20 @@ import { User, UserSchema } from 'src/users/users.model';
 import { PostSchema, Posts } from 'src/posts/posts.model';
 import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';
+import { OrdersArhive, OrdersArhiveSchema } from './orders-arhive.model';
 
 @Module({
   imports: [
     forwardRef(() => UsersModule),
     MongooseModule.forFeature([
       { name: Orders.name, schema: OrderSchema, collection: 'orders' },
+    ]),
+    MongooseModule.forFeature([
+      {
+        name: OrdersArhive.name,
+        schema: OrdersArhiveSchema,
+        collection: 'orders-arhive',
+      },
     ]),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema, collection: 'users' },

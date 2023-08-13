@@ -15,6 +15,7 @@ import { OrderService } from './orders/orders.service';
 import { OrdersModule } from './orders/orders.module';
 import { OrderSchema, Orders } from './orders/orders.model';
 import { UsersService } from './users/users.service';
+import { OrdersArhive, OrdersArhiveSchema } from './orders/orders-arhive.model';
 
 @Module({
   imports: [
@@ -31,6 +32,13 @@ import { UsersService } from './users/users.service';
     ]),
     MongooseModule.forFeature([
       { name: Posts.name, schema: PostSchema, collection: 'posts' },
+    ]),
+    MongooseModule.forFeature([
+      {
+        name: OrdersArhive.name,
+        schema: OrdersArhiveSchema,
+        collection: 'orders-arhive',
+      },
     ]),
     UsersModule,
     PassportModule.register({ session: true }),

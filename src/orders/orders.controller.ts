@@ -37,6 +37,19 @@ export class OrdersController {
     return this.orderService.chatMessage(id, request, message);
   }
 
+  @ApiOperation({
+    summary: 'Set approve deal',
+  })
+  @ApiResponse({ status: 200, type: Object })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Post('/approve/:Id')
+  async orderAndArhive(
+    @Param('Id') id: string,
+    @Req() request: any,
+  ): Promise<Orders> {
+    return this.orderService.approveOrderAndArhive(id, request);
+  }
+
   @ApiOperation({ summary: 'Get order by ID' })
   @ApiResponse({ status: 200, type: Object })
   @Get('/find/:id')

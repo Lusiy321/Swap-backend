@@ -21,11 +21,14 @@ const uuid_1 = require("uuid");
 const users_model_1 = require("../users/users.model");
 const http_errors_1 = require("http-errors");
 const users_service_1 = require("../users/users.service");
+const orders_arhive_model_1 = require("./orders-arhive.model");
+const mongoose_2 = require("mongoose");
 let OrderService = class OrderService {
-    constructor(orderModel, userModel, postModel, userService) {
+    constructor(orderModel, userModel, postModel, orderArchiveModel, userService) {
         this.orderModel = orderModel;
         this.userModel = userModel;
         this.postModel = postModel;
+        this.orderArchiveModel = orderArchiveModel;
         this.userService = userService;
     }
     async createOrder(postId, userPostId) {
@@ -106,15 +109,49 @@ let OrderService = class OrderService {
             throw new http_errors_1.NotFound('Post not found');
         }
     }
+    async approveOrderAndArhive(orderId, req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            const order = await this.orderModel.findById(orderId).exec();
+            if (order.product.owner.id === user.id) {
+                order.productStatus = true;
+                order.save();
+            }
+            else if (order.offer.owner.id === user.id) {
+                order.offerStatus = true;
+                order.save();
+            }
+            else {
+                throw new http_errors_1.NotFound('User not found');
+            }
+            if (order.productStatus === true && order.offerStatus === true) {
+                order.status = true;
+                order.save();
+                const archivedOrder = new this.orderArchiveModel(order.toObject());
+                await archivedOrder.save();
+                await this.orderModel.findByIdAndDelete(orderId);
+                return order;
+            }
+            return order;
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Order not found');
+        }
+    }
 };
 OrderService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(orders_model_1.Orders.name)),
     __param(1, (0, mongoose_1.InjectModel)(users_model_1.User.name)),
     __param(2, (0, mongoose_1.InjectModel)(posts_model_1.Posts.name)),
+    __param(3, (0, mongoose_1.InjectModel)(orders_arhive_model_1.OrdersArhive.name)),
     __metadata("design:paramtypes", [orders_model_1.Orders,
         users_model_1.User,
         posts_model_1.Posts,
+        mongoose_2.Model,
         users_service_1.UsersService])
 ], OrderService);
 exports.OrderService = OrderService;

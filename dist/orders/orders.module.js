@@ -16,6 +16,7 @@ const users_model_1 = require("../users/users.model");
 const posts_model_1 = require("../posts/posts.model");
 const users_module_1 = require("../users/users.module");
 const users_service_1 = require("../users/users.service");
+const orders_arhive_model_1 = require("./orders-arhive.model");
 let OrdersModule = class OrdersModule {
 };
 OrdersModule = __decorate([
@@ -24,6 +25,13 @@ OrdersModule = __decorate([
             (0, common_1.forwardRef)(() => users_module_1.UsersModule),
             mongoose_1.MongooseModule.forFeature([
                 { name: orders_model_1.Orders.name, schema: orders_model_1.OrderSchema, collection: 'orders' },
+            ]),
+            mongoose_1.MongooseModule.forFeature([
+                {
+                    name: orders_arhive_model_1.OrdersArhive.name,
+                    schema: orders_arhive_model_1.OrdersArhiveSchema,
+                    collection: 'orders-arhive',
+                },
             ]),
             mongoose_1.MongooseModule.forFeature([
                 { name: users_model_1.User.name, schema: users_model_1.UserSchema, collection: 'users' },
