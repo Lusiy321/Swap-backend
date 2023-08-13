@@ -125,7 +125,7 @@ export class Posts extends Model<Posts> {
     type: [
       {
         id: String,
-        text: { type: String, required: true },
+        text: { type: String, required: true, minlength: 2 },
         user: {
           id: { type: String },
           firstName: String,
@@ -137,7 +137,7 @@ export class Posts extends Model<Posts> {
         answer: [
           {
             id: String,
-            text: { type: String, required: true },
+            text: { type: String, required: true, minlength: 2 },
             user: {
               id: String,
               firstName: String,

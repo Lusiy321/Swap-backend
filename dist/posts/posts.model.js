@@ -140,7 +140,7 @@ __decorate([
         type: [
             {
                 id: String,
-                text: { type: String, required: true },
+                text: { type: String, required: true, minlength: 2 },
                 user: {
                     id: { type: String },
                     firstName: String,
@@ -152,7 +152,7 @@ __decorate([
                 answer: [
                     {
                         id: String,
-                        text: { type: String, required: true },
+                        text: { type: String, required: true, minlength: 2 },
                         user: {
                             id: String,
                             firstName: String,
