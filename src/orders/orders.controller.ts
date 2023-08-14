@@ -9,6 +9,7 @@ import {
 } from '@nestjs/swagger';
 import { Orders } from './orders.model';
 import { CreateMessageDto } from './dto/create.message.dto';
+import { OrdersArhive } from './orders-arhive.model';
 
 @ApiTags('Order')
 @Controller('orders')
@@ -68,5 +69,13 @@ export class OrdersController {
   @Get('/find/:id')
   async findById(@Param('id') id: string): Promise<Orders> {
     return this.orderService.findOrderById(id);
+  }
+
+  @ApiOperation({ summary: 'Find my orders' })
+  @ApiResponse({ status: 200, type: [Object] })
+  @ApiBearerAuth('BearerAuthMethod')
+  @Get('/orders-arhive')
+  async findOrder(@Req() req: any): Promise<object[]> {
+    return this.orderService.findAllApproveOrders(req);
   }
 }

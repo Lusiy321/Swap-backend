@@ -36,6 +36,9 @@ let OrdersController = class OrdersController {
     async findById(id) {
         return this.orderService.findOrderById(id);
     }
+    async findOrder(req) {
+        return this.orderService.findAllApproveOrders(req);
+    }
 };
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Find my orders' }),
@@ -96,6 +99,16 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "findById", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Find my orders' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: [Object] }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Get)('/orders-arhive'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OrdersController.prototype, "findOrder", null);
 OrdersController = __decorate([
     (0, swagger_1.ApiTags)('Order'),
     (0, common_1.Controller)('orders'),

@@ -133,6 +133,8 @@ let OrderService = class OrderService {
                 const archivedOrder = new this.orderArchiveModel(order.toObject());
                 await archivedOrder.save();
                 await this.orderModel.findByIdAndDelete(orderId);
+                await this.postModel.findByIdAndDelete(order.product.id);
+                await this.postModel.findByIdAndDelete(order.offer.id);
                 return order;
             }
             return order;
@@ -168,6 +170,28 @@ let OrderService = class OrderService {
                 return order;
             }
             return order;
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Order not found');
+        }
+    }
+    async findAllApproveOrders(req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            const userOffer = await this.orderArchiveModel
+                .find({ 'offer.owner.id': user.id })
+                .exec();
+            const userProduct = await this.orderArchiveModel
+                .find({ 'product.owner.id': user.id })
+                .exec();
+            const sumArr = [...userProduct, ...userOffer];
+            if (Array.isArray(sumArr) && sumArr.length === 0) {
+                throw new http_errors_1.NotFound('Order not found');
+            }
+            return sumArr;
         }
         catch (e) {
             throw new http_errors_1.NotFound('Order not found');
