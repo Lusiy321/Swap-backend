@@ -84,7 +84,6 @@ let PostsService = class PostsService {
     }
     async searchPosts(query) {
         const { req } = query;
-        console.log(req);
         try {
             const searchItem = req;
             if (searchItem === '') {

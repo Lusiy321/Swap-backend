@@ -80,6 +80,15 @@ let OrderService = class OrderService {
             throw new http_errors_1.NotFound('Order not found');
         }
     }
+    async findOrderArhiveById(id) {
+        try {
+            const find = await this.orderArchiveModel.findById(id).exec();
+            return find;
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Order not found');
+        }
+    }
     async chatMessage(postId, req, message) {
         const user = await this.userService.findToken(req);
         if (!user) {

@@ -71,6 +71,13 @@ export class OrdersController {
     return this.orderService.findOrderById(id);
   }
 
+  @ApiOperation({ summary: 'Get arhive order by ID' })
+  @ApiResponse({ status: 200, type: Object })
+  @Get('/find-arhive/:id')
+  async findArhiveById(@Param('id') id: string): Promise<object> {
+    return this.orderService.findOrderArhiveById(id);
+  }
+
   @ApiOperation({ summary: 'Find my orders' })
   @ApiResponse({ status: 200, type: [Object] })
   @ApiBearerAuth('BearerAuthMethod')

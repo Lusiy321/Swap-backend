@@ -77,6 +77,15 @@ export class OrderService {
     }
   }
 
+  async findOrderArhiveById(id: string) {
+    try {
+      const find = await this.orderArchiveModel.findById(id).exec();
+      return find;
+    } catch (e) {
+      throw new NotFound('Order not found');
+    }
+  }
+
   async chatMessage(
     postId: string,
     req: any,

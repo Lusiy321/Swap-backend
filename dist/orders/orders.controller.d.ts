@@ -9,5 +9,6 @@ export declare class OrdersController {
     orderAndArhive(id: string, request: any): Promise<Orders>;
     orderReject(id: string, request: any): Promise<Orders>;
     findById(id: string): Promise<Orders>;
+    findArhiveById(id: string): Promise<object>;
     findOrder(req: any): Promise<object[]>;
 }

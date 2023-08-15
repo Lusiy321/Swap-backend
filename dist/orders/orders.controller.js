@@ -36,6 +36,9 @@ let OrdersController = class OrdersController {
     async findById(id) {
         return this.orderService.findOrderById(id);
     }
+    async findArhiveById(id) {
+        return this.orderService.findOrderArhiveById(id);
+    }
     async findOrder(req) {
         return this.orderService.findAllApproveOrders(req);
     }
@@ -99,6 +102,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "findById", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Get arhive order by ID' }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: Object }),
+    (0, common_1.Get)('/find-arhive/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], OrdersController.prototype, "findArhiveById", null);
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Find my orders' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: [Object] }),

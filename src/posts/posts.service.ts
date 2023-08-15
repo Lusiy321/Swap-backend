@@ -65,7 +65,6 @@ export class PostsService {
 
   async searchPosts(query: any): Promise<Posts[]> {
     const { req } = query;
-    console.log(req);
     try {
       const searchItem = req;
       if (searchItem === '') {
