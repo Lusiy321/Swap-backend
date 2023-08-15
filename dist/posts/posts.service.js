@@ -84,8 +84,12 @@ let PostsService = class PostsService {
     }
     async searchPosts(query) {
         const { req } = query;
+        console.log(req);
         try {
             const searchItem = req;
+            if (searchItem === '') {
+                throw new http_errors_1.NotFound('Post not found');
+            }
             const regex = new RegExp(searchItem, 'i');
             const find = await this.postModel
                 .find({ title: { $regex: regex } })
@@ -95,7 +99,7 @@ let PostsService = class PostsService {
                     .find({ description: { $regex: regex } })
                     .exec();
                 if (Array.isArray(descr) && descr.length === 0) {
-                    return await this.postModel.find();
+                    throw new http_errors_1.NotFound('Post not found');
                 }
                 return descr;
             }
@@ -215,6 +219,7 @@ let PostsService = class PostsService {
             }
             else if (post.owner.id === user.id) {
                 const find = await this.postModel.findByIdAndRemove({ _id: id }).exec();
+                await this.removePostData(id);
                 return find;
             }
             else {
@@ -507,7 +512,6 @@ let PostsService = class PostsService {
                 { 'toExchange.data.id': { $eq: postId } },
             ],
         });
-        console.log(toExchangeFind);
         if (userPost.verify === 'approve') {
             if (foundUser(post.toExchange, userPost.id) === null &&
                 orderProduct === null &&

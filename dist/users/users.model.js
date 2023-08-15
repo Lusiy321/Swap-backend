@@ -127,6 +127,17 @@ __decorate([
 ], User.prototype, "verify", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
+        example: '200',
+        description: 'Deals',
+    }),
+    (0, mongoose_1.Prop)({
+        type: Number,
+        default: '0',
+    }),
+    __metadata("design:type", Number)
+], User.prototype, "deals", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
         example: 'jE0fQ.rxH3-wVl3VGGX675UCqOFrLx-1xNH-GObq9v7GbZj0s',
         description: 'Verification token',
     }),

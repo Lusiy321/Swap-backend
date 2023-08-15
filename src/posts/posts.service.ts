@@ -65,8 +65,12 @@ export class PostsService {
 
   async searchPosts(query: any): Promise<Posts[]> {
     const { req } = query;
+    console.log(req);
     try {
       const searchItem = req;
+      if (searchItem === '') {
+        throw new NotFound('Post not found');
+      }
       const regex = new RegExp(searchItem, 'i');
       const find = await this.postModel
         .find({ title: { $regex: regex } })
@@ -76,11 +80,11 @@ export class PostsService {
           .find({ description: { $regex: regex } })
           .exec();
         if (Array.isArray(descr) && descr.length === 0) {
-          return await this.postModel.find();
+          throw new NotFound('Post not found');
         }
         return descr;
       } else {
-        throw new NotFound('Post not found');
+        return find;
       }
     } catch (e) {
       throw new NotFound('Post not found');

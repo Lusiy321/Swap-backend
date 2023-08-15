@@ -135,6 +135,12 @@ let OrderService = class OrderService {
                 await this.orderModel.findByIdAndDelete(orderId);
                 await this.postModel.findByIdAndDelete(order.product.id);
                 await this.postModel.findByIdAndDelete(order.offer.id);
+                const productUser = await this.userModel.findById(order.product.owner.id);
+                productUser.deals += 1;
+                productUser.save();
+                const offerUser = await this.userModel.findById(order.offer.owner.id);
+                offerUser.deals += 1;
+                offerUser.save();
                 return order;
             }
             return order;

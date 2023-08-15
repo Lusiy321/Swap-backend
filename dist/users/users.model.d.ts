@@ -38,6 +38,7 @@ export declare class User extends Model<User> {
     postsId: Array<string>;
     token: string;
     verify: boolean;
+    deals: number;
     verificationToken: string;
     googleId: string;
     ban: boolean;
