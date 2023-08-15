@@ -107,6 +107,16 @@ export class User extends Model<User> {
   verify: boolean;
 
   @ApiProperty({
+    example: '200',
+    description: 'Deals',
+  })
+  @Prop({
+    type: Number,
+    default: '0',
+  })
+  deals: number;
+
+  @ApiProperty({
     example: 'jE0fQ.rxH3-wVl3VGGX675UCqOFrLx-1xNH-GObq9v7GbZj0s',
     description: 'Verification token',
   })

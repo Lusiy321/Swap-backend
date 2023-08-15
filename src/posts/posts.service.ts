@@ -80,7 +80,7 @@ export class PostsService {
         }
         return descr;
       } else {
-        return find;
+        throw new NotFound('Post not found');
       }
     } catch (e) {
       throw new NotFound('Post not found');
@@ -209,6 +209,7 @@ export class PostsService {
         return find;
       } else if (post.owner.id === user.id) {
         const find = await this.postModel.findByIdAndRemove({ _id: id }).exec();
+        await this.removePostData(id);
         return find;
       } else {
         throw new NotFound('Post or user not found');
@@ -225,6 +226,7 @@ export class PostsService {
       { new: true },
       { arrayFilters: [{ 'toExchange.data.id': findId }] },
     );
+
     return;
   }
 
@@ -578,7 +580,6 @@ export class PostsService {
         { 'toExchange.data.id': { $eq: postId } },
       ],
     });
-    console.log(toExchangeFind);
     if (userPost.verify === 'approve') {
       if (
         foundUser(post.toExchange, userPost.id) === null &&
