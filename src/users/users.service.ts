@@ -48,7 +48,7 @@ export class UsersService {
       throw new NotFound('User not found');
     }
   }
-
+  
   async create(user: CreateUserDto): Promise<User> {
     try {
       const { email } = user;
