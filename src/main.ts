@@ -6,8 +6,6 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 import * as express from 'express';
 import * as session from 'express-session';
 
-
-
 async function start() {
   const PORT = process.env.PORT || 6000;
   const app = await NestFactory.create(
@@ -23,7 +21,7 @@ async function start() {
         maxAge: 60000,
       },
     }),
-  );    
+  );
   app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Test server Thing')
@@ -39,6 +37,7 @@ async function start() {
       },
       'BearerAuthMethod',
     )
+    .addServer(`https://swap-server.cyclic.cloud`)
     .addServer(`https://test-server-thing.onrender.com/`)
     .addServer(`http://localhost:${PORT}`)
     .build();
