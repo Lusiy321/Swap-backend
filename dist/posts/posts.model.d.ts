@@ -42,8 +42,8 @@ export declare class Posts extends Model<Posts> {
     comments: Comment[];
     toExchange: Exchange[];
 }
-export declare const PostSchema: import("mongoose").Schema<Posts, Model<Posts, any, any, any, import("mongoose").Document<unknown, any, Posts> & Omit<Posts & {
+export declare const PostSchema: import("mongoose").Schema<Posts, Model<Posts, any, any, any, import("mongoose").Document<unknown, any, Posts> & Posts & {
     _id: import("mongoose").Types.ObjectId;
-}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Posts, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Posts>> & Omit<import("mongoose").FlatRecord<Posts> & {
+}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Posts, import("mongoose").Document<unknown, {}, Posts> & Posts & {
     _id: import("mongoose").Types.ObjectId;
-}, never>>;
+}>;

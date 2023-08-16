@@ -34,8 +34,8 @@ export declare class Orders extends Model<Orders> {
     productStatus: boolean;
     offerStatus: boolean;
 }
-export declare const OrderSchema: import("mongoose").Schema<Orders, Model<Orders, any, any, any, import("mongoose").Document<unknown, any, Orders> & Omit<Orders & {
+export declare const OrderSchema: import("mongoose").Schema<Orders, Model<Orders, any, any, any, import("mongoose").Document<unknown, any, Orders> & Orders & {
     _id: import("mongoose").Types.ObjectId;
-}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Orders, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Orders>> & Omit<import("mongoose").FlatRecord<Orders> & {
+}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Orders, import("mongoose").Document<unknown, {}, Orders> & Orders & {
     _id: import("mongoose").Types.ObjectId;
-}, never>>;
+}>;

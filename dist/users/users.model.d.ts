@@ -43,8 +43,8 @@ export declare class User extends Model<User> {
     googleId: string;
     ban: boolean;
 }
-export declare const UserSchema: import("mongoose").Schema<User, Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & Omit<User & {
+export declare const UserSchema: import("mongoose").Schema<User, Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & User & {
     _id: import("mongoose").Types.ObjectId;
-}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, User, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<User>> & Omit<import("mongoose").FlatRecord<User> & {
+}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, User, import("mongoose").Document<unknown, {}, User> & User & {
     _id: import("mongoose").Types.ObjectId;
-}, never>>;
+}>;

@@ -39,13 +39,13 @@ export declare class OrderService {
     createOrder(postId: string, userPostId: string): Promise<Orders>;
     findMyOwnOrder(req: any): Promise<any>;
     findOrderById(id: string): Promise<Orders>;
-    findOrderArhiveById(id: string): Promise<import("mongoose").Document<unknown, {}, OrdersArhive> & Omit<OrdersArhive & {
+    findOrderArhiveById(id: string): Promise<import("mongoose").Document<unknown, {}, OrdersArhive> & OrdersArhive & {
         _id: import("mongoose").Types.ObjectId;
-    }, never>>;
+    }>;
     chatMessage(postId: string, req: any, message: CreateMessageDto): Promise<Orders>;
     approveOrderAndArhive(orderId: string, req: any): Promise<Orders>;
     rejectOrderAndArhive(orderId: string, req: any): Promise<Orders>;
-    findAllApproveOrders(req: any): Promise<(import("mongoose").Document<unknown, {}, OrdersArhive> & Omit<OrdersArhive & {
+    findAllApproveOrders(req: any): Promise<(import("mongoose").Document<unknown, {}, OrdersArhive> & OrdersArhive & {
         _id: import("mongoose").Types.ObjectId;
-    }, never>)[]>;
+    })[]>;
 }
