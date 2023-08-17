@@ -35,7 +35,6 @@ export declare class User extends Model<User> {
     avatarURL: string;
     role: role;
     isOnline: boolean;
-    postsId: Array<string>;
     token: string;
     verify: boolean;
     deals: number;

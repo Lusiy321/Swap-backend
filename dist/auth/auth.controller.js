@@ -18,6 +18,7 @@ const Guards_1 = require("./utils/Guards");
 const users_service_1 = require("../users/users.service");
 const swagger_1 = require("@nestjs/swagger");
 const google_user_dto_1 = require("../users/dto/google.user.dto");
+const password_user_dto_1 = require("../users/dto/password.user.dto");
 let AuthController = class AuthController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -40,6 +41,9 @@ let AuthController = class AuthController {
     }
     async refresh(request) {
         return this.usersService.refreshAccessToken(request);
+    }
+    async cangePwd(request, password) {
+        return this.usersService.changePassword(request, password);
     }
 };
 __decorate([
@@ -78,6 +82,16 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refresh", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Refresh Access Token' }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Patch)('change-password'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, password_user_dto_1.PasswordUserDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "cangePwd", null);
 AuthController = __decorate([
     (0, swagger_1.ApiTags)('Auth'),
     (0, common_1.Controller)('auth'),

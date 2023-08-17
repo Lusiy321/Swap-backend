@@ -13,7 +13,6 @@ const users_controller_1 = require("./users.controller");
 const users_service_1 = require("./users.service");
 const users_model_1 = require("./users.model");
 const jwt_1 = require("@nestjs/jwt");
-const sendgrid_module_1 = require("./utils/sendgrid.module");
 const posts_model_1 = require("../posts/posts.model");
 const orders_module_1 = require("../orders/orders.module");
 const orders_model_1 = require("../orders/orders.model");
@@ -22,7 +21,6 @@ let UsersModule = class UsersModule {
 UsersModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            sendgrid_module_1.SendGridModule,
             orders_module_1.OrdersModule,
             jwt_1.JwtModule.register({
                 secret: process.env.SECRET_KEY,

@@ -29,6 +29,7 @@ async function start() {
         scheme: 'bearer',
         bearerFormat: 'JWT',
     }, 'BearerAuthMethod')
+        .addServer(`https://swap-server.cyclic.cloud`)
         .addServer(`https://test-server-thing.onrender.com/`)
         .addServer(`http://localhost:${PORT}`)
         .build();

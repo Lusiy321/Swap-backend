@@ -10,6 +10,7 @@ import { UpdateUserDto } from './dto/update.user.dto';
 import { sign, verify, JwtPayload } from 'jsonwebtoken';
 import { Posts } from 'src/posts/posts.model';
 import { Orders } from 'src/orders/orders.model';
+import { PasswordUserDto } from './dto/password.user.dto';
 
 @Injectable()
 export class UsersService {
@@ -48,7 +49,7 @@ export class UsersService {
       throw new NotFound('User not found');
     }
   }
-  
+
   async create(user: CreateUserDto): Promise<User> {
     try {
       const { email } = user;
@@ -66,6 +67,25 @@ export class UsersService {
       createdUser.setPassword(user.password);
       createdUser.save();
       return await this.userModel.findById(createdUser._id);
+    } catch (e) {
+      throw new BadRequest(e.message);
+    }
+  }
+
+  async changePassword(req: any, newPass: PasswordUserDto): Promise<User> {
+    const user = await this.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
+    try {
+      const { oldPassword, password } = newPass;
+
+      if (user.comparePassword(oldPassword) === true) {
+        user.setPassword(password);
+        user.save();
+        return await this.userModel.findById(user._id);
+      }
+      throw new BadRequest('Password is not avaible');
     } catch (e) {
       throw new BadRequest(e.message);
     }

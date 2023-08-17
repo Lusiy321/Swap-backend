@@ -5,14 +5,12 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { User, UserSchema } from './users.model';
 import { JwtModule } from '@nestjs/jwt';
-import { SendGridModule } from './utils/sendgrid.module';
 import { PostSchema, Posts } from 'src/posts/posts.model';
 import { OrdersModule } from 'src/orders/orders.module';
 import { OrderSchema, Orders } from 'src/orders/orders.model';
 
 @Module({
   imports: [
-    SendGridModule,
     OrdersModule,
     JwtModule.register({
       secret: process.env.SECRET_KEY,

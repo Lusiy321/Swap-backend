@@ -79,6 +79,24 @@ let UsersService = class UsersService {
             throw new http_errors_1.BadRequest(e.message);
         }
     }
+    async changePassword(req, newPass) {
+        const user = await this.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        try {
+            const { oldPassword, password } = newPass;
+            if (user.comparePassword(oldPassword) === true) {
+                user.setPassword(password);
+                user.save();
+                return await this.userModel.findById(user._id);
+            }
+            throw new http_errors_1.BadRequest('Password is not avaible');
+        }
+        catch (e) {
+            throw new http_errors_1.BadRequest(e.message);
+        }
+    }
     async login(user) {
         try {
             const { email, password } = user;

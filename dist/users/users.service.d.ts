@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { Posts } from 'src/posts/posts.model';
 import { Orders } from 'src/orders/orders.model';
+import { PasswordUserDto } from './dto/password.user.dto';
 export declare class UsersService {
     private userModel;
     private postModel;
@@ -11,6 +12,7 @@ export declare class UsersService {
     findAll(req: any): Promise<User[]>;
     findById(id: string): Promise<User>;
     create(user: CreateUserDto): Promise<User>;
+    changePassword(req: any, newPass: PasswordUserDto): Promise<User>;
     login(user: CreateUserDto): Promise<User>;
     logout(req: any): Promise<User>;
     update(user: UpdateUserDto, req: any): Promise<User>;

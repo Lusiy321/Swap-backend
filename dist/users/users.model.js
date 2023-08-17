@@ -103,14 +103,6 @@ __decorate([
 ], User.prototype, "isOnline", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: ['64849dc0b92d9a89e4bbf568'],
-        description: 'User post ID',
-    }),
-    (0, mongoose_1.Prop)({ type: [{ type: 'ObjectId', ref: 'Post' }], default: [] }),
-    __metadata("design:type", Array)
-], User.prototype, "postsId", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
         example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0N2EzNzhiNGU4MTk3ODYzMzkwMTUyYSIsImlhdCI6MTY4NTczMTIxNCwiZXhwIjoxNjg1ODE3NjE0fQ.rxH3-wVl3VGGX675UCqOFrLx-1xNH-GObq9v7GbZj0s',
         description: 'JWT token',
     }),
