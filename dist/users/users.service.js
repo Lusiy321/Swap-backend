@@ -109,6 +109,7 @@ let UsersService = class UsersService {
     }
     async changePassword(req, newPass) {
         const user = await this.findToken(req);
+        console.log(req);
         if (!user) {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
