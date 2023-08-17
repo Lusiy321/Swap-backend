@@ -26,10 +26,8 @@ let AuthController = class AuthController {
     handleLogin() {
         return { msg: 'Google Authentication' };
     }
-    async googleAuthRedirect(req) {
-        return {
-            token: req.user,
-        };
+    async googleAuthRedirect(res, req) {
+        return res.redirect(`https://my-app-hazel-nine.vercel.app/product?token=${req.user.token}`);
     }
     async user(request) {
         if (request.user) {
@@ -63,9 +61,10 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, type: google_user_dto_1.GoogleUserDto }),
     (0, common_1.Get)('google/redirect'),
     (0, common_1.UseGuards)(Guards_1.GoogleAuthGuard),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "googleAuthRedirect", null);
 __decorate([

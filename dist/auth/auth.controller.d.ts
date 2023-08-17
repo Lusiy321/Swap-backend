@@ -7,9 +7,7 @@ export declare class AuthController {
     handleLogin(): {
         msg: string;
     };
-    googleAuthRedirect(req: any): Promise<{
-        token: any;
-    }>;
+    googleAuthRedirect(res: any, req: any): Promise<any>;
     user(request: any): Promise<{
         msg: string;
     }>;

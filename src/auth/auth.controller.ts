@@ -1,5 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { GoogleAuthGuard } from './utils/Guards';
 import { UsersService } from 'src/users/users.service';
 import {
@@ -29,10 +37,10 @@ export class AuthController {
   @ApiResponse({ status: 200, type: GoogleUserDto })
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  async googleAuthRedirect(@Req() req: any) {
-    return {
-      token: req.user,
-    };
+  async googleAuthRedirect(@Res() res: any, @Req() req: any) {
+    return res.redirect(
+      `https://my-app-hazel-nine.vercel.app/product?token=${req.user.token}`,
+    );
   }
 
   @ApiOperation({ summary: 'Google Authentication status' })
