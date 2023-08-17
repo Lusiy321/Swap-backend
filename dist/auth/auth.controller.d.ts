@@ -15,4 +15,5 @@ export declare class AuthController {
     }>;
     refresh(request: any): Promise<import("../users/users.model").User>;
     cangePwd(request: any, password: PasswordUserDto): Promise<import("../users/users.model").User>;
+    verifyEmail(request: any): Promise<void>;
 }

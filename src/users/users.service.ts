@@ -1,24 +1,27 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserSchema } from './users.model';
 import { CreateUserDto } from './dto/create.user.dto';
 import { compareSync, hashSync } from 'bcrypt';
 import { Conflict, NotFound, BadRequest, Unauthorized } from 'http-errors';
 import { UpdateUserDto } from './dto/update.user.dto';
-
 import { sign, verify, JwtPayload } from 'jsonwebtoken';
 import { Posts } from 'src/posts/posts.model';
 import { Orders } from 'src/orders/orders.model';
 import { PasswordUserDto } from './dto/password.user.dto';
+import * as sgMail from '@sendgrid/mail';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name) private userModel: User,
+    @InjectModel(User.name)
+    private userModel: User,
     @InjectModel(Posts.name) private postModel: Posts,
     @InjectModel(Orders.name) private orderModel: Orders,
-  ) {}
+  ) {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  }
 
   async findAll(req: any): Promise<User[]> {
     const user = await this.findToken(req);
@@ -66,7 +69,37 @@ export class UsersService {
       createdUser.setName(lowerCaseEmail);
       createdUser.setPassword(user.password);
       createdUser.save();
+      const verificationLink = `https://swap-server.cyclic.cloud/auth/verify-email?${createdUser._id}`;
+      this.sendVerificationEmail(email, verificationLink);
       return await this.userModel.findById(createdUser._id);
+    } catch (e) {
+      throw new BadRequest(e.message);
+    }
+  }
+
+  async sendVerificationEmail(
+    email: string,
+    verificationLink: string,
+  ): Promise<void> {
+    const msg = {
+      to: email,
+      from: 'lusiy321@gmail.com',
+      subject: 'Email Verification from Swap',
+      html: `<p>Click the link below to verify your email:</p><p><a href="${verificationLink}">Click</a></p>`,
+    };
+
+    try {
+      await sgMail.send(msg);
+    } catch (error) {
+      throw new Error('Failed to send verification email');
+    }
+  }
+
+  async verifyUserEmail(id: any) {
+    try {
+      const user = await this.userModel.findById(id);
+      user.verify = true;
+      user.save();
     } catch (e) {
       throw new BadRequest(e.message);
     }
@@ -86,6 +119,13 @@ export class UsersService {
         return await this.userModel.findById(user._id);
       }
       throw new BadRequest('Password is not avaible');
+    } catch (e) {
+      throw new BadRequest(e.message);
+    }
+  }
+
+  async restorePassword(email: string) {
+    try {
     } catch (e) {
       throw new BadRequest(e.message);
     }

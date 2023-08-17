@@ -1,13 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {
-  Body,
-  Controller,
-  Get,
-  Patch,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
 import { GoogleAuthGuard } from './utils/Guards';
 import { UsersService } from 'src/users/users.service';
 import {
@@ -65,5 +57,11 @@ export class AuthController {
   @Patch('change-password')
   async cangePwd(@Req() request: any, @Body() password: PasswordUserDto) {
     return this.usersService.changePassword(request, password);
+  }
+
+  @ApiOperation({ summary: 'Verify user email' })
+  @Patch('verify-email')
+  async verifyEmail(@Req() request: any) {
+    return this.usersService.verifyUserEmail(request);
   }
 }

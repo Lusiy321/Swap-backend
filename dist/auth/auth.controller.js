@@ -45,6 +45,9 @@ let AuthController = class AuthController {
     async cangePwd(request, password) {
         return this.usersService.changePassword(request, password);
     }
+    async verifyEmail(request) {
+        return this.usersService.verifyUserEmail(request);
+    }
 };
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Login Google User' }),
@@ -92,6 +95,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, password_user_dto_1.PasswordUserDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "cangePwd", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Verify user email' }),
+    (0, common_1.Patch)('verify-email'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "verifyEmail", null);
 AuthController = __decorate([
     (0, swagger_1.ApiTags)('Auth'),
     (0, common_1.Controller)('auth'),

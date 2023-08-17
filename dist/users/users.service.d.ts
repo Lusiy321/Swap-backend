@@ -12,7 +12,10 @@ export declare class UsersService {
     findAll(req: any): Promise<User[]>;
     findById(id: string): Promise<User>;
     create(user: CreateUserDto): Promise<User>;
+    sendVerificationEmail(email: string, verificationLink: string): Promise<void>;
+    verifyUserEmail(id: any): Promise<void>;
     changePassword(req: any, newPass: PasswordUserDto): Promise<User>;
+    restorePassword(email: string): Promise<void>;
     login(user: CreateUserDto): Promise<User>;
     logout(req: any): Promise<User>;
     update(user: UpdateUserDto, req: any): Promise<User>;

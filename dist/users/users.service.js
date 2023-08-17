@@ -21,11 +21,13 @@ const http_errors_1 = require("http-errors");
 const jsonwebtoken_1 = require("jsonwebtoken");
 const posts_model_1 = require("../posts/posts.model");
 const orders_model_1 = require("../orders/orders.model");
+const sgMail = require("@sendgrid/mail");
 let UsersService = class UsersService {
     constructor(userModel, postModel, orderModel) {
         this.userModel = userModel;
         this.postModel = postModel;
         this.orderModel = orderModel;
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     }
     async findAll(req) {
         const user = await this.findToken(req);
@@ -73,7 +75,33 @@ let UsersService = class UsersService {
             createdUser.setName(lowerCaseEmail);
             createdUser.setPassword(user.password);
             createdUser.save();
+            const verificationLink = `https://swap-server.cyclic.cloud/auth/verify-email?${createdUser._id}`;
+            this.sendVerificationEmail(email, verificationLink);
             return await this.userModel.findById(createdUser._id);
+        }
+        catch (e) {
+            throw new http_errors_1.BadRequest(e.message);
+        }
+    }
+    async sendVerificationEmail(email, verificationLink) {
+        const msg = {
+            to: email,
+            from: 'lusiy321@gmail.com',
+            subject: 'Email Verification from Swap',
+            html: `<p>Click the link below to verify your email:</p><p><a href="${verificationLink}">Click</a></p>`,
+        };
+        try {
+            await sgMail.send(msg);
+        }
+        catch (error) {
+            throw new Error('Failed to send verification email');
+        }
+    }
+    async verifyUserEmail(id) {
+        try {
+            const user = await this.userModel.findById(id);
+            user.verify = true;
+            user.save();
         }
         catch (e) {
             throw new http_errors_1.BadRequest(e.message);
@@ -92,6 +120,13 @@ let UsersService = class UsersService {
                 return await this.userModel.findById(user._id);
             }
             throw new http_errors_1.BadRequest('Password is not avaible');
+        }
+        catch (e) {
+            throw new http_errors_1.BadRequest(e.message);
+        }
+    }
+    async restorePassword(email) {
+        try {
         }
         catch (e) {
             throw new http_errors_1.BadRequest(e.message);

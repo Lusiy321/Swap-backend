@@ -4,7 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { User, UserSchema } from './users/users.model';
-
 import { PassportModule } from '@nestjs/passport';
 import { PostsController } from './posts/posts.controller';
 import { PostsService } from './posts/posts.service';
