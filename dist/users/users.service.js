@@ -109,7 +109,6 @@ let UsersService = class UsersService {
     }
     async changePassword(req, newPass) {
         const user = await this.findToken(req);
-        console.log(req);
         if (!user) {
             throw new http_errors_1.Unauthorized('jwt expired');
         }
@@ -118,6 +117,13 @@ let UsersService = class UsersService {
             if (user.comparePassword(oldPassword) === true) {
                 user.setPassword(password);
                 user.save();
+                const msg = {
+                    to: user.email,
+                    from: 'lusiy321@gmail.com',
+                    subject: 'Your password has been changed',
+                    html: `<p>Click on the link to go to your personal account:</p><p><a href="https://my-app-hazel-nine.vercel.app/ru/account/profile">Click</a></p>`,
+                };
+                await sgMail.send(msg);
                 return await this.userModel.findById(user._id);
             }
             throw new http_errors_1.BadRequest('Password is not avaible');

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserSchema } from './users.model';
 import { CreateUserDto } from './dto/create.user.dto';
@@ -116,6 +116,13 @@ export class UsersService {
       if (user.comparePassword(oldPassword) === true) {
         user.setPassword(password);
         user.save();
+        const msg = {
+          to: user.email,
+          from: 'lusiy321@gmail.com',
+          subject: 'Your password has been changed',
+          html: `<p>Click on the link to go to your personal account:</p><p><a href="https://my-app-hazel-nine.vercel.app/ru/account/profile">Click</a></p>`,
+        };
+        await sgMail.send(msg);
         return await this.userModel.findById(user._id);
       }
       throw new BadRequest('Password is not avaible');

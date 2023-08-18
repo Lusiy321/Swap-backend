@@ -4,9 +4,6 @@ export declare class AuthController {
     private readonly usersService;
     constructor(usersService: UsersService);
     [x: string]: any;
-    handleLogin(): {
-        msg: string;
-    };
     googleAuthRedirect(res: any, req: any): Promise<any>;
     user(request: any): Promise<{
         msg: string;

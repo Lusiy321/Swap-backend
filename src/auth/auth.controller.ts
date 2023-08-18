@@ -29,17 +29,16 @@ export class AuthController {
   @ApiResponse({ status: 200, type: GoogleUserDto })
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
-  handleLogin() {
-    return { msg: 'Google Authentication' };
-  }
-
+  
   @ApiOperation({ summary: 'Google Authentication' })
   @ApiResponse({ status: 200, type: GoogleUserDto })
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Res() res: any, @Req() req: any) {
+    const user = await this.userService.findById(req.user.id);
+    console.log(req.user);
     return res.redirect(
-      `https://my-app-hazel-nine.vercel.app/product?token=${req.user.token}`,
+      `https://my-app-hazel-nine.vercel.app/product?token=${user.token}`,
     );
   }
 
