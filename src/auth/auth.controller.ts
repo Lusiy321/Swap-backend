@@ -46,7 +46,9 @@ export class AuthController {
   async googleAuthRedirect(@Res() res: any, @Req() req: any) {
     const userId = req.user.id;
     const user = await this.userModel.findById(userId);
-    return res.redirect(`${process.env.MAIN_URL}/product/${user.token}`);
+    return res.redirect(
+      `https://my-app-hazel-nine.vercel.app/product/?${user.token}`,
+    );
   }
 
   @ApiOperation({ summary: 'Google Authentication status' })
