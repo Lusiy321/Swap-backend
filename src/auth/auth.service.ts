@@ -22,20 +22,20 @@ export class AuthService {
     const user = await this.userModel.findOne({ googleId: details.googleId });
     console.log(user);
     console.log(details);
-
-    if (user === null) {
-      const newUser = await this.userModel.create(details);
-      newUser.save();
-      const userUpdateToken = await this.userModel.findOne({
-        email: details.email,
-      });
-
-      await this.userService.createToken(userUpdateToken);
-      return await this.userModel.findById({
-        _id: userUpdateToken._id,
-      });
-    }
     try {
+      if (user === null) {
+        const newUser = await this.userModel.create(details);
+        newUser.save();
+        const userUpdateToken = await this.userModel.findOne({
+          email: details.email,
+        });
+
+        await this.userService.createToken(userUpdateToken);
+        return await this.userModel.findById({
+          _id: userUpdateToken._id,
+        });
+      }
+
       await this.userService.createToken(user);
 
       return await this.userModel.findOne({
