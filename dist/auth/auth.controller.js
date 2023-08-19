@@ -32,7 +32,7 @@ let AuthController = class AuthController {
     async googleAuthRedirect(res, req) {
         const userId = req.user.id;
         const user = await this.userModel.findById(userId);
-        return res.redirect(`https://my-app-hazel-nine.vercel.app/product?token=${user.token}`);
+        return res.redirect(`${process.env.MAIN_URL}/product/${user.token}`);
     }
     async user(request) {
         if (request.user) {
