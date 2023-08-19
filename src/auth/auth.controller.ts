@@ -47,7 +47,7 @@ export class AuthController {
     const userId = req.user.id;
     const user = await this.userModel.findById(userId);
     return res.redirect(
-      `https://my-app-hazel-nine.vercel.app/product/?${user.token}`,
+      `https://my-app-hazel-nine.vercel.app/product/?token=${user.token}`,
     );
   }
 
