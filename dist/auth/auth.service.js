@@ -29,20 +29,22 @@ let AuthService = class AuthService {
         this.userService = userService;
     }
     async validateUser(details) {
+        const user = await this.userModel.findOne({ googleId: details.googleId });
+        console.log(user);
+        console.log(details);
+        if (user === null) {
+            const newUser = await this.userModel.create(details);
+            newUser.save();
+            const userUpdateToken = await this.userModel.findOne({
+                email: details.email,
+            });
+            await this.userService.createToken(userUpdateToken);
+            return await this.userModel.findById({
+                _id: userUpdateToken._id,
+            });
+        }
         try {
-            const user = await this.userModel.findOne({ googleId: details.googleId });
-            if (!user) {
-                const newUser = this.userModel.create(details);
-                newUser.save();
-                const userUpdateToken = await this.userModel.findOne({
-                    email: details.email,
-                });
-                this.userService.createToken(userUpdateToken);
-                return await this.userModel.findById({
-                    _id: userUpdateToken._id,
-                });
-            }
-            this.userService.createToken(user);
+            await this.userService.createToken(user);
             return await this.userModel.findOne({
                 _id: user.id,
             });
