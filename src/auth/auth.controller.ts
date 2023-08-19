@@ -18,25 +18,34 @@ import {
 } from '@nestjs/swagger';
 import { GoogleUserDto } from 'src/users/dto/google.user.dto';
 import { PasswordUserDto } from 'src/users/dto/password.user.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { User } from 'src/users/users.model';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    @InjectModel(User.name)
+    private userModel: User,
+    private readonly usersService: UsersService,
+  ) {}
   [x: string]: any;
 
   @ApiOperation({ summary: 'Login Google User' })
   @ApiResponse({ status: 200, type: GoogleUserDto })
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
-  
+  googleLogin() {
+    return;
+  }
+
   @ApiOperation({ summary: 'Google Authentication' })
   @ApiResponse({ status: 200, type: GoogleUserDto })
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Res() res: any, @Req() req: any) {
-    const user = await this.userService.findById(req.user.id);
-    console.log(req.user);
+    const userId = req.user.id;
+    const user = await this.userModel.findById(userId);
     return res.redirect(
       `https://my-app-hazel-nine.vercel.app/product?token=${user.token}`,
     );

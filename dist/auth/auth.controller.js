@@ -19,13 +19,19 @@ const users_service_1 = require("../users/users.service");
 const swagger_1 = require("@nestjs/swagger");
 const google_user_dto_1 = require("../users/dto/google.user.dto");
 const password_user_dto_1 = require("../users/dto/password.user.dto");
+const mongoose_1 = require("@nestjs/mongoose");
+const users_model_1 = require("../users/users.model");
 let AuthController = class AuthController {
-    constructor(usersService) {
+    constructor(userModel, usersService) {
+        this.userModel = userModel;
         this.usersService = usersService;
     }
+    googleLogin() {
+        return;
+    }
     async googleAuthRedirect(res, req) {
-        const user = await this.userService.findById(req.user.id);
-        console.log(req.user);
+        const userId = req.user.id;
+        const user = await this.userModel.findById(userId);
         return res.redirect(`https://my-app-hazel-nine.vercel.app/product?token=${user.token}`);
     }
     async user(request) {
@@ -51,6 +57,11 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, type: google_user_dto_1.GoogleUserDto }),
     (0, common_1.Get)('google/login'),
     (0, common_1.UseGuards)(Guards_1.GoogleAuthGuard),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "googleLogin", null);
+__decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Google Authentication' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: google_user_dto_1.GoogleUserDto }),
     (0, common_1.Get)('google/redirect'),
@@ -99,7 +110,9 @@ __decorate([
 AuthController = __decorate([
     (0, swagger_1.ApiTags)('Auth'),
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [users_service_1.UsersService])
+    __param(0, (0, mongoose_1.InjectModel)(users_model_1.User.name)),
+    __metadata("design:paramtypes", [users_model_1.User,
+        users_service_1.UsersService])
 ], AuthController);
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controller.js.map
