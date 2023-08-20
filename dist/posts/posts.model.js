@@ -14,6 +14,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const mongoose_2 = require("mongoose");
 const verify_post_dto_1 = require("./dto/verify.post.dto");
+const category_post_dto_1 = require("./dto/category.post.dto");
 let Posts = class Posts extends mongoose_2.Model {
 };
 __decorate([
@@ -41,7 +42,7 @@ __decorate([
 ], Posts.prototype, "description", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Electronics', description: 'Post category' }),
-    (0, mongoose_1.Prop)({ type: String }),
+    (0, mongoose_1.Prop)({ enum: ['none', 'electronics', 'cloth'] }),
     __metadata("design:type", String)
 ], Posts.prototype, "category", void 0);
 __decorate([

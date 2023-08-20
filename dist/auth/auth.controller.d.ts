@@ -1,6 +1,8 @@
 import { UsersService } from 'src/users/users.service';
 import { PasswordUserDto } from 'src/users/dto/password.user.dto';
 import { User } from 'src/users/users.model';
+import { MailUserDto } from 'src/users/dto/email.user.dto';
+import { UpdatePasswordUserDto } from 'src/users/dto/updatePassword.user.dto';
 export declare class AuthController {
     private userModel;
     private readonly usersService;
@@ -13,5 +15,7 @@ export declare class AuthController {
     }>;
     refresh(request: any): Promise<User>;
     cangePwd(request: any, password: PasswordUserDto): Promise<User>;
-    verifyEmail(request: any): Promise<void>;
+    forgotPwd(email: MailUserDto): Promise<[import("@sendgrid/mail").ClientResponse, {}]>;
+    setUpdatePsw(id: string, password: UpdatePasswordUserDto): Promise<User>;
+    verifyEmail(id: string, res: any): Promise<any>;
 }

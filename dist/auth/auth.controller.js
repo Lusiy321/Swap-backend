@@ -21,6 +21,8 @@ const google_user_dto_1 = require("../users/dto/google.user.dto");
 const password_user_dto_1 = require("../users/dto/password.user.dto");
 const mongoose_1 = require("@nestjs/mongoose");
 const users_model_1 = require("../users/users.model");
+const email_user_dto_1 = require("../users/dto/email.user.dto");
+const updatePassword_user_dto_1 = require("../users/dto/updatePassword.user.dto");
 let AuthController = class AuthController {
     constructor(userModel, usersService) {
         this.userModel = userModel;
@@ -43,13 +45,20 @@ let AuthController = class AuthController {
         }
     }
     async refresh(request) {
-        return this.usersService.refreshAccessToken(request);
+        return await this.usersService.refreshAccessToken(request);
     }
     async cangePwd(request, password) {
-        return this.usersService.changePassword(request, password);
+        return await this.usersService.changePassword(request, password);
     }
-    async verifyEmail(request) {
-        return this.usersService.verifyUserEmail(request);
+    async forgotPwd(email) {
+        return await this.usersService.restorePassword(email);
+    }
+    async setUpdatePsw(id, password) {
+        return this.usersService.updateRestorePassword(id, password);
+    }
+    async verifyEmail(id, res) {
+        await this.usersService.verifyUserEmail(id);
+        return res.redirect(`https://my-app-hazel-nine.vercel.app/account/profile`);
     }
 };
 __decorate([
@@ -100,11 +109,32 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "cangePwd", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Verify user email' }),
-    (0, common_1.Patch)('verify-email'),
-    __param(0, (0, common_1.Req)()),
+    (0, swagger_1.ApiOperation)({ summary: 'Forgot password email send' }),
+    (0, common_1.Post)('forgot-password'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [email_user_dto_1.MailUserDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "forgotPwd", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Update password for forgot password',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: users_model_1.User }),
+    (0, common_1.Post)('/update-password/:Id'),
+    __param(0, (0, common_1.Param)('Id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, updatePassword_user_dto_1.UpdatePasswordUserDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "setUpdatePsw", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Verify user email' }),
+    (0, common_1.Patch)('verify-email/:Id'),
+    __param(0, (0, common_1.Param)('Id')),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyEmail", null);
 AuthController = __decorate([

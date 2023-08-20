@@ -35,7 +35,6 @@ let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrateg
             verificationToken: accessToken,
             verify: profile.emails[0].verified,
         });
-        console.log(profile);
         user.save();
         return user || null;
     }

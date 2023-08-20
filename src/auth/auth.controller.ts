@@ -3,7 +3,9 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
+  Post,
   Req,
   Res,
   UseGuards,
@@ -20,6 +22,8 @@ import { GoogleUserDto } from 'src/users/dto/google.user.dto';
 import { PasswordUserDto } from 'src/users/dto/password.user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/users/users.model';
+import { MailUserDto } from 'src/users/dto/email.user.dto';
+import { UpdatePasswordUserDto } from 'src/users/dto/updatePassword.user.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -65,19 +69,38 @@ export class AuthController {
   @ApiBearerAuth('BearerAuthMethod')
   @Patch('refresh')
   async refresh(@Req() request: any) {
-    return this.usersService.refreshAccessToken(request);
+    return await this.usersService.refreshAccessToken(request);
   }
 
   @ApiOperation({ summary: 'Refresh Access Token' })
   @ApiBearerAuth('BearerAuthMethod')
   @Patch('change-password')
   async cangePwd(@Req() request: any, @Body() password: PasswordUserDto) {
-    return this.usersService.changePassword(request, password);
+    return await this.usersService.changePassword(request, password);
+  }
+
+  @ApiOperation({ summary: 'Forgot password email send' })
+  @Post('forgot-password')
+  async forgotPwd(@Body() email: MailUserDto) {
+    return await this.usersService.restorePassword(email);
+  }
+
+  @ApiOperation({
+    summary: 'Update password for forgot password',
+  })
+  @ApiResponse({ status: 200, type: User })
+  @Post('/update-password/:Id')
+  async setUpdatePsw(
+    @Param('Id') id: string,
+    @Body() password: UpdatePasswordUserDto,
+  ): Promise<User> {
+    return this.usersService.updateRestorePassword(id, password);
   }
 
   @ApiOperation({ summary: 'Verify user email' })
-  @Patch('verify-email')
-  async verifyEmail(@Req() request: any) {
-    return this.usersService.verifyUserEmail(request);
+  @Patch('verify-email/:Id')
+  async verifyEmail(@Param('Id') id: string, @Res() res: any) {
+    await this.usersService.verifyUserEmail(id);
+    return res.redirect(`https://my-app-hazel-nine.vercel.app/account/profile`);
   }
 }

@@ -30,8 +30,6 @@ let AuthService = class AuthService {
     }
     async validateUser(details) {
         const user = await this.userModel.findOne({ googleId: details.googleId });
-        console.log(user);
-        console.log(details);
         try {
             if (user === null) {
                 const newUser = await this.userModel.create(details);

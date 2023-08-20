@@ -11,6 +11,12 @@ import { Posts } from 'src/posts/posts.model';
 import { Orders } from 'src/orders/orders.model';
 import { PasswordUserDto } from './dto/password.user.dto';
 import * as sgMail from '@sendgrid/mail';
+import {
+  changePasswordMsg,
+  restorePasswordMsg,
+} from './utils/message-variables';
+import { MailUserDto } from './dto/email.user.dto';
+import { UpdatePasswordUserDto } from './dto/updatePassword.user.dto';
 
 @Injectable()
 export class UsersService {
@@ -69,8 +75,8 @@ export class UsersService {
       createdUser.setName(lowerCaseEmail);
       createdUser.setPassword(user.password);
       createdUser.save();
-      const verificationLink = `https://swap-server.cyclic.cloud/auth/verify-email?${createdUser._id}`;
-      this.sendVerificationEmail(email, verificationLink);
+      const verificationLink = `https://swap-server.cyclic.cloud/auth/verify-email/${createdUser._id}`;
+      await this.sendVerificationEmail(email, verificationLink);
       return await this.userModel.findById(createdUser._id);
     } catch (e) {
       throw new BadRequest(e.message);
@@ -84,7 +90,7 @@ export class UsersService {
     const msg = {
       to: email,
       from: 'lusiy321@gmail.com',
-      subject: 'Email Verification from Swap',
+      subject: 'Email Verification from Swep',
       html: `<p>Click the link below to verify your email:</p><p><a href="${verificationLink}">Click</a></p>`,
     };
 
@@ -112,59 +118,14 @@ export class UsersService {
     }
     try {
       const { oldPassword, password } = newPass;
-
       if (user.comparePassword(oldPassword) === true) {
         user.setPassword(password);
         user.save();
         const msg = {
           to: user.email,
-          from: 'norepay@swep.com',
-          subject: 'Your password has been changed',
-          html: `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Change</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            color: #555;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Your Password Has Been Changed</h1>
-        <p>Click on the link below to go to your personal account:</p>
-        <p><a href="https://my-app-hazel-nine.vercel.app/ru/account/profile">Go to your account</a></p>
-    </div>
-</body>
-</html>`,
+          from: 'lusiy321@gmail.com',
+          subject: 'Your password has been changed on swep.com',
+          html: changePasswordMsg,
         };
         await sgMail.send(msg);
         return await this.userModel.findById(user._id);
@@ -175,8 +136,44 @@ export class UsersService {
     }
   }
 
-  async restorePassword(email: string) {
+  async restorePassword(email: MailUserDto) {
+    const restoreMail: User = await this.userModel.findOne(email);
     try {
+      if (restoreMail) {
+        const msg: any = {
+          to: restoreMail.email,
+          from: 'lusiy321@gmail.com',
+          subject: 'Change your password on swep.com',
+          html: restorePasswordMsg,
+        };
+        return await sgMail.send(msg);
+      }
+    } catch (e) {
+      throw new BadRequest('User not found');
+    }
+  }
+
+  async updateRestorePassword(
+    id: string,
+    newPass: UpdatePasswordUserDto,
+  ): Promise<User> {
+    const user = await this.userModel.findById(id);
+    const { password } = newPass;
+    try {
+      if (user) {
+        user.setPassword(password);
+        user.save();
+        const msg = {
+          to: user.email,
+          from: 'lusiy321@gmail.com',
+          subject: 'Your password has been changed on swep.com',
+          html: changePasswordMsg,
+        };
+        await sgMail.send(msg);
+        return await this.userModel.findById(user._id);
+      }
+
+      throw new BadRequest('User not found');
     } catch (e) {
       throw new BadRequest(e.message);
     }
