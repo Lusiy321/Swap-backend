@@ -294,7 +294,7 @@ export class PostsController {
   })
   @ApiResponse({ status: 200, type: Posts })
   @Get('/category')
-  async getCat(): Promise<any> {
+  async getCat(): Promise<any[]> {
     return this.postService.getCategory();
   }
 }
