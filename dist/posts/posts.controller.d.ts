@@ -3,6 +3,7 @@ import { CreatePostDto } from './dto/create.post.dto';
 import { Posts } from './posts.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
 import { CreateCommentDto } from './dto/create.comment.dto';
+import { CategoryPostDto } from './dto/category.post.dto';
 export declare class PostsController {
     private readonly postService;
     constructor(postService: PostsService);
@@ -29,4 +30,6 @@ export declare class PostsController {
     deleteExchange(postId: string, exchangeId: string, request: any): Promise<Posts>;
     setExchangeTrue(postId: string, userPostId: string, request: any): Promise<object>;
     setExchangeFalse(postId: string, userPostId: string, request: any): Promise<Posts>;
+    setCategory(category: CategoryPostDto, id: string, request: any): Promise<Posts>;
+    getCat(): Promise<any>;
 }

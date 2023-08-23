@@ -32,6 +32,7 @@ const users_service_1 = require("../users/users.service");
 const uuid_1 = require("uuid");
 const orders_service_1 = require("../orders/orders.service");
 const orders_model_1 = require("../orders/orders.model");
+const category_post_dto_1 = require("./dto/category.post.dto");
 let PostsService = class PostsService {
     constructor(postModel, orderModel, userService, orderService) {
         this.postModel = postModel;
@@ -612,6 +613,35 @@ let PostsService = class PostsService {
         catch (e) {
             throw new http_errors_1.NotFound('Post not found');
         }
+    }
+    async setCategoryPosts(postId, req, setCategory) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
+        const { category } = setCategory;
+        try {
+            if (user || user.role === 'admin' || user.role === 'moderator') {
+                const post = await this.postModel.findById(postId);
+                if (post) {
+                    await this.postModel.updateOne({ _id: postId }, { $set: { category: category } });
+                    return await this.postModel.findById(postId);
+                }
+                else {
+                    throw new http_errors_1.NotFound('Post not found');
+                }
+            }
+            else {
+                throw new http_errors_1.NotFound('User not found');
+            }
+        }
+        catch (e) {
+            throw new http_errors_1.NotFound('Post not found');
+        }
+    }
+    async getCategory() {
+        const category = [...Object.values(category_post_dto_1.categoryList)];
+        return category;
     }
 };
 PostsService = __decorate([

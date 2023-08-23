@@ -20,6 +20,7 @@ const create_post_dto_1 = require("./dto/create.post.dto");
 const posts_model_1 = require("./posts.model");
 const verify_post_dto_1 = require("./dto/verify.post.dto");
 const create_comment_dto_1 = require("./dto/create.comment.dto");
+const category_post_dto_1 = require("./dto/category.post.dto");
 let PostsController = class PostsController {
     constructor(postService) {
         this.postService = postService;
@@ -92,6 +93,12 @@ let PostsController = class PostsController {
     }
     async setExchangeFalse(postId, userPostId, request) {
         return this.postService.exchangeFalsePosts(postId, userPostId, request);
+    }
+    async setCategory(category, id, request) {
+        return this.postService.setCategoryPosts(id, request, category);
+    }
+    async getCat() {
+        return this.postService.getCategory();
     }
 };
 __decorate([
@@ -357,6 +364,30 @@ __decorate([
     __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "setExchangeFalse", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Set category',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
+    (0, common_1.Post)('/category/:Id'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Param)('Id')),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [category_post_dto_1.CategoryPostDto, String, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "setCategory", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Set category',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, common_1.Get)('/category/:Id'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "getCat", null);
 PostsController = __decorate([
     (0, swagger_1.ApiTags)('Post'),
     (0, common_1.Controller)('posts'),

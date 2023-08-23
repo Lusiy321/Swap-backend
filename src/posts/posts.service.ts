@@ -10,6 +10,7 @@ import { CreateCommentDto } from './dto/create.comment.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { OrderService } from 'src/orders/orders.service';
 import { Orders } from 'src/orders/orders.model';
+import { CategoryPostDto, categoryList } from './dto/category.post.dto';
 
 @Injectable()
 export class PostsService {
@@ -700,5 +701,40 @@ export class PostsService {
     } catch (e) {
       throw new NotFound('Post not found');
     }
+  }
+
+  async setCategoryPosts(
+    postId: string,
+    req: any,
+    setCategory: CategoryPostDto,
+  ): Promise<Posts> {
+    const user = await this.userService.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
+    const { category } = setCategory;
+    try {
+      if (user || user.role === 'admin' || user.role === 'moderator') {
+        const post = await this.postModel.findById(postId);
+        if (post) {
+          await this.postModel.updateOne(
+            { _id: postId },
+            { $set: { category: category } },
+          );
+          return await this.postModel.findById(postId);
+        } else {
+          throw new NotFound('Post not found');
+        }
+      } else {
+        throw new NotFound('User not found');
+      }
+    } catch (e) {
+      throw new NotFound('Post not found');
+    }
+  }
+
+  async getCategory() {
+    const category = [...Object.values(categoryList)];
+    return category;
   }
 }

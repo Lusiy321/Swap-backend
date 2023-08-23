@@ -9,14 +9,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CategoryPostDto = exports.category = void 0;
+exports.CategoryPostDto = exports.categoryList = void 0;
 const swagger_1 = require("@nestjs/swagger");
-var category;
-(function (category) {
-    category["none"] = "none";
-    category["cloth"] = "cloth";
-    category["electronics"] = "electronics";
-})(category = exports.category || (exports.category = {}));
+var categoryList;
+(function (categoryList) {
+    categoryList["other"] = "other";
+    categoryList["cloth"] = "cloth";
+    categoryList["electronics"] = "electronics";
+    categoryList["health"] = "health";
+    categoryList["house"] = "house";
+    categoryList["sport"] = "sport";
+    categoryList["children"] = "children";
+    categoryList["animals"] = "animals";
+    categoryList["books"] = "books";
+    categoryList["auto"] = "auto";
+    categoryList["food"] = "food";
+    categoryList["craft"] = "craft";
+    categoryList["souvenirs"] = "souvenirs";
+    categoryList["garden"] = "garden";
+    categoryList["collecting"] = "collecting";
+})(categoryList = exports.categoryList || (exports.categoryList = {}));
 class CategoryPostDto {
 }
 __decorate([

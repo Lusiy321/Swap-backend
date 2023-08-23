@@ -1,10 +1,22 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 
-export enum category {
-  none = 'none',
+export enum categoryList {
+  other = 'other',
   cloth = 'cloth',
   electronics = 'electronics',
+  health = 'health',
+  house = 'house',
+  sport = 'sport',
+  children = 'children',
+  animals = 'animals',
+  books = 'books',
+  auto = 'auto',
+  food = 'food',
+  craft = 'craft',
+  souvenirs = 'souvenirs',
+  garden = 'garden',
+  collecting = 'collecting',
 }
 
 export class CategoryPostDto {
@@ -12,5 +24,5 @@ export class CategoryPostDto {
     example: 'electronics',
     description: 'Post category',
   })
-  readonly category: category;
+  readonly category: categoryList;
 }
