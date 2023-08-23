@@ -104,6 +104,7 @@ export class PostsService {
     try {
       const post = await this.postModel
         .find({ verify: 'approve', isActive: true })
+        .sort({ createdAt: -1 })
         .exec();
       return post;
     } catch (e) {
