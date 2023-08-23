@@ -290,10 +290,10 @@ export class PostsController {
   }
 
   @ApiOperation({
-    summary: 'Set category',
+    summary: 'Get category',
   })
   @ApiResponse({ status: 200, type: Posts })
-  @Get('/category/:Id')
+  @Get('/category')
   async getCat(): Promise<any> {
     return this.postService.getCategory();
   }
