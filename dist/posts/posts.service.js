@@ -124,6 +124,7 @@ let PostsService = class PostsService {
         try {
             const post = await this.postModel
                 .find({ verify: 'approve', isActive: true })
+                .sort({ createdAt: -1 })
                 .exec();
             return post;
         }
@@ -642,6 +643,13 @@ let PostsService = class PostsService {
     async getCategory() {
         const category = [...Object.values(category_post_dto_1.categoryList)];
         return category;
+    }
+    async addNewCategory(value) {
+        console.log(value);
+        if (value) {
+            return [...Object.values(category_post_dto_1.categoryList)];
+        }
+        throw new http_errors_1.BadRequest('Unable value');
     }
 };
 PostsService = __decorate([

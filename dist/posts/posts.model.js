@@ -22,7 +22,7 @@ __decorate([
     (0, mongoose_1.Prop)({
         type: String,
         minlength: 2,
-        maxlength: 50,
+        maxlength: 150,
         required: [true, 'Title is required'],
     }),
     __metadata("design:type", String)
@@ -43,7 +43,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Electronics', description: 'Post category' }),
     (0, mongoose_1.Prop)({ enum: ['other', 'electronics', 'cloth'], default: 'other' }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Posts.prototype, "category", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({

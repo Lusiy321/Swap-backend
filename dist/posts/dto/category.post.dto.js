@@ -13,21 +13,6 @@ exports.CategoryPostDto = exports.categoryList = void 0;
 const swagger_1 = require("@nestjs/swagger");
 var categoryList;
 (function (categoryList) {
-    categoryList["other"] = "other";
-    categoryList["cloth"] = "cloth";
-    categoryList["electronics"] = "electronics";
-    categoryList["health"] = "health";
-    categoryList["house"] = "house";
-    categoryList["sport"] = "sport";
-    categoryList["children"] = "children";
-    categoryList["animals"] = "animals";
-    categoryList["books"] = "books";
-    categoryList["auto"] = "auto";
-    categoryList["food"] = "food";
-    categoryList["craft"] = "craft";
-    categoryList["souvenirs"] = "souvenirs";
-    categoryList["garden"] = "garden";
-    categoryList["collecting"] = "collecting";
 })(categoryList = exports.categoryList || (exports.categoryList = {}));
 class CategoryPostDto {
 }
@@ -36,7 +21,7 @@ __decorate([
         example: 'electronics',
         description: 'Post category',
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], CategoryPostDto.prototype, "category", void 0);
 exports.CategoryPostDto = CategoryPostDto;
 //# sourceMappingURL=category.post.dto.js.map

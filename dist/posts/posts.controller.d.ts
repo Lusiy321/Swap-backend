@@ -31,5 +31,6 @@ export declare class PostsController {
     setExchangeTrue(postId: string, userPostId: string, request: any): Promise<object>;
     setExchangeFalse(postId: string, userPostId: string, request: any): Promise<Posts>;
     setCategory(category: CategoryPostDto, id: string, request: any): Promise<Posts>;
+    addCategory(category: string): Promise<any[]>;
     getCat(): Promise<any>;
 }

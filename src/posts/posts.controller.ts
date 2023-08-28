@@ -22,7 +22,7 @@ import { CreatePostDto } from './dto/create.post.dto';
 import { Posts } from './posts.model';
 import { VerifyPostDto } from './dto/verify.post.dto';
 import { CreateCommentDto } from './dto/create.comment.dto';
-import { CategoryPostDto } from './dto/category.post.dto';
+import { CategoryPostDto, categoryList } from './dto/category.post.dto';
 
 @ApiTags('Post')
 @Controller('posts')
@@ -290,11 +290,24 @@ export class PostsController {
   }
 
   @ApiOperation({
+    summary: 'Add category',
+  })
+  @ApiResponse({ status: 200, type: String })
+  // @ApiBearerAuth('BearerAuthMethod')
+  @Post('/category/add/:Id')
+  async addCategory(
+    @Param('Id') category: string,
+    // @Req() request: any,
+  ): Promise<any[]> {
+    return this.postService.addNewCategory(category);
+  }
+
+  @ApiOperation({
     summary: 'Get category',
   })
-  @ApiResponse({ status: 200, type: Posts })
+  @ApiResponse({ status: 200, type: String })
   @Get('/category')
-  async getCat(): Promise<any[]> {
+  async getCat(): Promise<any> {
     return this.postService.getCategory();
   }
 }

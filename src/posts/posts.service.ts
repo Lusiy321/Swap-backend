@@ -738,4 +738,14 @@ export class PostsService {
     const category = [...Object.values(categoryList)];
     return category;
   }
+
+  async addNewCategory(value: any): Promise<any> {
+    console.log(value);
+    if (value) {
+      // categoryList[value] = value;
+
+      return [...Object.values(categoryList)];
+    }
+    throw new BadRequest('Unable value');
+  }
 }

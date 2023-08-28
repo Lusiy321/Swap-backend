@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
-
 export enum categoryList {
   other = 'other',
   cloth = 'cloth',
