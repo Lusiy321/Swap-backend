@@ -15,8 +15,8 @@ import { OrdersModule } from './orders/orders.module';
 import { OrderSchema, Orders } from './orders/orders.model';
 import { UsersService } from './users/users.service';
 import { OrdersArhive, OrdersArhiveSchema } from './orders/orders-arhive.model';
-import { Server } from 'http';
-import { ChatGateway } from './orders/utils/chat.gateway';
+
+
 
 @Module({
   imports: [
@@ -45,9 +45,9 @@ import { ChatGateway } from './orders/utils/chat.gateway';
     PassportModule.register({ session: true }),
     PostsModule,
     OrdersModule,
-    Server,
+    
   ],
   controllers: [PostsController],
-  providers: [PostsService, OrderService, UsersService, ChatGateway],
+  providers: [PostsService, OrderService, UsersService, ],
 })
 export class AppModule {}
