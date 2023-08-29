@@ -23,7 +23,8 @@ const orders_module_1 = require("./orders/orders.module");
 const orders_model_1 = require("./orders/orders.model");
 const users_service_1 = require("./users/users.service");
 const orders_arhive_model_1 = require("./orders/orders-arhive.model");
-const https_1 = require("https");
+const http_1 = require("http");
+const chat_gateway_1 = require("./orders/utils/chat.gateway");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -54,10 +55,10 @@ AppModule = __decorate([
             passport_1.PassportModule.register({ session: true }),
             posts_module_1.PostsModule,
             orders_module_1.OrdersModule,
-            https_1.Server,
+            http_1.Server,
         ],
         controllers: [posts_controller_1.PostsController],
-        providers: [posts_service_1.PostsService, orders_service_1.OrderService, users_service_1.UsersService],
+        providers: [posts_service_1.PostsService, orders_service_1.OrderService, users_service_1.UsersService, chat_gateway_1.ChatGateway],
     })
 ], AppModule);
 exports.AppModule = AppModule;

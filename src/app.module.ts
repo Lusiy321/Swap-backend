@@ -15,7 +15,8 @@ import { OrdersModule } from './orders/orders.module';
 import { OrderSchema, Orders } from './orders/orders.model';
 import { UsersService } from './users/users.service';
 import { OrdersArhive, OrdersArhiveSchema } from './orders/orders-arhive.model';
-import { Server } from 'https';
+import { Server } from 'http';
+import { ChatGateway } from './orders/utils/chat.gateway';
 
 @Module({
   imports: [
@@ -47,6 +48,6 @@ import { Server } from 'https';
     Server,
   ],
   controllers: [PostsController],
-  providers: [PostsService, OrderService, UsersService],
+  providers: [PostsService, OrderService, UsersService, ChatGateway],
 })
 export class AppModule {}

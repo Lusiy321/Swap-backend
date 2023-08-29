@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import * as https from 'https';
+import * as http from 'http';
 import * as express from 'express';
 import * as session from 'express-session';
 
@@ -26,7 +26,7 @@ async function start() {
     }),
   );
   app.enableCors();
-  app.useWebSocketAdapter(new IoAdapter(app.get(https.Server)));
+  app.useWebSocketAdapter(new IoAdapter(app.get(http.Server)));
   const config = new DocumentBuilder()
     .setTitle('Test server Swep')
     .setDescription('REAST API Documentation')

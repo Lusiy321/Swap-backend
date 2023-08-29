@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway({ namespace: 'chat' })
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
@@ -18,7 +18,7 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('chatMessage')
-  handleChatMessage(client: any, message: string) {
+  handleChatMessage(client: any, message: string): void {
     const roomId = '1';
     this.server.to(roomId).emit('chatMessage', message);
   }
