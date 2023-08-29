@@ -6,7 +6,7 @@ import { UsersService } from 'src/users/users.service';
 import { CreateCommentDto } from './dto/create.comment.dto';
 import { OrderService } from 'src/orders/orders.service';
 import { Orders } from 'src/orders/orders.model';
-import { CategoryPostDto } from './dto/category.post.dto';
+import { CategoryPostDto, categoryList } from './dto/category.post.dto';
 export declare class PostsService {
     private postModel;
     private orderModel;
@@ -42,6 +42,6 @@ export declare class PostsService {
     exchangeFalsePosts(postId: string, userPostId: string, req: any): Promise<any>;
     findMyOwnPosts(req: any): Promise<any>;
     setCategoryPosts(postId: string, req: any, setCategory: CategoryPostDto): Promise<Posts>;
-    getCategory(): Promise<string[]>;
+    getCategory(): Promise<categoryList[]>;
     addNewCategory(value: any): Promise<any>;
 }

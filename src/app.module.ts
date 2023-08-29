@@ -15,6 +15,7 @@ import { OrdersModule } from './orders/orders.module';
 import { OrderSchema, Orders } from './orders/orders.model';
 import { UsersService } from './users/users.service';
 import { OrdersArhive, OrdersArhiveSchema } from './orders/orders-arhive.model';
+import { Server } from 'https';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { OrdersArhive, OrdersArhiveSchema } from './orders/orders-arhive.model';
     PassportModule.register({ session: true }),
     PostsModule,
     OrdersModule,
+    Server,
   ],
   controllers: [PostsController],
   providers: [PostsService, OrderService, UsersService],

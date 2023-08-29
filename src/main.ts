@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import * as http from 'http';
+import * as https from 'https';
 import * as express from 'express';
 import * as session from 'express-session';
 
@@ -14,7 +14,7 @@ async function start() {
     AppModule,
     new ExpressAdapter(express()),
   );
-  app.useWebSocketAdapter(new IoAdapter(app.get(http.Server)));
+
   app.use(
     session({
       secret: process.env.GOOGLE_CLIENT_SECRET,
@@ -26,6 +26,7 @@ async function start() {
     }),
   );
   app.enableCors();
+  app.useWebSocketAdapter(new IoAdapter(app.get(https.Server)));
   const config = new DocumentBuilder()
     .setTitle('Test server Swep')
     .setDescription('REAST API Documentation')

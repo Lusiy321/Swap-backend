@@ -4,6 +4,8 @@ const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const swagger_1 = require("@nestjs/swagger");
 const platform_express_1 = require("@nestjs/platform-express");
+const platform_socket_io_1 = require("@nestjs/platform-socket.io");
+const https = require("https");
 const express = require("express");
 const session = require("express-session");
 async function start() {
@@ -18,8 +20,9 @@ async function start() {
         },
     }));
     app.enableCors();
+    app.useWebSocketAdapter(new platform_socket_io_1.IoAdapter(app.get(https.Server)));
     const config = new swagger_1.DocumentBuilder()
-        .setTitle('Test server Thing')
+        .setTitle('Test server Swep')
         .setDescription('REAST API Documentation')
         .setVersion('1.0.0')
         .addBearerAuth({

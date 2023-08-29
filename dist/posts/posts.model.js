@@ -43,7 +43,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Electronics', description: 'Post category' }),
     (0, mongoose_1.Prop)({ enum: ['other', 'electronics', 'cloth'], default: 'other' }),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Posts.prototype, "category", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
