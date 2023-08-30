@@ -10,7 +10,7 @@ import { CreateCommentDto } from './dto/create.comment.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { OrderService } from 'src/orders/orders.service';
 import { Orders } from 'src/orders/orders.model';
-import { CategoryPostDto, categoryList } from './dto/category.post.dto';
+import { CategoryPostDto, categoriesArray } from './dto/category.post.dto';
 
 @Injectable()
 export class PostsService {
@@ -56,7 +56,10 @@ export class PostsService {
     }
     try {
       if (user) {
-        const post = await this.postModel.find({ 'owner.id': user.id });
+        const post = await this.postModel
+          .find({ 'owner.id': user.id })
+          .sort({ createdAt: -1 })
+          .exec();
         return post;
       }
     } catch (e) {
@@ -714,18 +717,19 @@ export class PostsService {
       throw new Unauthorized('jwt expired');
     }
     const { category } = setCategory;
+
     try {
-      if (user || user.role === 'admin' || user.role === 'moderator') {
-        const post = await this.postModel.findById(postId);
-        if (post) {
-          await this.postModel.updateOne(
-            { _id: postId },
-            { $set: { category: category } },
-          );
-          return await this.postModel.findById(postId);
-        } else {
-          throw new NotFound('Post not found');
-        }
+      const post = await this.postModel.findById(postId);
+      if (
+        (post && post.owner.id === user.id) ||
+        user.role === 'admin' ||
+        user.role === 'moderator'
+      ) {
+        await this.postModel.updateOne(
+          { _id: postId },
+          { $set: { category: category } },
+        );
+        return await this.postModel.findById(postId);
       } else {
         throw new NotFound('User not found');
       }
@@ -735,17 +739,28 @@ export class PostsService {
   }
 
   async getCategory() {
-    const category = [...Object.values(categoryList)];
+    const category = categoriesArray;
     return category;
   }
 
-  async addNewCategory(value: any): Promise<any> {
-    console.log(value);
-    if (value) {
-      // categoryList[value] = value;
-
-      return [...Object.values(categoryList)];
+  async findByCategory(category: string): Promise<Posts[]> {
+    try {
+      const posts = await this.postModel
+        .find({
+          $and: [
+            { category: { $eq: category } },
+            { verify: { $eq: 'approve' } },
+            { isActive: { $eq: true } },
+          ],
+        })
+        .sort({ views: -1 })
+        .exec();
+      if (Array.isArray(posts) && posts.length === 0) {
+        throw new BadRequest('Unable value');
+      }
+      return posts;
+    } catch (e) {
+      throw new BadRequest('Unable value');
     }
-    throw new BadRequest('Unable value');
   }
 }

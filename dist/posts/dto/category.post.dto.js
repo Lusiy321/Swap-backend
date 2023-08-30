@@ -9,26 +9,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CategoryPostDto = exports.categoryList = void 0;
+exports.CategoryPostDto = exports.categoriesArray = void 0;
 const swagger_1 = require("@nestjs/swagger");
-var categoryList;
-(function (categoryList) {
-    categoryList["other"] = "other";
-    categoryList["cloth"] = "cloth";
-    categoryList["electronics"] = "electronics";
-    categoryList["health"] = "health";
-    categoryList["house"] = "house";
-    categoryList["sport"] = "sport";
-    categoryList["children"] = "children";
-    categoryList["animals"] = "animals";
-    categoryList["books"] = "books";
-    categoryList["auto"] = "auto";
-    categoryList["food"] = "food";
-    categoryList["craft"] = "craft";
-    categoryList["souvenirs"] = "souvenirs";
-    categoryList["garden"] = "garden";
-    categoryList["collecting"] = "collecting";
-})(categoryList = exports.categoryList || (exports.categoryList = {}));
+const categoriesData = require("./category.json");
+const categoryList = categoriesData;
+Object.keys(categoryList).forEach((category) => {
+    return;
+});
+exports.categoriesArray = Object.values(categoryList);
+console.log(exports.categoriesArray);
 class CategoryPostDto {
 }
 __decorate([
@@ -36,7 +25,7 @@ __decorate([
         example: 'electronics',
         description: 'Post category',
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], CategoryPostDto.prototype, "category", void 0);
 exports.CategoryPostDto = CategoryPostDto;
 //# sourceMappingURL=category.post.dto.js.map

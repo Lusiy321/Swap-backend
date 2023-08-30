@@ -75,7 +75,10 @@ let PostsService = class PostsService {
         }
         try {
             if (user) {
-                const post = await this.postModel.find({ 'owner.id': user.id });
+                const post = await this.postModel
+                    .find({ 'owner.id': user.id })
+                    .sort({ createdAt: -1 })
+                    .exec();
                 return post;
             }
         }
@@ -622,15 +625,12 @@ let PostsService = class PostsService {
         }
         const { category } = setCategory;
         try {
-            if (user || user.role === 'admin' || user.role === 'moderator') {
-                const post = await this.postModel.findById(postId);
-                if (post) {
-                    await this.postModel.updateOne({ _id: postId }, { $set: { category: category } });
-                    return await this.postModel.findById(postId);
-                }
-                else {
-                    throw new http_errors_1.NotFound('Post not found');
-                }
+            const post = await this.postModel.findById(postId);
+            if ((post && post.owner.id === user.id) ||
+                user.role === 'admin' ||
+                user.role === 'moderator') {
+                await this.postModel.updateOne({ _id: postId }, { $set: { category: category } });
+                return await this.postModel.findById(postId);
             }
             else {
                 throw new http_errors_1.NotFound('User not found');
@@ -641,15 +641,29 @@ let PostsService = class PostsService {
         }
     }
     async getCategory() {
-        const category = [...Object.values(category_post_dto_1.categoryList)];
+        const category = category_post_dto_1.categoriesArray;
         return category;
     }
-    async addNewCategory(value) {
-        console.log(value);
-        if (value) {
-            return [...Object.values(category_post_dto_1.categoryList)];
+    async findByCategory(category) {
+        try {
+            const posts = await this.postModel
+                .find({
+                $and: [
+                    { category: { $eq: category } },
+                    { verify: { $eq: 'approve' } },
+                    { isActive: { $eq: true } },
+                ],
+            })
+                .sort({ views: -1 })
+                .exec();
+            if (Array.isArray(posts) && posts.length === 0) {
+                throw new http_errors_1.BadRequest('Unable value');
+            }
+            return posts;
         }
-        throw new http_errors_1.BadRequest('Unable value');
+        catch (e) {
+            throw new http_errors_1.BadRequest('Unable value');
+        }
     }
 };
 PostsService = __decorate([

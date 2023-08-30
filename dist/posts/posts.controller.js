@@ -97,11 +97,11 @@ let PostsController = class PostsController {
     async setCategory(category, id, request) {
         return this.postService.setCategoryPosts(id, request, category);
     }
-    async addCategory(category) {
-        return this.postService.addNewCategory(category);
-    }
     async getCat() {
         return this.postService.getCategory();
+    }
+    async findCategory(request) {
+        return this.postService.findByCategory(request);
     }
 };
 __decorate([
@@ -383,17 +383,6 @@ __decorate([
 ], PostsController.prototype, "setCategory", null);
 __decorate([
     (0, swagger_1.ApiOperation)({
-        summary: 'Add category',
-    }),
-    (0, swagger_1.ApiResponse)({ status: 200, type: String }),
-    (0, common_1.Post)('/category/add/:Id'),
-    __param(0, (0, common_1.Param)('Id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], PostsController.prototype, "addCategory", null);
-__decorate([
-    (0, swagger_1.ApiOperation)({
         summary: 'Get category',
     }),
     (0, swagger_1.ApiResponse)({ status: 200, type: String }),
@@ -402,6 +391,17 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "getCat", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Find by category',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, common_1.Get)('/category/sort/:Id'),
+    __param(0, (0, common_1.Param)('Id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "findCategory", null);
 PostsController = __decorate([
     (0, swagger_1.ApiTags)('Post'),
     (0, common_1.Controller)('posts'),

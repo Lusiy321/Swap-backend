@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import { verify } from './dto/verify.post.dto';
 import { Comment } from './utils/comment.interface';
 import { Exchange } from './utils/exchange.interface';
-import { categoryList } from './dto/category.post.dto';
+import { CategoryPostDto } from './dto/category.post.dto';
 
 export type PostDocument = Posts & Document;
 
@@ -34,7 +34,7 @@ export class Posts extends Model<Posts> {
 
   @ApiProperty({ example: 'Electronics', description: 'Post category' })
   @Prop({ enum: ['other', 'electronics', 'cloth'], default: 'other' })
-  category: categoryList;
+  category: CategoryPostDto;
 
   @ApiProperty({
     example: 'Kyiv',

@@ -26,12 +26,12 @@ import { Model } from 'mongoose';
 import { verify } from './dto/verify.post.dto';
 import { Comment } from './utils/comment.interface';
 import { Exchange } from './utils/exchange.interface';
-import { categoryList } from './dto/category.post.dto';
+import { CategoryPostDto } from './dto/category.post.dto';
 export type PostDocument = Posts & Document;
 export declare class Posts extends Model<Posts> {
     title: string;
     description: string;
-    category: categoryList;
+    category: CategoryPostDto;
     location: string;
     img: string;
     favorite: Array<string>;
