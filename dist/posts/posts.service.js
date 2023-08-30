@@ -33,6 +33,7 @@ const uuid_1 = require("uuid");
 const orders_service_1 = require("../orders/orders.service");
 const orders_model_1 = require("../orders/orders.model");
 const category_post_dto_1 = require("./dto/category.post.dto");
+const fs = require("fs");
 let PostsService = class PostsService {
     constructor(postModel, orderModel, userService, orderService) {
         this.postModel = postModel;
@@ -660,6 +661,19 @@ let PostsService = class PostsService {
                 throw new http_errors_1.BadRequest('Unable value');
             }
             return posts;
+        }
+        catch (e) {
+            throw new http_errors_1.BadRequest('Unable value');
+        }
+    }
+    async addCategory(req) {
+        const filePath = 'src/posts/dto/category.json';
+        const data = { [req]: req };
+        try {
+            const existingData = JSON.parse(await fs.promises.readFile(filePath, 'utf8'));
+            const updatedData = Object.assign(Object.assign({}, existingData), data);
+            await fs.promises.writeFile(filePath, JSON.stringify(updatedData, null, 2));
+            return;
         }
         catch (e) {
             throw new http_errors_1.BadRequest('Unable value');

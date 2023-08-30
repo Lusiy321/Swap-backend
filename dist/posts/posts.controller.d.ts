@@ -33,4 +33,5 @@ export declare class PostsController {
     setCategory(category: CategoryPostDto, id: string, request: any): Promise<Posts>;
     getCat(): Promise<any>;
     findCategory(request: string): Promise<Posts[]>;
+    addCategory(request: string): Promise<void>;
 }

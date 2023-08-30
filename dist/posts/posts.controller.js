@@ -103,6 +103,9 @@ let PostsController = class PostsController {
     async findCategory(request) {
         return this.postService.findByCategory(request);
     }
+    async addCategory(request) {
+        return this.postService.addCategory(request);
+    }
 };
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Create Post' }),
@@ -402,6 +405,17 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "findCategory", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Add category',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, common_1.Post)('/category/add/:Id'),
+    __param(0, (0, common_1.Param)('Id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "addCategory", null);
 PostsController = __decorate([
     (0, swagger_1.ApiTags)('Post'),
     (0, common_1.Controller)('posts'),

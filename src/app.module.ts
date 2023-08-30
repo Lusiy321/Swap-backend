@@ -15,6 +15,7 @@ import { OrdersModule } from './orders/orders.module';
 import { OrderSchema, Orders } from './orders/orders.model';
 import { UsersService } from './users/users.service';
 import { OrdersArhive, OrdersArhiveSchema } from './orders/orders-arhive.model';
+import { AuctionModule } from './auction/auction.module';
 
 
 
@@ -45,6 +46,7 @@ import { OrdersArhive, OrdersArhiveSchema } from './orders/orders-arhive.model';
     PassportModule.register({ session: true }),
     PostsModule,
     OrdersModule,
+    AuctionModule,
     
   ],
   controllers: [PostsController],

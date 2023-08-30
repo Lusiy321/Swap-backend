@@ -6,12 +6,9 @@ interface categoryList {
   [key: string]: string;
 }
 const categoryList: Record<string, string> = categoriesData;
-Object.keys(categoryList).forEach((category) => {
-  return;
-});
 
 export const categoriesArray = Object.values(categoryList);
-console.log(categoriesArray);
+
 export class CategoryPostDto {
   @ApiProperty({
     example: 'electronics',

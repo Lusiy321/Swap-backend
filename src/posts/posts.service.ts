@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { OrderService } from 'src/orders/orders.service';
 import { Orders } from 'src/orders/orders.model';
 import { CategoryPostDto, categoriesArray } from './dto/category.post.dto';
+import * as fs from 'fs';
 
 @Injectable()
 export class PostsService {
@@ -759,6 +760,25 @@ export class PostsService {
         throw new BadRequest('Unable value');
       }
       return posts;
+    } catch (e) {
+      throw new BadRequest('Unable value');
+    }
+  }
+
+  async addCategory(req: string) {
+    const filePath = 'src/posts/dto/category.json';
+    const data = { [req]: req };
+    try {
+      const existingData = JSON.parse(
+        await fs.promises.readFile(filePath, 'utf8'),
+      );
+      const updatedData = { ...existingData, ...data };
+
+      await fs.promises.writeFile(
+        filePath,
+        JSON.stringify(updatedData, null, 2),
+      );
+      return;
     } catch (e) {
       throw new BadRequest('Unable value');
     }

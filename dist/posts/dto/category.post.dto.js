@@ -13,11 +13,7 @@ exports.CategoryPostDto = exports.categoriesArray = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const categoriesData = require("./category.json");
 const categoryList = categoriesData;
-Object.keys(categoryList).forEach((category) => {
-    return;
-});
 exports.categoriesArray = Object.values(categoryList);
-console.log(exports.categoriesArray);
 class CategoryPostDto {
 }
 __decorate([

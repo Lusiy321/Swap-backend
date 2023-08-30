@@ -44,4 +44,5 @@ export declare class PostsService {
     setCategoryPosts(postId: string, req: any, setCategory: CategoryPostDto): Promise<Posts>;
     getCategory(): Promise<string[]>;
     findByCategory(category: string): Promise<Posts[]>;
+    addCategory(req: string): Promise<void>;
 }
