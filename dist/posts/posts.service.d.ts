@@ -1,7 +1,6 @@
 /// <reference types="http-errors" />
 import { Posts } from './posts.model';
 import { CreatePostDto } from './dto/create.post.dto';
-import { VerifyPostDto } from './dto/verify.post.dto';
 import { UsersService } from 'src/users/users.service';
 import { CreateCommentDto } from './dto/create.comment.dto';
 import { OrderService } from 'src/orders/orders.service';
@@ -14,7 +13,6 @@ export declare class PostsService {
     private orderService;
     constructor(postModel: Posts, orderModel: Orders, userService: UsersService, orderService: OrderService);
     findAllPosts(req: any): Promise<Posts[]>;
-    findNewPosts(req: any): Promise<Posts[]>;
     findMyPosts(req: any): Promise<Posts[]>;
     searchPosts(query: any): Promise<Posts[]>;
     findUserPosts(id: string): Promise<Posts[]>;
@@ -27,7 +25,6 @@ export declare class PostsService {
     removePostData(findId: string): Promise<Posts[]>;
     deleteComment(postId: string, commentId: string, req: any): Promise<Posts>;
     deleteExchange(postId: string, exchangeId: string, req: any): Promise<Posts>;
-    verifyPost(id: string, req: any, postUp: VerifyPostDto): Promise<Posts>;
     activePost(id: string, req: any): Promise<Posts>;
     favoritePost(id: string, req: any): Promise<Posts>;
     viewPost(id: string, req: any): Promise<Posts>;
@@ -44,5 +41,4 @@ export declare class PostsService {
     setCategoryPosts(postId: string, req: any, setCategory: CategoryPostDto): Promise<Posts>;
     getCategory(): Promise<string[]>;
     findByCategory(category: string): Promise<Posts[]>;
-    addCategory(category: string, req: any): Promise<any>;
 }

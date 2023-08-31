@@ -9,7 +9,7 @@ import {
   Patch,
   Post,
   Put,
-  Query,
+  Query, 
   Req,
 } from '@nestjs/common';
 import {
@@ -20,7 +20,6 @@ import {
 } from '@nestjs/swagger';
 import { CreatePostDto } from './dto/create.post.dto';
 import { Posts } from './posts.model';
-import { VerifyPostDto } from './dto/verify.post.dto';
 import { CreateCommentDto } from './dto/create.comment.dto';
 import { CategoryPostDto } from './dto/category.post.dto';
 
@@ -47,14 +46,7 @@ export class PostsController {
   async findAll(@Req() request: any): Promise<Posts[]> {
     return this.postService.findAllPosts(request);
   }
-
-  @ApiOperation({ summary: 'Get new Post (admin of moderator only)' })
-  @ApiResponse({ status: 200, type: [Posts] })
-  @ApiBearerAuth('BearerAuthMethod')
-  @Get('/new')
-  async findNew(@Req() request: any): Promise<Posts[]> {
-    return this.postService.findNewPosts(request);
-  }
+  
 
   @ApiOperation({ summary: 'Get my Posts' })
   @ApiResponse({ status: 200, type: [Posts] })
@@ -110,21 +102,6 @@ export class PostsController {
   @Delete('/:id')
   async delete(@Param('id') id: string, @Req() request: any): Promise<Posts> {
     return this.postService.deletePost(id, request);
-  }
-
-  @ApiOperation({
-    summary:
-      'Verify user enum: [new, aprove, rejected] (admin of moderator only)',
-  })
-  @ApiResponse({ status: 200, type: Posts })
-  @ApiBearerAuth('BearerAuthMethod')
-  @Patch('/verify/:Id')
-  async setVerify(
-    @Body() post: VerifyPostDto,
-    @Param('Id') id: string,
-    @Req() request: any,
-  ): Promise<Posts> {
-    return this.postService.verifyPost(id, request, post);
   }
 
   @ApiOperation({
@@ -307,16 +284,5 @@ export class PostsController {
     return this.postService.findByCategory(request);
   }
 
-  @ApiOperation({
-    summary: 'Add category',
-  })
-  @ApiResponse({ status: 200, type: Posts })
-  @ApiBearerAuth('BearerAuthMethod')
-  @Post('/category/add/:Id')
-  async addCategory(
-    @Param('Id') category: string,
-    @Req() request: any,
-  ): Promise<void> {
-    return this.postService.addCategory(category, request);
-  }
+  
 }

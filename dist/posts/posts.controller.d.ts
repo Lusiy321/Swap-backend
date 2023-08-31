@@ -1,7 +1,6 @@
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create.post.dto';
 import { Posts } from './posts.model';
-import { VerifyPostDto } from './dto/verify.post.dto';
 import { CreateCommentDto } from './dto/create.comment.dto';
 import { CategoryPostDto } from './dto/category.post.dto';
 export declare class PostsController {
@@ -9,7 +8,6 @@ export declare class PostsController {
     constructor(postService: PostsService);
     create(post: CreatePostDto, request: any): Promise<Posts>;
     findAll(request: any): Promise<Posts[]>;
-    findNew(request: any): Promise<Posts[]>;
     findMy(request: any): Promise<Posts[]>;
     findUserPost(id: string): Promise<Posts[]>;
     findAllAprove(): Promise<Posts[]>;
@@ -17,7 +15,6 @@ export declare class PostsController {
     findById(id: string): Promise<Posts>;
     update(post: CreatePostDto, request: any, id: string): Promise<Posts>;
     delete(id: string, request: any): Promise<Posts>;
-    setVerify(post: VerifyPostDto, id: string, request: any): Promise<Posts>;
     setActive(id: string, request: any): Promise<Posts>;
     setFavorite(id: string, request: any): Promise<Posts>;
     setMyFavorite(request: any): Promise<Posts[]>;
@@ -33,5 +30,4 @@ export declare class PostsController {
     setCategory(category: CategoryPostDto, id: string, request: any): Promise<Posts>;
     getCat(): Promise<any>;
     findCategory(request: string): Promise<Posts[]>;
-    addCategory(category: string, request: any): Promise<void>;
 }

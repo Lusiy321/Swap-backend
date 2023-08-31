@@ -35,20 +35,8 @@ let UsersController = class UsersController {
     async logout(request) {
         return this.usersService.logout(request);
     }
-    async findAll(request) {
-        return this.usersService.findAll(request);
-    }
     async update(user, request) {
         return this.usersService.update(user, request);
-    }
-    async delete(id, request) {
-        return this.usersService.delete(id, request);
-    }
-    async setRole(id, request) {
-        return this.usersService.setModerator(id, request);
-    }
-    async setBan(id, request) {
-        return this.usersService.banUser(id, request);
     }
 };
 __decorate([
@@ -90,16 +78,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "logout", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Get All Users (admin only and moderator role)' }),
-    (0, swagger_1.ApiResponse)({ status: 200, type: [users_model_1.User] }),
-    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
-    (0, common_1.Get)('/'),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "findAll", null);
-__decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Update user' }),
     (0, swagger_1.ApiResponse)({ status: 200, type: users_model_1.User }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
@@ -110,39 +88,6 @@ __decorate([
     __metadata("design:paramtypes", [update_user_dto_1.UpdateUserDto, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "update", null);
-__decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Delet user (admin only)' }),
-    (0, swagger_1.ApiResponse)({ status: 200, type: users_model_1.User }),
-    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
-    (0, common_1.Delete)('/:id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "delete", null);
-__decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Set moderator' }),
-    (0, swagger_1.ApiResponse)({ status: 200, type: users_model_1.User }),
-    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
-    (0, common_1.Patch)('/role/:Id'),
-    __param(0, (0, common_1.Param)('Id')),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "setRole", null);
-__decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Set ban user' }),
-    (0, swagger_1.ApiResponse)({ status: 200, type: users_model_1.User }),
-    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
-    (0, common_1.Patch)('/ban/:Id'),
-    __param(0, (0, common_1.Param)('Id')),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "setBan", null);
 UsersController = __decorate([
     (0, swagger_1.ApiTags)('User'),
     (0, common_1.Controller)('users'),

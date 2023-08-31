@@ -12,7 +12,6 @@ export declare class UsersService {
     private postModel;
     private orderModel;
     constructor(userModel: User, postModel: Posts, orderModel: Orders);
-    findAll(req: any): Promise<User[]>;
     findById(id: string): Promise<User>;
     create(user: CreateUserDto): Promise<User>;
     sendVerificationEmail(email: string, verificationLink: string): Promise<void>;
@@ -24,9 +23,6 @@ export declare class UsersService {
     logout(req: any): Promise<User>;
     update(user: UpdateUserDto, req: any): Promise<User>;
     updateUserData(findId: string): Promise<Posts[]>;
-    delete(id: string, req: any): Promise<User>;
-    setModerator(id: string, req: any): Promise<User>;
-    banUser(id: string, req: any): Promise<User>;
     findOrCreateUser(googleId: string, firstName: string, email: string): Promise<any>;
     findToken(req: any): Promise<User>;
     createToken(authUser: {

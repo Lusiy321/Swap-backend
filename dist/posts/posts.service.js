@@ -33,7 +33,6 @@ const uuid_1 = require("uuid");
 const orders_service_1 = require("../orders/orders.service");
 const orders_model_1 = require("../orders/orders.model");
 const category_post_dto_1 = require("./dto/category.post.dto");
-const fs = require("fs");
 let PostsService = class PostsService {
     constructor(postModel, orderModel, userService, orderService) {
         this.postModel = postModel;
@@ -49,20 +48,6 @@ let PostsService = class PostsService {
         try {
             if (user.role === 'admin' || user.role === 'moderator') {
                 return await this.postModel.find().exec();
-            }
-        }
-        catch (e) {
-            throw new http_errors_1.NotFound('Post not found');
-        }
-    }
-    async findNewPosts(req) {
-        const user = await this.userService.findToken(req);
-        if (!user) {
-            throw new http_errors_1.Unauthorized('jwt expired');
-        }
-        try {
-            if (user.role === 'admin' || user.role === 'moderator') {
-                return await this.postModel.find({ verify: 'new' }).exec();
             }
         }
         catch (e) {
@@ -301,31 +286,6 @@ let PostsService = class PostsService {
         }
         catch (e) {
             throw new http_errors_1.NotFound('Exchange not found');
-        }
-    }
-    async verifyPost(id, req, postUp) {
-        const admin = await this.userService.findToken(req);
-        const post = await this.postModel.findById(id);
-        if (!admin) {
-            throw new http_errors_1.Unauthorized('jwt expired');
-        }
-        if (!admin || !post) {
-            throw new http_errors_1.Conflict('Not found');
-        }
-        try {
-            const adm = admin.role === 'admin' || admin.role === 'moderator';
-            if (adm && post.verify === 'new') {
-                const params = __rest(postUp, []);
-                await this.postModel.findByIdAndUpdate({ _id: id }, Object.assign({}, params));
-                post.save();
-                return await this.postModel.findById(id);
-            }
-            else {
-                return post;
-            }
-        }
-        catch (e) {
-            throw new http_errors_1.NotFound('User not found');
         }
     }
     async activePost(id, req) {
@@ -661,26 +621,6 @@ let PostsService = class PostsService {
                 throw new http_errors_1.BadRequest('Unable value');
             }
             return posts;
-        }
-        catch (e) {
-            throw new http_errors_1.BadRequest('Unable value');
-        }
-    }
-    async addCategory(category, req) {
-        const user = await this.userService.findToken(req);
-        if (!user) {
-            throw new http_errors_1.Unauthorized('jwt expired');
-        }
-        const filePath = 'src/posts/dto/category.json';
-        const data = { [category]: category };
-        try {
-            if (user.role === 'admin') {
-                const existingData = JSON.parse(await fs.promises.readFile(filePath, 'utf8'));
-                const updatedData = Object.assign(Object.assign({}, existingData), data);
-                await fs.promises.writeFile(filePath, JSON.stringify(updatedData, null, 2));
-                return updatedData;
-            }
-            throw new http_errors_1.BadRequest('You are not admin');
         }
         catch (e) {
             throw new http_errors_1.BadRequest('Unable value');

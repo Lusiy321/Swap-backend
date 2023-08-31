@@ -9,9 +9,5 @@ export declare class UsersController {
     findById(id: string): Promise<User>;
     login(user: CreateUserDto): Promise<User>;
     logout(request: any): Promise<User>;
-    findAll(request: any): Promise<User[]>;
     update(user: UpdateUserDto, request: any): Promise<User>;
-    delete(id: string, request: any): Promise<User>;
-    setRole(id: string, request: any): Promise<User>;
-    setBan(id: string, request: any): Promise<User>;
 }

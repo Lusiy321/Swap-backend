@@ -24,6 +24,11 @@ const orders_model_1 = require("./orders/orders.model");
 const users_service_1 = require("./users/users.service");
 const orders_arhive_model_1 = require("./orders/orders-arhive.model");
 const auction_module_1 = require("./auction/auction.module");
+const admin_controller_1 = require("./admin/admin.controller");
+const admin_service_1 = require("./admin/admin.service");
+const admin_module_1 = require("./admin/admin.module");
+const users_controller_1 = require("./users/users.controller");
+const orders_controller_1 = require("./orders/orders.controller");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -55,9 +60,15 @@ AppModule = __decorate([
             posts_module_1.PostsModule,
             orders_module_1.OrdersModule,
             auction_module_1.AuctionModule,
+            admin_module_1.AdminModule,
         ],
-        controllers: [posts_controller_1.PostsController],
-        providers: [posts_service_1.PostsService, orders_service_1.OrderService, users_service_1.UsersService,],
+        controllers: [
+            posts_controller_1.PostsController,
+            admin_controller_1.AdminController,
+            users_controller_1.UsersController,
+            orders_controller_1.OrdersController,
+        ],
+        providers: [posts_service_1.PostsService, orders_service_1.OrderService, users_service_1.UsersService, admin_service_1.AdminService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

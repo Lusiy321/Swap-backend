@@ -4,14 +4,12 @@ import { Posts } from './posts.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Conflict, NotFound, BadRequest, Unauthorized } from 'http-errors';
 import { CreatePostDto } from './dto/create.post.dto';
-import { VerifyPostDto } from './dto/verify.post.dto';
 import { UsersService } from 'src/users/users.service';
 import { CreateCommentDto } from './dto/create.comment.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { OrderService } from 'src/orders/orders.service';
 import { Orders } from 'src/orders/orders.model';
 import { CategoryPostDto, categoriesArray } from './dto/category.post.dto';
-import * as fs from 'fs';
 
 @Injectable()
 export class PostsService {
@@ -30,20 +28,6 @@ export class PostsService {
     try {
       if (user.role === 'admin' || user.role === 'moderator') {
         return await this.postModel.find().exec();
-      }
-    } catch (e) {
-      throw new NotFound('Post not found');
-    }
-  }
-
-  async findNewPosts(req: any): Promise<Posts[]> {
-    const user = await this.userService.findToken(req);
-    if (!user) {
-      throw new Unauthorized('jwt expired');
-    }
-    try {
-      if (user.role === 'admin' || user.role === 'moderator') {
-        return await this.postModel.find({ verify: 'new' }).exec();
       }
     } catch (e) {
       throw new NotFound('Post not found');
@@ -334,35 +318,6 @@ export class PostsService {
       }
     } catch (e) {
       throw new NotFound('Exchange not found');
-    }
-  }
-
-  async verifyPost(
-    id: string,
-    req: any,
-    postUp: VerifyPostDto,
-  ): Promise<Posts> {
-    const admin = await this.userService.findToken(req);
-    const post = await this.postModel.findById(id);
-    if (!admin) {
-      throw new Unauthorized('jwt expired');
-    }
-
-    if (!admin || !post) {
-      throw new Conflict('Not found');
-    }
-    try {
-      const adm = admin.role === 'admin' || admin.role === 'moderator';
-      if (adm && post.verify === 'new') {
-        const { ...params } = postUp;
-        await this.postModel.findByIdAndUpdate({ _id: id }, { ...params });
-        post.save();
-        return await this.postModel.findById(id);
-      } else {
-        return post;
-      }
-    } catch (e) {
-      throw new NotFound('User not found');
     }
   }
 
@@ -760,32 +715,6 @@ export class PostsService {
         throw new BadRequest('Unable value');
       }
       return posts;
-    } catch (e) {
-      throw new BadRequest('Unable value');
-    }
-  }
-
-  async addCategory(category: string, req: any) {
-    const user = await this.userService.findToken(req);
-    if (!user) {
-      throw new Unauthorized('jwt expired');
-    }
-    const filePath = 'src/posts/dto/category.json';
-    const data = { [category]: category };
-    try {
-      if (user.role === 'admin') {
-        const existingData = JSON.parse(
-          await fs.promises.readFile(filePath, 'utf8'),
-        );
-        const updatedData = { ...existingData, ...data };
-
-        await fs.promises.writeFile(
-          filePath,
-          JSON.stringify(updatedData, null, 2),
-        );
-        return updatedData;
-      }
-      throw new BadRequest('You are not admin');
     } catch (e) {
       throw new BadRequest('Unable value');
     }

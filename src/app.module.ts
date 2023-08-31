@@ -16,8 +16,11 @@ import { OrderSchema, Orders } from './orders/orders.model';
 import { UsersService } from './users/users.service';
 import { OrdersArhive, OrdersArhiveSchema } from './orders/orders-arhive.model';
 import { AuctionModule } from './auction/auction.module';
-
-
+import { AdminController } from './admin/admin.controller';
+import { AdminService } from './admin/admin.service';
+import { AdminModule } from './admin/admin.module';
+import { UsersController } from './users/users.controller';
+import { OrdersController } from './orders/orders.controller';
 
 @Module({
   imports: [
@@ -47,9 +50,14 @@ import { AuctionModule } from './auction/auction.module';
     PostsModule,
     OrdersModule,
     AuctionModule,
-    
+    AdminModule,
   ],
-  controllers: [PostsController],
-  providers: [PostsService, OrderService, UsersService, ],
+  controllers: [
+    PostsController,
+    AdminController,
+    UsersController,
+    OrdersController,
+  ],
+  providers: [PostsService, OrderService, UsersService, AdminService],
 })
 export class AppModule {}
