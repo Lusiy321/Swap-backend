@@ -666,14 +666,21 @@ let PostsService = class PostsService {
             throw new http_errors_1.BadRequest('Unable value');
         }
     }
-    async addCategory(req) {
+    async addCategory(category, req) {
+        const user = await this.userService.findToken(req);
+        if (!user) {
+            throw new http_errors_1.Unauthorized('jwt expired');
+        }
         const filePath = 'src/posts/dto/category.json';
-        const data = { [req]: req };
+        const data = { [category]: category };
         try {
-            const existingData = JSON.parse(await fs.promises.readFile(filePath, 'utf8'));
-            const updatedData = Object.assign(Object.assign({}, existingData), data);
-            await fs.promises.writeFile(filePath, JSON.stringify(updatedData, null, 2));
-            return;
+            if (user.role === 'admin') {
+                const existingData = JSON.parse(await fs.promises.readFile(filePath, 'utf8'));
+                const updatedData = Object.assign(Object.assign({}, existingData), data);
+                await fs.promises.writeFile(filePath, JSON.stringify(updatedData, null, 2));
+                return updatedData;
+            }
+            throw new http_errors_1.BadRequest('You are not admin');
         }
         catch (e) {
             throw new http_errors_1.BadRequest('Unable value');

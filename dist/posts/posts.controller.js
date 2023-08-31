@@ -103,8 +103,8 @@ let PostsController = class PostsController {
     async findCategory(request) {
         return this.postService.findByCategory(request);
     }
-    async addCategory(request) {
-        return this.postService.addCategory(request);
+    async addCategory(category, request) {
+        return this.postService.addCategory(category, request);
     }
 };
 __decorate([
@@ -410,10 +410,12 @@ __decorate([
         summary: 'Add category',
     }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
+    (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
     (0, common_1.Post)('/category/add/:Id'),
     __param(0, (0, common_1.Param)('Id')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "addCategory", null);
 PostsController = __decorate([

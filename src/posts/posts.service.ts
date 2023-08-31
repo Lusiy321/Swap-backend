@@ -765,20 +765,27 @@ export class PostsService {
     }
   }
 
-  async addCategory(req: string) {
+  async addCategory(category: string, req: any) {
+    const user = await this.userService.findToken(req);
+    if (!user) {
+      throw new Unauthorized('jwt expired');
+    }
     const filePath = 'src/posts/dto/category.json';
-    const data = { [req]: req };
+    const data = { [category]: category };
     try {
-      const existingData = JSON.parse(
-        await fs.promises.readFile(filePath, 'utf8'),
-      );
-      const updatedData = { ...existingData, ...data };
+      if (user.role === 'admin') {
+        const existingData = JSON.parse(
+          await fs.promises.readFile(filePath, 'utf8'),
+        );
+        const updatedData = { ...existingData, ...data };
 
-      await fs.promises.writeFile(
-        filePath,
-        JSON.stringify(updatedData, null, 2),
-      );
-      return;
+        await fs.promises.writeFile(
+          filePath,
+          JSON.stringify(updatedData, null, 2),
+        );
+        return updatedData;
+      }
+      throw new BadRequest('You are not admin');
     } catch (e) {
       throw new BadRequest('Unable value');
     }

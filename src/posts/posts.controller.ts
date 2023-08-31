@@ -311,8 +311,12 @@ export class PostsController {
     summary: 'Add category',
   })
   @ApiResponse({ status: 200, type: Posts })
+  @ApiBearerAuth('BearerAuthMethod')
   @Post('/category/add/:Id')
-  async addCategory(@Param('Id') request: string): Promise<void> {
-    return this.postService.addCategory(request);
+  async addCategory(
+    @Param('Id') category: string,
+    @Req() request: any,
+  ): Promise<void> {
+    return this.postService.addCategory(category, request);
   }
 }
