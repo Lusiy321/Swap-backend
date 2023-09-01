@@ -58,7 +58,7 @@ export class AdminController {
     return this.adminService.findAll(request);
   }
   @ApiOperation({
-    summary: 'Verify user enum: [new, aprove, rejected]',
+    summary: 'Verify post enum: [new, aprove, rejected]',
   })
   @ApiResponse({ status: 200, type: Posts })
   @ApiBearerAuth('BearerAuthMethod')
