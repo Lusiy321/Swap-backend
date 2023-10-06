@@ -90,7 +90,7 @@ __decorate([
 ], AdminController.prototype, "findAll", null);
 __decorate([
     (0, swagger_1.ApiOperation)({
-        summary: 'Verify user enum: [new, aprove, rejected]',
+        summary: 'Verify post enum: [new, aprove, rejected]',
     }),
     (0, swagger_1.ApiResponse)({ status: 200, type: posts_model_1.Posts }),
     (0, swagger_1.ApiBearerAuth)('BearerAuthMethod'),
