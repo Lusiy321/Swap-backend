@@ -26,7 +26,7 @@ async function start() {
   );
   app.enableCors();
   const config = new DocumentBuilder()
-    .setTitle('Test server Swep')
+    .setTitle('SwapNShare server')
     .setDescription('REAST API Documentation')
     .setVersion('1.0.0')
     .addBearerAuth(
