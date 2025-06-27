@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { User, UserSchema } from './users.model';
 import { CreateUserDto } from './dto/create.user.dto';
 import { compareSync, hashSync } from 'bcrypt';
@@ -17,385 +17,704 @@ import {
 } from './utils/message-variables';
 import { MailUserDto } from './dto/email.user.dto';
 import { UpdatePasswordUserDto } from './dto/updatePassword.user.dto';
+import { Connection, ClientSession } from 'mongoose';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+  private readonly ACCESS_TOKEN_EXPIRY =
+    process.env.ACCESS_TOKEN_EXPIRY || '1h';
+  private readonly REFRESH_TOKEN_EXPIRY =
+    process.env.REFRESH_TOKEN_EXPIRY || '24h';
+  private readonly FROM_EMAIL = process.env.FROM_EMAIL || 'lusiy321@gmail.com';
+  private readonly FRONTEND_URL =
+    process.env.FRONTEND_URL || 'https://swap-server.cyclic.cloud';
+
   constructor(
     @InjectModel(User.name)
     private userModel: User,
     @InjectModel(Posts.name) private postModel: Posts,
     @InjectModel(Orders.name) private orderModel: Orders,
+    @InjectConnection() private connection: Connection,
   ) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   }
-
   async findById(id: string): Promise<User> {
-    try {
-      const find = await this.userModel.findById(id).exec();
-      return find;
-    } catch (e) {
-      throw new NotFound('User not found');
+    if (!id) {
+      throw new BadRequest('User ID is required');
     }
-  }
 
-  async create(user: CreateUserDto): Promise<User> {
     try {
-      const { email } = user;
-      const lowerCaseEmail = email.toLowerCase();
-
-      const registrationUser = await this.userModel.findOne({
-        email: lowerCaseEmail,
-      });
-      if (registrationUser) {
-        throw new Conflict(`User with ${email} in use`);
+      const user = await this.userModel.findById(id).lean().exec();
+      if (!user) {
+        throw new NotFound('User not found');
       }
-
-      const createdUser = await this.userModel.create(user);
-      createdUser.setName(lowerCaseEmail);
-      createdUser.setPassword(user.password);
-      createdUser.save();
-      const verificationLink = `https://swap-server.cyclic.cloud/auth/verify-email/${createdUser._id}`;
-      await this.sendVerificationEmail(email, verificationLink);
-      return await this.userModel.findById(createdUser._id);
-    } catch (e) {
-      throw new BadRequest(e.message);
+      return user;
+    } catch (error) {
+      this.logger.error(`Error finding user by ID ${id}:`, error);
+      if (error instanceof NotFound) {
+        throw error;
+      }
+      throw new BadRequest('Invalid user ID format');
     }
   }
+  async create(user: CreateUserDto): Promise<User> {
+    const { email, password } = user;
+    const lowerCaseEmail = email.toLowerCase();
 
+    const session: ClientSession = await this.connection.startSession();
+
+    try {
+      await session.withTransaction(async () => {
+        // Проверяем существование пользователя
+        const existingUser = await this.userModel
+          .findOne({
+            email: lowerCaseEmail,
+          })
+          .session(session);
+
+        if (existingUser) {
+          throw new Conflict(`User with email ${email} already exists`);
+        }
+
+        // Создаем пользователя
+        const userData = {
+          ...user,
+          email: lowerCaseEmail,
+          password: hashSync(password, 10),
+        };
+
+        const [createdUser] = await this.userModel.create([userData], {
+          session,
+        });
+
+        // Устанавливаем имя из email
+        const emailName = lowerCaseEmail.split('@')[0];
+        createdUser.firstName = createdUser.firstName || emailName;
+        await createdUser.save({ session });
+
+        // Отправляем письмо верификации (асинхронно)
+        const verificationLink = `${this.FRONTEND_URL}/auth/verify-email/${createdUser._id}`;
+        this.sendVerificationEmail(lowerCaseEmail, verificationLink).catch(
+          (error) =>
+            this.logger.error('Failed to send verification email:', error),
+        );
+
+        return createdUser;
+      });
+
+      // Возвращаем созданного пользователя
+      return await this.userModel
+        .findOne({ email: lowerCaseEmail })
+        .lean()
+        .exec();
+    } catch (error) {
+      this.logger.error('Error creating user:', error);
+      if (error instanceof Conflict) {
+        throw error;
+      }
+      throw new BadRequest('Failed to create user');
+    } finally {
+      await session.endSession();
+    }
+  }
   async sendVerificationEmail(
     email: string,
     verificationLink: string,
   ): Promise<void> {
     const msg = {
       to: email,
-      from: 'lusiy321@gmail.com',
-      subject: 'Email Verification from Swep',
-      html: `<p>Click the link below to verify your email:</p><p><a href="${verificationLink}">Click</a></p>`,
+      from: this.FROM_EMAIL,
+      subject: 'Email Verification from Swap',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Email Verification</h2>
+          <p>Thank you for registering with Swap! Please click the link below to verify your email address:</p>
+          <p><a href="${verificationLink}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Verify Email</a></p>
+          <p>If you did not create an account, please ignore this email.</p>
+        </div>
+      `,
     };
 
     try {
       await sgMail.send(msg);
+      this.logger.log(`Verification email sent to ${email}`);
     } catch (error) {
+      this.logger.error(
+        `Failed to send verification email to ${email}:`,
+        error,
+      );
       throw new Error('Failed to send verification email');
     }
   }
+  async verifyUserEmail(id: string): Promise<User> {
+    if (!id) {
+      throw new BadRequest('User ID is required');
+    }
 
-  async verifyUserEmail(id: any) {
     try {
-      const user = await this.userModel.findById(id);
-      user.verify = true;
-      user.save();
-    } catch (e) {
-      throw new BadRequest(e.message);
+      const user = await this.userModel
+        .findByIdAndUpdate(id, { verify: true }, { new: true, lean: true })
+        .exec();
+
+      if (!user) {
+        throw new NotFound('User not found');
+      }
+
+      this.logger.log(`User ${id} email verified successfully`);
+      return user;
+    } catch (error) {
+      this.logger.error(`Error verifying email for user ${id}:`, error);
+      if (error instanceof NotFound) {
+        throw error;
+      }
+      throw new BadRequest('Failed to verify email');
     }
   }
-
   async changePassword(req: any, newPass: PasswordUserDto): Promise<User> {
     const user = await this.findToken(req);
     if (!user) {
-      throw new Unauthorized('jwt expired');
+      throw new Unauthorized('JWT token expired or invalid');
     }
+
+    const { oldPassword, password } = newPass;
+
     try {
-      const { oldPassword, password } = newPass;
-      if (user.comparePassword(oldPassword) === true) {
-        user.setPassword(password);
-        user.save();
-        const msg = {
-          to: user.email,
-          from: 'lusiy321@gmail.com',
-          subject: 'Your password has been changed on swep.com',
-          html: changePasswordMsg,
-        };
-        await sgMail.send(msg);
-        return await this.userModel.findById(user._id);
+      // Проверяем старый пароль
+      if (!compareSync(oldPassword, user.password)) {
+        throw new BadRequest('Current password is incorrect');
       }
-      throw new BadRequest('Password is not avaible');
-    } catch (e) {
-      throw new BadRequest(e.message);
+
+      // Обновляем пароль
+      const hashedPassword = hashSync(password, 10);
+      await this.userModel
+        .findByIdAndUpdate(
+          user._id,
+          { password: hashedPassword },
+          { new: true },
+        )
+        .exec();
+
+      // Отправляем уведомление (асинхронно)
+      this.sendPasswordChangeNotification(user.email).catch((error) =>
+        this.logger.error(
+          'Failed to send password change notification:',
+          error,
+        ),
+      );
+
+      this.logger.log(`Password changed for user ${user._id}`);
+      return await this.userModel.findById(user._id).lean().exec();
+    } catch (error) {
+      this.logger.error(`Error changing password for user ${user._id}:`, error);
+      if (error instanceof BadRequest) {
+        throw error;
+      }
+      throw new BadRequest('Failed to change password');
     }
   }
 
-  async restorePassword(email: MailUserDto) {
-    const restoreMail: User = await this.userModel.findOne(email);
+  private async sendPasswordChangeNotification(email: string): Promise<void> {
+    const msg = {
+      to: email,
+      from: this.FROM_EMAIL,
+      subject: 'Your password has been changed on Swap',
+      html: changePasswordMsg,
+    };
+    await sgMail.send(msg);
+  }
+  async restorePassword(emailDto: MailUserDto): Promise<void> {
+    const { email } = emailDto;
+
     try {
-      if (restoreMail) {
-        const msg: any = {
-          to: restoreMail.email,
-          from: 'lusiy321@gmail.com',
-          subject: 'Change your password on swep.com',
-          html: restorePasswordMsg,
-        };
-        return await sgMail.send(msg);
+      const user = await this.userModel
+        .findOne({ email: email.toLowerCase() })
+        .lean()
+        .exec();
+
+      if (!user) {
+        // Не раскрываем информацию о существовании пользователя
+        this.logger.warn(
+          `Password restore attempt for non-existent email: ${email}`,
+        );
+        return;
       }
-    } catch (e) {
-      throw new BadRequest('User not found');
+
+      const msg = {
+        to: user.email,
+        from: this.FROM_EMAIL,
+        subject: 'Reset your password on Swap',
+        html: restorePasswordMsg.replace(
+          '{{resetLink}}',
+          `${this.FRONTEND_URL}/reset-password/${user._id}`,
+        ),
+      };
+
+      await sgMail.send(msg);
+      this.logger.log(`Password reset email sent to ${email}`);
+    } catch (error) {
+      this.logger.error(
+        `Error sending password reset email to ${email}:`,
+        error,
+      );
+      throw new BadRequest('Failed to send password reset email');
     }
   }
-
   async updateRestorePassword(
     id: string,
     newPass: UpdatePasswordUserDto,
   ): Promise<User> {
-    const user = await this.userModel.findById(id);
+    if (!id) {
+      throw new BadRequest('User ID is required');
+    }
+
     const { password } = newPass;
+
     try {
-      if (user) {
-        user.setPassword(password);
-        user.save();
-        const msg = {
-          to: user.email,
-          from: 'lusiy321@gmail.com',
-          subject: 'Your password has been changed on swep.com',
-          html: changePasswordMsg,
-        };
-        await sgMail.send(msg);
-        return await this.userModel.findById(user._id);
+      const hashedPassword = hashSync(password, 10);
+      const user = await this.userModel
+        .findByIdAndUpdate(
+          id,
+          { password: hashedPassword },
+          { new: true, lean: true },
+        )
+        .exec();
+
+      if (!user) {
+        throw new NotFound('User not found');
       }
 
-      throw new BadRequest('User not found');
-    } catch (e) {
-      throw new BadRequest(e.message);
+      // Отправляем уведомление (асинхронно)
+      this.sendPasswordChangeNotification(user.email).catch((error) =>
+        this.logger.error(
+          'Failed to send password change notification:',
+          error,
+        ),
+      );
+
+      this.logger.log(`Password restored for user ${id}`);
+      return user;
+    } catch (error) {
+      this.logger.error(
+        `Error updating restored password for user ${id}:`,
+        error,
+      );
+      if (error instanceof NotFound) {
+        throw error;
+      }
+      throw new BadRequest('Failed to update password');
     }
   }
-
   async login(user: CreateUserDto): Promise<User> {
+    const { email, password } = user;
+    const lowerCaseEmail = email.toLowerCase();
+
     try {
-      const { email, password } = user;
-      const lowerCaseEmail = email.toLowerCase();
-      const authUser = await this.userModel.findOne({ email: lowerCaseEmail });
-      if (!authUser || !authUser.comparePassword(password)) {
-        throw new Unauthorized(`Email or password is wrong`);
+      const authUser = await this.userModel
+        .findOne({ email: lowerCaseEmail })
+        .exec();
+
+      if (!authUser) {
+        throw new Unauthorized('Invalid email or password');
       }
-      return this.createToken(authUser);
-    } catch (e) {
-      throw new BadRequest(e.message);
+
+      if (!compareSync(password, authUser.password)) {
+        throw new Unauthorized('Invalid email or password');
+      }
+
+      if (!authUser.verify) {
+        throw new Unauthorized('Please verify your email before logging in');
+      }
+
+      if (authUser.ban) {
+        throw new Unauthorized('Your account has been banned');
+      }
+
+      // Создание токена и обновление пользователя
+      const tokenData = await this.createToken(authUser);
+
+      this.logger.log(`User ${authUser._id} logged in successfully`);
+      return tokenData;
+    } catch (error) {
+      this.logger.error(`Login failed for email ${lowerCaseEmail}:`, error);
+      if (error instanceof Unauthorized) {
+        throw error;
+      }
+      throw new BadRequest('Login failed');
     }
   }
-
   async logout(req: any): Promise<User> {
     const user = await this.findToken(req);
     if (!user) {
-      throw new Unauthorized('jwt expired');
+      throw new Unauthorized('JWT token expired or invalid');
     }
+
     try {
-      await this.userModel.findByIdAndUpdate({ _id: user.id }, { token: null });
-      return await this.userModel.findById({ _id: user.id });
-    } catch (e) {
-      throw new BadRequest(e.message);
+      const updatedUser = await this.userModel
+        .findByIdAndUpdate(
+          user._id,
+          { token: null, isOnline: false },
+          { new: true, lean: true },
+        )
+        .exec();
+
+      this.logger.log(`User ${user._id} logged out successfully`);
+      return updatedUser;
+    } catch (error) {
+      this.logger.error(`Error logging out user ${user._id}:`, error);
+      throw new BadRequest('Logout failed');
     }
   }
-
   async update(user: UpdateUserDto, req: any): Promise<User> {
-    const { firstName, lastName, phone, location, avatarURL } = user;
-    const findId = await this.findToken(req);
-    if (!findId) {
-      throw new Unauthorized('jwt expired');
+    const authenticatedUser = await this.findToken(req);
+    if (!authenticatedUser) {
+      throw new Unauthorized('JWT token expired or invalid');
     }
 
-    if (firstName || lastName || phone || location || avatarURL) {
-      await this.userModel.findByIdAndUpdate(
-        { _id: findId.id },
-        { firstName, lastName, phone, location, avatarURL },
-      );
-      const userUpdate = this.userModel.findById({ _id: findId.id });
-      this.updateUserData(findId.id);
+    const { firstName, lastName, phone, location, avatarURL } = user;
 
-      return userUpdate;
+    // Фильтруем только те поля, которые действительно изменились
+    const updateFields: any = {};
+    if (firstName !== undefined) updateFields.firstName = firstName;
+    if (lastName !== undefined) updateFields.lastName = lastName;
+    if (phone !== undefined) updateFields.phone = phone;
+    if (location !== undefined) updateFields.location = location;
+    if (avatarURL !== undefined) updateFields.avatarURL = avatarURL;
+
+    if (Object.keys(updateFields).length === 0) {
+      return await this.userModel.findById(authenticatedUser._id).lean().exec();
+    }
+
+    const session: ClientSession = await this.connection.startSession();
+
+    try {
+      let updatedUser: User;
+
+      await session.withTransaction(async () => {
+        // Обновляем пользователя
+        updatedUser = await this.userModel
+          .findByIdAndUpdate(authenticatedUser._id, updateFields, {
+            new: true,
+            session,
+          })
+          .exec();
+
+        if (!updatedUser) {
+          throw new NotFound('User not found');
+        }
+
+        // Обновляем связанные данные в фоновом режиме
+        this.updateUserData(updatedUser._id.toString()).catch((error) =>
+          this.logger.error('Failed to update related user data:', error),
+        );
+      });
+
+      this.logger.log(`User ${authenticatedUser._id} updated successfully`);
+      return updatedUser;
+    } catch (error) {
+      this.logger.error(`Error updating user ${authenticatedUser._id}:`, error);
+      if (error instanceof NotFound || error instanceof Unauthorized) {
+        throw error;
+      }
+      throw new BadRequest('Failed to update user');
+    } finally {
+      await session.endSession();
     }
   }
+  async updateUserData(userId: string): Promise<void> {
+    try {
+      const user = await this.userModel.findById(userId).lean().exec();
+      if (!user) {
+        throw new NotFound('User not found');
+      }
 
-  async updateUserData(findId: string): Promise<Posts[]> {
-    const user = await this.userModel.findById({ _id: findId });
-    await this.postModel.updateMany(
-      { 'owner.id': user.id },
-      {
-        $set: {
-          owner: {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-            avatarURL: user.avatarURL,
-            location: user.location,
-          },
-        },
-      },
-    );
-    await this.postModel.updateMany(
-      { 'comments.user.id': user.id },
-      {
-        $set: {
-          'comments.$[comment].user': {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-            avatarURL: user.avatarURL,
-            location: user.location,
-          },
-        },
-      },
-      { arrayFilters: [{ 'comment.user.id': user.id }] },
-    );
-    await this.postModel.updateMany(
-      { 'toExchange.user.id': user.id },
-      {
-        $set: {
-          'toExchange.$[toExchange].user': {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-            avatarURL: user.avatarURL,
-            location: user.location,
-          },
-        },
-      },
-      { arrayFilters: [{ 'toExchange.user.id': user.id }] },
-    );
-    await this.postModel.updateMany(
-      { 'comments.answer.user.id': user.id },
-      {
-        $set: {
-          'comments.$[comment].answer.$[ans].user': {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-            avatarURL: user.avatarURL,
-            location: user.location,
-          },
-        },
-      },
-      {
-        arrayFilters: [
-          { 'comment.user.id': user.id },
-          { 'ans.user.id': user.id },
-        ],
-      },
-    );
-    await this.orderModel.updateMany(
-      { 'product.owner.id': user.id },
-      {
-        $set: {
-          owner: {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-            avatarURL: user.avatarURL,
-            location: user.location,
-          },
-        },
-      },
-    );
-    await this.orderModel.updateMany(
-      { 'offer.owner.id': user.id },
-      {
-        $set: {
-          owner: {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-            avatarURL: user.avatarURL,
-            location: user.location,
-          },
-        },
-      },
-    );
-    return;
-  }  
+      const userInfo = {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        avatarURL: user.avatarURL,
+        location: user.location,
+      };
 
+      // Используем Promise.allSettled для параллельного выполнения всех обновлений
+      const updatePromises = [
+        // Обновление постов владельца
+        this.postModel
+          .updateMany({ 'owner.id': user._id }, { $set: { owner: userInfo } })
+          .exec(),
+
+        // Обновление комментариев пользователя
+        this.postModel
+          .updateMany(
+            { 'comments.user.id': user._id },
+            {
+              $set: {
+                'comments.$[comment].user': userInfo,
+              },
+            },
+            { arrayFilters: [{ 'comment.user.id': user._id }] },
+          )
+          .exec(),
+
+        // Обновление предложений к обмену
+        this.postModel
+          .updateMany(
+            { 'toExchange.user.id': user._id },
+            {
+              $set: {
+                'toExchange.$[exchange].user': userInfo,
+              },
+            },
+            { arrayFilters: [{ 'exchange.user.id': user._id }] },
+          )
+          .exec(),
+
+        // Обновление ответов на комментарии
+        this.postModel
+          .updateMany(
+            { 'comments.answer.user.id': user._id },
+            {
+              $set: {
+                'comments.$[comment].answer.$[answer].user': userInfo,
+              },
+            },
+            {
+              arrayFilters: [
+                { 'comment.answer': { $exists: true } },
+                { 'answer.user.id': user._id },
+              ],
+            },
+          )
+          .exec(),
+
+        // Обновление заказов где пользователь владелец продукта
+        this.orderModel
+          .updateMany(
+            { 'product.owner.id': user._id },
+            { $set: { 'product.owner': userInfo } },
+          )
+          .exec(),
+
+        // Обновление заказов где пользователь делает предложение
+        this.orderModel
+          .updateMany(
+            { 'offer.owner.id': user._id },
+            { $set: { 'offer.owner': userInfo } },
+          )
+          .exec(),
+      ];
+
+      const results = await Promise.allSettled(updatePromises);
+
+      // Логируем неуспешные операции
+      results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          this.logger.error(
+            `Failed to update related data (operation ${index}):`,
+            result.reason,
+          );
+        }
+      });
+
+      this.logger.log(`User data updated for user ${userId}`);
+    } catch (error) {
+      this.logger.error(`Error updating user data for ${userId}:`, error);
+      throw error;
+    }
+  }
   async findOrCreateUser(
     googleId: string,
     firstName: string,
     email: string,
-  ): Promise<any> {
+  ): Promise<User> {
     try {
-      let user = await this.userModel.findOne({ googleId });
+      let user = await this.userModel.findOne({ googleId }).exec();
+
       if (!user) {
-        user = await this.userModel.create({
+        const userData = {
           googleId,
           firstName,
-          email,
-        });
-        user.setPassword(googleId);
-        return user.save();
+          email: email.toLowerCase(),
+          password: hashSync(googleId, 10),
+          verify: true, // Google users are pre-verified
+        };
+
+        user = await this.userModel.create(userData);
+        this.logger.log(`New Google user created: ${user._id}`);
       }
-    } catch (e) {
-      throw new NotFound('User not found');
+
+      return user;
+    } catch (error) {
+      this.logger.error(`Error finding/creating Google user:`, error);
+      throw new BadRequest('Failed to authenticate with Google');
     }
   }
-
-  async findToken(req: any): Promise<User> {
+  async findToken(req: any): Promise<User | null> {
     try {
       const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
 
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
+      if (!authorization.startsWith('Bearer ')) {
+        throw new Unauthorized('Invalid authorization header format');
+      }
+
+      const token = authorization.slice(7); // Remove 'Bearer ' prefix
+
+      if (!token) {
+        throw new Unauthorized('Token not provided');
       }
 
       const SECRET_KEY = process.env.SECRET_KEY;
-      const findId = verify(token, SECRET_KEY) as JwtPayload;
-      const user = await this.userModel.findById({ _id: findId.id });
+      if (!SECRET_KEY) {
+        throw new Error('SECRET_KEY environment variable is not set');
+      }
+
+      const decoded = verify(token, SECRET_KEY) as JwtPayload;
+
+      if (!decoded.id) {
+        throw new Unauthorized('Invalid token payload');
+      }
+
+      const user = await this.userModel.findById(decoded.id).exec();
+
+      if (!user) {
+        throw new Unauthorized('User not found');
+      }
+
+      if (user.token !== token) {
+        throw new Unauthorized('Token mismatch');
+      }
 
       return user;
-    } catch (e) {
-      throw new Unauthorized('jwt expired');
+    } catch (error) {
+      if (error.name === 'JsonWebTokenError') {
+        throw new Unauthorized('Invalid token');
+      }
+      if (error.name === 'TokenExpiredError') {
+        throw new Unauthorized('Token expired');
+      }
+      if (error instanceof Unauthorized) {
+        throw error;
+      }
+      this.logger.error('Error validating token:', error);
+      throw new Unauthorized('Token validation failed');
     }
   }
+  async createToken(authUser: { _id: string }): Promise<User> {
+    try {
+      const payload = {
+        id: authUser._id,
+        iat: Math.floor(Date.now() / 1000),
+      };
 
-  async createToken(authUser: { _id: string }) {
-    const payload = {
-      id: authUser._id,
-    };
-    const SECRET_KEY = process.env.SECRET_KEY;
-    const token = sign(payload, SECRET_KEY, { expiresIn: '1m' });
-    await this.userModel.findByIdAndUpdate(authUser._id, { token });
-    const authentificationUser = await this.userModel.findById({
-      _id: authUser._id,
-    });
-    return authentificationUser;
+      const SECRET_KEY = process.env.SECRET_KEY;
+      if (!SECRET_KEY) {
+        throw new Error('SECRET_KEY environment variable is not set');
+      }
+
+      const token = sign(payload, SECRET_KEY, {
+        expiresIn: this.ACCESS_TOKEN_EXPIRY,
+      });
+
+      const updatedUser = await this.userModel
+        .findByIdAndUpdate(
+          authUser._id,
+          {
+            token,
+            isOnline: true,
+          },
+          { new: true, lean: true },
+        )
+        .exec();
+
+      if (!updatedUser) {
+        throw new NotFound('User not found during token creation');
+      }
+
+      this.logger.log(`Token created for user ${authUser._id}`);
+      return updatedUser;
+    } catch (error) {
+      this.logger.error(
+        `Error creating token for user ${authUser._id}:`,
+        error,
+      );
+      throw new BadRequest('Failed to create authentication token');
+    }
   }
-
   async refreshAccessToken(req: any): Promise<User> {
     try {
       const { authorization = '' } = req.headers;
-      const [bearer, token] = authorization.split(' ');
 
-      if (bearer !== 'Bearer') {
-        throw new Unauthorized('Not authorized');
+      if (!authorization.startsWith('Bearer ')) {
+        throw new Unauthorized('Invalid authorization header format');
       }
-      const SECRET_KEY = process.env.SECRET_KEY;
-      const user = await this.userModel.findOne({ token: token });
+
+      const token = authorization.slice(7);
+
+      if (!token) {
+        throw new Unauthorized('Token not provided');
+      }
+
+      const user = await this.userModel.findOne({ token }).exec();
+
       if (!user) {
-        throw new NotFound('User not found');
+        throw new Unauthorized('Invalid refresh token');
       }
+
+      const SECRET_KEY = process.env.SECRET_KEY;
+      if (!SECRET_KEY) {
+        throw new Error('SECRET_KEY environment variable is not set');
+      }
+
       const payload = {
         id: user._id,
+        iat: Math.floor(Date.now() / 1000),
       };
-      const tokenRef = sign(payload, SECRET_KEY, { expiresIn: '24h' });
-      await this.userModel.findByIdAndUpdate(user._id, { token: tokenRef });
-      const authentificationUser = await this.userModel.findById({
-        _id: user.id,
+
+      const newToken = sign(payload, SECRET_KEY, {
+        expiresIn: this.REFRESH_TOKEN_EXPIRY,
       });
-      return authentificationUser;
+
+      const updatedUser = await this.userModel
+        .findByIdAndUpdate(
+          user._id,
+          { token: newToken },
+          { new: true, lean: true },
+        )
+        .exec();
+
+      this.logger.log(`Token refreshed for user ${user._id}`);
+      return updatedUser;
     } catch (error) {
+      this.logger.error('Error refreshing token:', error);
+      if (error instanceof Unauthorized) {
+        throw error;
+      }
       throw new BadRequest('Invalid refresh token');
     }
   }
 }
 
-UserSchema.methods.setPassword = async function (password: string) {
-  return (this.password = hashSync(password, 10));
+// Оптимизированные методы схемы
+UserSchema.methods.setPassword = function (password: string): string {
+  this.password = hashSync(password, 10);
+  return this.password;
 };
 
-UserSchema.methods.setName = function (email: string) {
-  const parts = email.split('@');
-  this.firstName = parts[0];
+UserSchema.methods.setName = function (email: string): void {
+  if (!this.firstName) {
+    const parts = email.split('@');
+    this.firstName = parts[0];
+  }
 };
-UserSchema.methods.comparePassword = function (password: string) {
+
+UserSchema.methods.comparePassword = function (password: string): boolean {
   return compareSync(password, this.password);
 };
+
+// Добавляем индексы для оптимизации
+UserSchema.index({ email: 1 });
+UserSchema.index({ googleId: 1 });
+UserSchema.index({ token: 1 });
+UserSchema.index({ verify: 1 });
+UserSchema.index({ ban: 1 });
